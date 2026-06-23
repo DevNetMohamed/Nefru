@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import LogoDark from "../../../assets/images/Logo_Dark.png";
 import LogoLight from "../../../assets/images/Logo_Light.png";
-import Footer from "../../../shared/Footer/Footer";
+import Footer from "../../../shared/components/Footer/Footer";
 
 const roles = [
   {

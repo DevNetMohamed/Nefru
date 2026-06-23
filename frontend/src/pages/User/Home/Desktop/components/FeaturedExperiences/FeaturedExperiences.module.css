@@ -1,0 +1,112 @@
+.section {
+  max-width: 1400px;
+  margin: 120px auto;
+  padding: 0 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+
+  margin-bottom: 40px;
+}
+
+.header h2 {
+  font-size: 3rem;
+  font-family: "Cormorant Garamond", serif;
+}
+
+.header p {
+  margin-top: 8px;
+  color: #777;
+}
+
+.header button {
+  border: none;
+  background: none;
+
+  cursor: pointer;
+
+  color: #b88a2f;
+
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.largeCard,
+.smallCard {
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: 24px;
+}
+
+.largeCard {
+  height: 700px;
+}
+
+.smallCard {
+  height: 338px;
+}
+
+.largeCard img,
+.smallCard img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: .4s;
+}
+
+.largeCard:hover img,
+.smallCard:hover img {
+  transform: scale(1.05);
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.overlay {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: 32px;
+
+  background:
+    linear-gradient(
+      transparent,
+      rgba(0,0,0,.75)
+    );
+}
+
+.overlay h3 {
+  color: white;
+
+  font-size: 2rem;
+
+  font-family: "Cormorant Garamond", serif;
+}
+
+.overlay p {
+  color: white;
+
+  margin-top: 8px;
+
+  max-width: 400px;
+}

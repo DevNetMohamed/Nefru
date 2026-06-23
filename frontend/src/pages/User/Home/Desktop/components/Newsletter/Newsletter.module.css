@@ -1,0 +1,85 @@
+.section {
+max-width: 1400px;
+margin: 120px auto;
+padding: 0 40px;
+}
+
+.content {
+background: linear-gradient(
+135deg,
+#0c1c44,
+#1f3368
+);
+
+border-radius: 32px;
+padding: 80px 40px;
+
+text-align: center;
+color: white;
+}
+
+.badge {
+display: inline-block;
+
+padding: 8px 18px;
+
+border-radius: 999px;
+
+background: rgba(255,255,255,.12);
+
+font-size: 12px;
+letter-spacing: 2px;
+}
+
+.content h2 {
+margin-top: 24px;
+
+font-size: 3.5rem;
+
+font-family: "Cormorant Garamond", serif;
+}
+
+.content p {
+margin-top: 16px;
+
+max-width: 650px;
+
+margin-inline: auto;
+
+color: rgba(255,255,255,.8);
+}
+
+.form {
+margin-top: 40px;
+
+display: flex;
+justify-content: center;
+
+gap: 12px;
+}
+
+.form input {
+width: 400px;
+
+padding: 16px 20px;
+
+border: none;
+
+border-radius: 14px;
+}
+
+.form button {
+border: none;
+
+padding: 16px 28px;
+
+border-radius: 14px;
+
+background: #b88a2f;
+
+color: white;
+
+font-weight: 600;
+
+cursor: pointer;
+}

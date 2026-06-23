@@ -4,7 +4,8 @@ import { MdOutlineLocationOn , MdSearch } from "react-icons/md";
 import { FaRegBell } from "react-icons/fa";
 import { Input } from '../../../../../shared/components/Inputs/Inputs'
 
-export default function Header(){
+export default function 
+Header(){
     return (
         <>
             <div className={styles.header}>

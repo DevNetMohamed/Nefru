@@ -1,22 +1,32 @@
-import {Link} from 'react-router-dom'
-import styles  from './Home.module.css'
+import { useEffect, useState } from "react";
 
-import { Input } from '../../../shared/components/Inputs/Inputs'
-import { MdOutlineLocationOn , MdSearch } from "react-icons/md";
-
-import Header from './components/header/Header'
-import Body from './components/body/Body'
-
+import MobileHome from "./Mobile/MobileHome";
+import DesktopHome from "./Desktop/DesktopHome";
 
 const Home = () => {
-    return (
-        <>
-            <div className={styles.container}>
-                <Header className={styles.header}/>                
-                <Body className={styles.body}/>                
-            </div>
-        </>
-    );
-}
+  const [isMobile, setIsMobile] = useState(
+    window.innerWidth < 992
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 992);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+  }, []);
+
+  return isMobile ? (
+    <MobileHome />
+  ) : (
+    <DesktopHome />
+  );
+};
 
 export default Home;

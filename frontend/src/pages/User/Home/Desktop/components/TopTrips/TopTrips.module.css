@@ -1,0 +1,46 @@
+.section {
+  max-width: 1400px;
+
+  margin: 120px auto;
+
+  padding: 0 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+
+  margin-bottom: 40px;
+}
+
+.header h2 {
+  font-size: 3rem;
+
+  font-family: "Cormorant Garamond", serif;
+}
+
+.header p {
+  margin-top: 8px;
+
+  color: #777;
+}
+
+.header button {
+  border: none;
+  background: none;
+
+  color: #b88a2f;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 24px;
+}
