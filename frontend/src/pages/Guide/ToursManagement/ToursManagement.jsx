@@ -1,9 +1,24 @@
 import styles from "./ToursManagement.module.css";
-import { FaLocationDot, FaBell, FaPlus, FaClock, FaPeopleGroup, FaHouse, FaBookmark, FaEnvelope, FaRegCalendarCheck } from "react-icons/fa6";
-import { useMemo, useState } from "react";
+import {
+  FaLocationDot,
+  FaBell,
+  FaPlus,
+  FaClock,
+  FaPeopleGroup,
+  FaHouse,
+  FaBookmark,
+  FaEnvelope,
+  FaRegCalendarCheck,
+} from "react-icons/fa6";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../../../services/api";
 
 function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("All");
+  const [backendTours, setBackendTours] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const headerData = pageData || {
     exploreText: "Explore",
@@ -11,7 +26,23 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
     notificationCount: 1,
   };
 
-  const tours = toursData || [];
+  const tours = Array.isArray(toursData) && toursData.length > 0 ? toursData : backendTours;
+
+  useEffect(() => {
+    async function loadTours() {
+      try {
+        const response = await apiRequest("/trips/guide/me");
+        setBackendTours(response?.data?.tours || []);
+      } catch (error) {
+        console.error(error);
+        setBackendTours([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadTours();
+  }, []);
 
   const tabs = useMemo(() => {
     const allCount = tours.length;
@@ -38,6 +69,24 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
     if (status === "reviewing") return styles.statusReviewing;
     return styles.statusActive;
   };
+
+  function handleCreateTour() {
+    if (onCreateTour) {
+      onCreateTour();
+      return;
+    }
+
+    navigate("/guide/createtour");
+  }
+
+  function handleManageTour(tour) {
+    if (onManageTour) {
+      onManageTour(tour);
+      return;
+    }
+
+    navigate("/guide/createtour", { state: { tripId: tour.id } });
+  }
 
   return (
     <div className={styles.page}>
@@ -66,7 +115,7 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
             Manage your curated experiences and track their performance.
           </p>
 
-          <button type="button" className={styles.createButton} onClick={onCreateTour}>
+          <button type="button" className={styles.createButton} onClick={handleCreateTour}>
             <FaPlus />
             Create New Tour
           </button>
@@ -85,51 +134,51 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
           ))}
         </section>
 
-        <section className={styles.cardsList}>
-          {visibleTours.map((tour) => (
-            <article key={tour.id} className={styles.card}>
-              <div className={styles.cardImageWrap}>
-                <img
-                  src={tour.image}
-                  alt={tour.title}
-                  className={styles.cardImage}
-                />
-                <span className={`${styles.badge} ${getStatusClass(tour.status)}`}>
-                  {tour.statusText || tour.status}
-                </span>
-              </div>
-
-              <div className={styles.cardBody}>
-                <h3 className={styles.cardTitle}>{tour.title}</h3>
-
-                <div className={styles.metaRow}>
-                  <span className={styles.metaItem}>
-                    <FaClock />
-                    {tour.duration}
-                  </span>
-                  <span className={styles.metaItem}>
-                    <FaPeopleGroup />
-                    Max {tour.groupSize}
+        {loading ? (
+          <p className={styles.heroText}>Loading your tours...</p>
+        ) : (
+          <section className={styles.cardsList}>
+            {visibleTours.map((tour) => (
+              <article key={tour.id} className={styles.card}>
+                <div className={styles.cardImageWrap}>
+                  <img src={tour.image} alt={tour.title} className={styles.cardImage} />
+                  <span className={`${styles.badge} ${getStatusClass(tour.status)}`}>
+                    {tour.statusText || tour.status}
                   </span>
                 </div>
 
-                <div className={styles.bottomRow}>
-                  <p className={styles.price}>
-                    ${tour.price} <span>/ person</span>
-                  </p>
+                <div className={styles.cardBody}>
+                  <h3 className={styles.cardTitle}>{tour.title}</h3>
 
-                  <button
-                    type="button"
-                    className={styles.manageButton}
-                    onClick={() => onManageTour?.(tour)}
-                  >
-                    {tour.actionLabel || "Manage"} →
-                  </button>
+                  <div className={styles.metaRow}>
+                    <span className={styles.metaItem}>
+                      <FaClock />
+                      {tour.duration}
+                    </span>
+                    <span className={styles.metaItem}>
+                      <FaPeopleGroup />
+                      Max {tour.groupSize}
+                    </span>
+                  </div>
+
+                  <div className={styles.bottomRow}>
+                    <p className={styles.price}>
+                      ${tour.price} <span>/ person</span>
+                    </p>
+
+                    <button
+                      type="button"
+                      className={styles.manageButton}
+                      onClick={() => handleManageTour(tour)}
+                    >
+                      {tour.actionLabel || "Manage"} →
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
-        </section>
+              </article>
+            ))}
+          </section>
+        )}
       </main>
 
       <footer className={styles.bottomNav}>

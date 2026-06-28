@@ -2,6 +2,7 @@
   min-height: 100vh;
   background: #f6f7f8;
   color: #111618;
+  overflow-x: hidden;
 }
 
 .hero {

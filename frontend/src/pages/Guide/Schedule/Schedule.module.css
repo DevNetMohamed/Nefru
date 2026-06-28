@@ -3,6 +3,7 @@
   background: #ffffff;
   color: #00263b;
   font-family: Arial, sans-serif;
+  overflow-x: hidden;
 }
 
 .header {

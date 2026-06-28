@@ -1,12 +1,35 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./TourApprove.module.css";
+import { apiRequest } from "../../../services/api";
 
 function TourApprove({ approveData, onHome, onContactSupport }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const tripId = location.state?.tripId || approveData?.tripId;
+
+  useEffect(() => {
+    async function submitForReview() {
+      if (!tripId) return;
+
+      try {
+        await apiRequest(`/trips/${tripId}/status`, {
+          method: "PATCH",
+          body: JSON.stringify({ status: "reviewing" }),
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    submitForReview();
+  }, [tripId]);
 
   const data = approveData || {
     title: "All Done",
-    message: "Waiting for admin review, it should take 24 to 48 hours",
+    message: tripId
+      ? "Your tour has been submitted for review. It usually takes 24 to 48 hours."
+      : "Waiting for admin review, it should take 24 to 48 hours",
     supportText: "Contact Support ?",
     buttonText: "Home",
   };
@@ -18,6 +41,15 @@ function TourApprove({ approveData, onHome, onContactSupport }) {
     }
 
     navigate("/guide");
+  }
+
+  function handleSupport() {
+    if (onContactSupport) {
+      onContactSupport();
+      return;
+    }
+
+    window.location.href = "mailto:support@nefru.com";
   }
 
   return (
@@ -47,7 +79,7 @@ function TourApprove({ approveData, onHome, onContactSupport }) {
           <button
             type="button"
             className={styles.supportButton}
-            onClick={onContactSupport}
+            onClick={handleSupport}
           >
             {data.supportText}
           </button>
