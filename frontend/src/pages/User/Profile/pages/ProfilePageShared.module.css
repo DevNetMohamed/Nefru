@@ -1,0 +1,1033 @@
+.pageContent {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.header h1 {
+  color: var(--color-primary-dark);
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.1;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 26, 51, 0.07);
+  box-shadow: 0 14px 34px rgba(7, 31, 63, 0.07);
+  padding: 26px 30px;
+  margin-bottom: 20px;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  color: var(--color-secondary);
+}
+
+.cardTitle h2 {
+  color: var(--color-primary-dark);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.cardTitle svg {
+  font-size: 24px;
+}
+
+.formGrid,
+.listGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 26px;
+}
+
+.fieldBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldBox span,
+.smallText {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fieldBox input,
+.fieldBox select,
+.fieldBox textarea,
+.fieldValue {
+  min-height: 52px;
+  border: 1px solid #d7dce7;
+  border-radius: 10px;
+  padding: 0 16px;
+  color: var(--color-primary-dark);
+  font-size: 16px;
+  font-weight: 500;
+  background: #ffffff;
+  font-family: inherit;
+}
+
+.fieldBox textarea {
+  min-height: 120px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primaryButton,
+.secondaryButton,
+.dangerButton {
+  min-height: 50px;
+  border-radius: 10px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 15px;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.primaryButton {
+  border: none;
+  background: var(--color-primary-dark);
+  color: #ffffff;
+}
+
+.secondaryButton {
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  border: 1px solid var(--color-secondary);
+}
+
+.dangerButton {
+  border: none;
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.emptyState {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  gap: 10px;
+  color: #64748b;
+}
+
+.emptyState svg {
+  font-size: 42px;
+  color: var(--color-secondary);
+}
+
+.itemCard {
+  min-height: 120px;
+  border: 1px solid rgba(0, 26, 51, 0.08);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.itemCard h3 {
+  color: var(--color-primary-dark);
+  font-size: 18px;
+}
+
+.itemCard p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+@media (max-width: 991px) {
+  .pageContent {
+    max-width: none;
+  }
+
+  .header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .header p {
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .formGrid,
+  .listGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .dangerButton {
+    width: 100%;
+  }
+}
+
+.profilePhotoBlock {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(0, 26, 51, 0.08);
+}
+
+.profilePhotoPreview {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  border: 2px solid rgba(237, 174, 73, 0.6);
+  background: #fff8e7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary-dark);
+  font-size: 36px;
+  font-weight: 800;
+  overflow: visible;
+}
+
+.profilePhotoPreview img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  display: block;
+}
+
+.profilePhotoPreview span {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary-dark);
+  color: var(--color-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photoEditButton {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: var(--color-primary-dark);
+  color: var(--color-secondary);
+  position: absolute;
+  right: -4px;
+  bottom: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(7, 31, 63, 0.2);
+}
+
+.photoEditButton svg {
+  font-size: 18px;
+}
+
+.profilePhotoText h3 {
+  color: var(--color-primary-dark);
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.profilePhotoText p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .header {
+    display: none;
+  }
+
+  .profilePhotoBlock {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+  }
+
+  .profilePhotoPreview {
+    width: 118px;
+    height: 118px;
+  }
+
+  .photoEditButton {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Shared profile sub-pages UI */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tabButton {
+  min-height: 44px;
+  border: 1px solid rgba(0, 26, 51, 0.1);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: inherit;
+  box-shadow: 0 8px 18px rgba(7, 31, 63, 0.04);
+}
+
+.tabButton svg {
+  font-size: 18px;
+}
+
+.tabButton strong {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #f0f3f7;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.tabButtonActive {
+  border-color: transparent;
+  background: var(--color-primary-dark);
+  color: #ffffff;
+}
+
+.tabButtonActive svg {
+  color: var(--color-secondary);
+}
+
+.tabButtonActive strong {
+  background: #ffffff;
+  color: var(--color-secondary);
+}
+
+.sortControl {
+  min-height: 44px;
+  border: 1px solid rgba(0, 26, 51, 0.1);
+  border-radius: 12px;
+  background: #ffffff;
+  color: #64748b;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow: 0 8px 18px rgba(7, 31, 63, 0.04);
+}
+
+.sortControl svg {
+  color: var(--color-primary-dark);
+  font-size: 18px;
+}
+
+.sortControl span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sortControl select {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-primary-dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cardHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.cardTitleCompact {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--color-secondary);
+}
+
+.cardTitleCompact > svg {
+  font-size: 24px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.cardTitleCompact h2 {
+  color: var(--color-primary-dark);
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.cardTitleCompact p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.outlineButton {
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--color-secondary);
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-weight: 800;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.twoColumnLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 22px;
+  align-items: start;
+}
+
+/* Bookings */
+.bookingList,
+.reviewList,
+.paymentList,
+.questionList,
+.contactMethods {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bookingCard {
+  border: 1px solid rgba(0, 26, 51, 0.08);
+  border-radius: 16px;
+  background: #ffffff;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 180px;
+  min-height: 150px;
+  box-shadow: 0 10px 26px rgba(7, 31, 63, 0.04);
+}
+
+.bookingImageWrap,
+.reviewImageWrap {
+  background: #eef3f7;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.bookingImageWrap img,
+.reviewImageWrap img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.bookingImageFallback {
+  width: 100%;
+  height: 100%;
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f7ecd8, #e9f0f6);
+  color: var(--color-primary-dark);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.bookingMainInfo {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bookingMainInfo h2,
+.reviewBody h2 {
+  color: var(--color-primary-dark);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.bookingMainInfo p,
+.reviewBody p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.bookingMainInfo strong,
+.reviewBody strong {
+  color: var(--color-secondary);
+}
+
+.bookingMetaRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.bookingMetaRow span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bookingSideInfo {
+  padding: 20px;
+  border-left: 1px solid rgba(0, 26, 51, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bookingSideInfo strong {
+  color: var(--color-primary-dark);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.bookingSideInfo small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.statusBadge,
+.defaultBadge {
+  min-height: 26px;
+  border-radius: 999px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.statusUpcoming {
+  background: #eaf7ed;
+  color: #15803d;
+}
+
+.statusCompleted {
+  background: #eef2f7;
+  color: #475569;
+}
+
+.statusCancelled {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+/* Payment */
+.paymentCard {
+  border: 1px solid rgba(0, 26, 51, 0.08);
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.cardBrand {
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  font-size: 14px;
+}
+
+.paymentCard h3 {
+  color: var(--color-primary-dark);
+  font-size: 22px;
+  margin: 8px 0 4px;
+}
+
+.paymentCard p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.paymentActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.defaultBadge {
+  background: #fff8e7;
+  color: var(--color-secondary);
+}
+
+.paymentActions button {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #be123c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.infoPanel,
+.contactPanel {
+  border: 1px solid rgba(237, 174, 73, 0.26);
+  border-radius: 18px;
+  background: #fffdfa;
+  box-shadow: 0 14px 34px rgba(7, 31, 63, 0.06);
+  padding: 26px;
+}
+
+.infoPanelIcon {
+  width: 66px;
+  height: 66px;
+  border-radius: 18px;
+  background: var(--color-primary-dark);
+  color: var(--color-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-bottom: 18px;
+}
+
+.infoPanel h2,
+.contactPanel h2 {
+  color: var(--color-primary-dark);
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.infoPanel p,
+.contactPanel p {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.infoList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-primary-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.infoList svg {
+  color: var(--color-secondary);
+}
+
+/* Reviews */
+.reviewCard {
+  border: 1px solid rgba(0, 26, 51, 0.08);
+  border-radius: 16px;
+  background: #ffffff;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  box-shadow: 0 10px 26px rgba(7, 31, 63, 0.04);
+}
+
+.reviewImageWrap {
+  min-height: 156px;
+}
+
+.reviewBody {
+  padding: 20px 22px;
+}
+
+.reviewTopRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.reviewTopRow span {
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.starsRow {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0;
+}
+
+.starFilled {
+  color: var(--color-secondary);
+  fill: var(--color-secondary);
+}
+
+.starMuted {
+  color: #cbd5e1;
+}
+
+.reviewText {
+  line-height: 1.7;
+}
+
+/* Help */
+.searchSupportBox {
+  min-height: 58px;
+  border: 1px solid rgba(0, 26, 51, 0.08);
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 0 18px;
+  margin-bottom: 22px;
+}
+
+.searchSupportBox svg {
+  color: #64748b;
+  font-size: 22px;
+}
+
+.searchSupportBox input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  color: var(--color-primary-dark);
+  font: inherit;
+}
+
+.searchSupportBox input::placeholder {
+  color: #94a3b8;
+}
+
+.searchSupportBox button {
+  min-height: 42px;
+  border: none;
+  border-radius: 10px;
+  padding: 0 20px;
+  background: var(--color-secondary);
+  color: #ffffff;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.supportGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.supportCard {
+  border: 1px solid rgba(0, 26, 51, 0.08);
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+}
+
+.supportCard > span {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: #fff8e7;
+  color: var(--color-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.supportCard h3 {
+  color: var(--color-primary-dark);
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.supportCard p {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.supportArrow {
+  color: #94a3b8;
+  font-size: 22px;
+}
+
+.questionItem,
+.contactMethods a,
+.contactMethods button {
+  width: 100%;
+  min-height: 58px;
+  border: 1px solid rgba(0, 26, 51, 0.08);
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--color-primary-dark);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  text-decoration: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.questionItem span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.contactPanelHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.contactPanelHeader > svg {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: var(--color-primary-dark);
+  color: var(--color-secondary);
+  padding: 14px;
+  flex-shrink: 0;
+}
+
+.contactMethods a,
+.contactMethods button {
+  justify-content: flex-start;
+}
+
+.contactMethods svg {
+  color: var(--color-secondary);
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.contactMethods span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contactMethods strong {
+  font-size: 14px;
+}
+
+.contactMethods small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+@media (max-width: 1199px) {
+  .twoColumnLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 991px) {
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .tabButton {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .sortControl {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cardHeaderRow {
+    flex-direction: column;
+  }
+
+  .outlineButton {
+    width: 100%;
+  }
+
+  .bookingCard {
+    grid-template-columns: 1fr;
+  }
+
+  .bookingImageWrap {
+    height: 190px;
+  }
+
+  .bookingSideInfo {
+    border-left: none;
+    border-top: 1px solid rgba(0, 26, 51, 0.07);
+    align-items: stretch;
+  }
+
+  .bookingSideInfo .outlineButton {
+    margin-top: 8px;
+  }
+
+  .reviewCard {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewImageWrap {
+    height: 190px;
+  }
+
+  .reviewTopRow {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .supportGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .searchSupportBox {
+    flex-wrap: wrap;
+    padding: 14px;
+  }
+
+  .searchSupportBox input {
+    flex-basis: calc(100% - 40px);
+  }
+
+  .searchSupportBox button {
+    width: 100%;
+  }
+
+  .emptyState {
+    min-height: 220px;
+    padding: 24px 12px;
+  }
+}

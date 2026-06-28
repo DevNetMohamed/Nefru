@@ -1,3 +1,4 @@
+// wil be used for authentication and authorization only
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
@@ -30,24 +31,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-
-    // Future document verification
-    // We are not uploading files now.
-    // Later we can add:
-    // document: {
-    //   url: { type: String , default: ""},
-    //   publicId: { type: String , default: ""},
-    //   fileType: { type: String ,enum: ["image", "pdf", ""], default: ""},
-    //   type: {
-    //     type: String,
-    //     enum: ["passport", "national_id", "guide_license"],
-    //   },
-    // },
-    verificationStatus: {
-      type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
-    },
     passwordResetToken: {
       type: String,
       select: false,
@@ -57,6 +40,7 @@ const userSchema = new mongoose.Schema(
       type: Date,
       select: false,
     },
+
   },
   { timestamps: true },
 );
