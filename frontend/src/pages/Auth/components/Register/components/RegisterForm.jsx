@@ -36,7 +36,6 @@ const REGISTER_VALIDATION_SCHEMA = Yup.object({
     .required("You must agree to the terms."),
 });
 
-
 function RegisterForm() {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -128,7 +127,6 @@ function RegisterForm() {
       }
     },
   });
-
 
   return (
     <div className={styles.container}>
@@ -252,56 +250,63 @@ function RegisterForm() {
                   )}
               </div>
 
-              <label className={styles.label}>Document Verification</label>
-              <div className={styles.field}>
-                <div
-                  className={`${styles.uploadZone} ${
-                    isDragging ? styles.uploadZoneDragging : ""
-                  } ${formik.touched.document && formik.errors.document ? styles.uploadZoneError : ""}`}
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Upload ID or Passport"
-                  onClick={() => fileInputRef.current?.click()}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" && fileInputRef.current?.click()
-                  }
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDragging(true);
-                  }}
-                  onDragLeave={() => setIsDragging(false)}
-                  onDrop={handleDrop}
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*,.pdf"
-                    className={styles.hiddenInput}
-                    onChange={handleFileInput}
-                    aria-hidden="true"
-                  />
-                  <div className={styles.passportIcon}>
-                    <Icons.Passport />
+              {role === "guide" ? (
+                <>
+                  <label className={styles.label}>Document Verification</label>
+
+                  <div className={styles.field}>
+                    <div
+                      className={`${styles.uploadZone} ${
+                        isDragging ? styles.uploadZoneDragging : ""
+                      } ${formik.touched.document && formik.errors.document ? styles.uploadZoneError : ""}`}
+                      role="button"
+                      tabIndex={0}
+                      aria-label="Upload ID or Passport"
+                      onClick={() => fileInputRef.current?.click()}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" && fileInputRef.current?.click()
+                      }
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setIsDragging(true);
+                      }}
+                      onDragLeave={() => setIsDragging(false)}
+                      onDrop={handleDrop}
+                    >
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*,.pdf"
+                        className={styles.hiddenInput}
+                        onChange={handleFileInput}
+                        aria-hidden="true"
+                      />
+                      <div className={styles.passportIcon}>
+                        <Icons.Passport />
+                      </div>
+                      <div className={styles.uploadText}>
+                        <span className={styles.uploadTitle}>
+                          {uploadedFile
+                            ? uploadedFile.name
+                            : "Upload ID or Passport"}
+                        </span>
+                        <span className={styles.uploadSub}>
+                          {uploadedFile
+                            ? "Click to replace"
+                            : "Drag & drop or browse"}
+                        </span>
+                      </div>
+                    </div>
+                    {formik.touched.document && formik.errors.document && (
+                      <span className={styles.errorMsg}>
+                        {formik.errors.document}
+                      </span>
+                    )}
                   </div>
-                  <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>
-                      {uploadedFile
-                        ? uploadedFile.name
-                        : "Upload ID or Passport"}
-                    </span>
-                    <span className={styles.uploadSub}>
-                      {uploadedFile
-                        ? "Click to replace"
-                        : "Drag & drop or browse"}
-                    </span>
-                  </div>
-                </div>
-                {formik.touched.document && formik.errors.document && (
-                  <span className={styles.errorMsg}>
-                    {formik.errors.document}
-                  </span>
-                )}
-              </div>
+                </>
+              ) : (
+                <> </>
+              )}
 
               <div className={styles.termsRow}>
                 <input
@@ -357,7 +362,6 @@ function RegisterForm() {
             </form>
           </div>
         </main>
-
       </div>
     </div>
   );
