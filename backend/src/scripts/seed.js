@@ -46,7 +46,8 @@ import { env } from "../config/env.js";
 import { User } from "../models/user.model.js";
 import { Trip } from "../models/trip.model.js";
 import { Booking } from "../models/booking.model.js";
-
+import { TouristProfile } from "../models/tourist.model.js";
+import { Guide } from "../models/guide.model.js";
 const seedDatabase = async () => {
   try {
     await mongoose.connect(env.mongoUri);

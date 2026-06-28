@@ -1,7 +1,10 @@
 import { User, USER_ROLES, REGISTER_ROLES } from "../../models/user.model.js";
 import { generateToken } from "../../utils/generateToken.js";
 import crypto from "crypto";
-import {env} from "../../config/env.js";
+import { env } from "../../config/env.js";
+import { TouristProfile } from "../../models/tourist.model.js";
+import { Guide } from "../../models/guide.model.js";
+
 export const registerUser = async (req, res, next) => {
   try {
     const { fullName, email, password, role } = req.body;
@@ -18,36 +21,54 @@ export const registerUser = async (req, res, next) => {
       throw new Error("Unable to create account");
     }
 
-    const user = await User.create({
-      fullName,
-      email,
-      password,
-      role,
+    let user;
 
-      // Later with multer:
-      // verificationDocument will be required here.
-      // If uploaded successfully, verificationStatus remains "pending".
-    });
+    try {
+      user = await User.create({
+        fullName,
+        email,
+        password,
+        role,
+        verificationStatus: role === "guide" ? "pending" : "approved",
+        // Later with multer:
+        // verificationDocument will be required here.
+        // If uploaded successfully, verificationStatus remains "pending".
+      });
 
-    const token = generateToken(user._id);
+      if (role === "tourist") {
+        await TouristProfile.create({ user: user._id });
+      }
 
-    res.status(201).json({
-      success: true,
-      message: "Account created successfully",
-      token,
-      data: {
-        user: {
-          id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          role: user.role,
-          avatar: user.avatar,
-          verificationStatus: user.verificationStatus,
-          isActive: user.isActive,
-          createdAt: user.createdAt,
+      if (role === "guide") {
+        await Guide.create({ user: user._id });
+      }
+
+      const token = generateToken(user._id);
+
+      res.status(201).json({
+        success: true,
+        message: "Account created successfully",
+        token,
+        data: {
+          user: {
+            id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+            verificationStatus: user.verificationStatus,
+            isActive: user.isActive,
+            createdAt: user.createdAt,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      if (user?._id) {
+        await User.findByIdAndDelete(user._id);
+      }
+
+      next(error);
+    }
   } catch (error) {
     next(error);
   }
