@@ -19,5 +19,4 @@ apiRouter.use("/users", userRouter);
 apiRouter.use("/guides", guideRouter);
 apiRouter.use("/trips", tripRouter);
 apiRouter.use("/bookings", bookingRouter);
-
 export default apiRouter;

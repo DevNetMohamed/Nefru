@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Logo_Light from "../../../../../assets/images/Logo_Light.png";
 import Icons from "../../../../../assets/icons";
@@ -10,31 +10,6 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../../../../store/slices/authSlice";
 import { apiRequest } from "../../../../../services/api";
-
-const REGISTER_VALIDATION_SCHEMA = Yup.object({
-  fullName: Yup.string()
-    .trim()
-    .min(3, "Full name must be at least 3 characters.")
-    .required("Full name is required."),
-
-  email: Yup.string()
-    .email("Please enter a valid email address.")
-    .required("Email is required."),
-
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters.")
-    .required("Password is required."),
-
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords do not match.")
-    .required("Confirm password is required."),
-
-  document: Yup.mixed().required("Verification document is required."),
-
-  terms: Yup.boolean()
-    .oneOf([true], "You must agree to the terms.")
-    .required("You must agree to the terms."),
-});
 
 function RegisterForm() {
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -56,6 +31,36 @@ function RegisterForm() {
 
   const [role, setRole] = useState(initialRole);
   const roleLabel = role === "guide" ? "Guide" : "Traveler";
+
+  const validationSchema = useMemo(() => {
+    return Yup.object({
+      fullName: Yup.string()
+        .trim()
+        .min(3, "Full name must be at least 3 characters.")
+        .required("Full name is required."),
+
+      email: Yup.string()
+        .email("Please enter a valid email address.")
+        .required("Email is required."),
+
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters.")
+        .required("Password is required."),
+
+      confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password")], "Passwords do not match.")
+        .required("Confirm password is required."),
+
+      document:
+        role === "guide"
+          ? Yup.mixed().required("Verification document is required.")
+          : Yup.mixed().nullable(),
+
+      terms: Yup.boolean()
+        .oneOf([true], "You must agree to the terms.")
+        .required("You must agree to the terms."),
+    });
+  }, [role]);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -90,7 +95,7 @@ function RegisterForm() {
       terms: false,
     },
 
-    validationSchema: REGISTER_VALIDATION_SCHEMA,
+    validationSchema,
 
     onSubmit: async (values, { setSubmitting }) => {
       setApiError("");
@@ -156,7 +161,12 @@ function RegisterForm() {
                   className={`${styles.roleOption} ${
                     role === "tourist" ? styles.roleOptionActive : ""
                   }`}
-                  onClick={() => setRole("tourist")}
+                  onClick={() => {
+                    setRole("tourist");
+                    setUploadedFile(null);
+                    formik.setFieldValue("document", null);
+                    formik.setFieldTouched("document", false);
+                  }}
                   aria-pressed={role === "tourist"}
                 >
                   <Icons.User />

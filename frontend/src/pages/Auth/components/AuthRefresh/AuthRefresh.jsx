@@ -14,7 +14,7 @@ export default function AuthRefresh() {
       if (!token) return;
 
       try {
-        const response = await apiRequest("/users/me", {
+        const response = await apiRequest("/users/profile/me", {
           method: "GET",
         });
 
@@ -22,6 +22,7 @@ export default function AuthRefresh() {
           loginSuccess({
             token,
             user: response.data.user,
+            profile: response.data.profile,
           }),
         );
       } catch (error) {

@@ -44,16 +44,6 @@ export default function ProfileSidebar({ onLogout }) {
           <h2>{fullName}</h2>
           <p>{email}</p>
         </div>
-
-        <div className={styles.progressBlock}>
-          <div className={styles.progressHeader}>
-            <span>Profile Completion</span>
-            <strong>60%</strong>
-          </div>
-          <div className={styles.progressTrack}>
-            <span />
-          </div>
-        </div>
       </div>
 
       <nav className={styles.navCard} aria-label="Profile navigation">

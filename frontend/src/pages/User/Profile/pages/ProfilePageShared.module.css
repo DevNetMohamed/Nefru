@@ -942,6 +942,16 @@
   font-size: 12px;
 }
 
+.errorMessage {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fff1f2;
+  color: #b42318;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 @media (max-width: 1199px) {
   .twoColumnLayout {
     grid-template-columns: 1fr;

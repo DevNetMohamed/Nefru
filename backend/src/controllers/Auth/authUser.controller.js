@@ -66,8 +66,7 @@ export const registerUser = async (req, res, next) => {
       if (user?._id) {
         await User.findByIdAndDelete(user._id);
       }
-
-      next(error);
+      return next(error);
     }
   } catch (error) {
     next(error);
