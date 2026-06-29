@@ -951,6 +951,15 @@
   font-size: 14px;
   font-weight: 600;
 }
+.successMessage {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #ecfdf3;
+  color: #027a48;
+  font-size: 14px;
+  font-weight: 600;
+}
 
 @media (max-width: 1199px) {
   .twoColumnLayout {
