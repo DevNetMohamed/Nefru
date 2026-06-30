@@ -124,16 +124,16 @@ export const router = createBrowserRouter([
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT
   },
  
-  {
-    path: "guide",
-    element: <ToursManagement />,
-    children: [
-       { path: "createtour", element: <CreateTour /> },
-       { path: "createtour/schedule", element: <Schedule /> },
-       { path: "createtour/schedule/tourmedia", element: <TourMedia /> },
-       { path: "createtour/schedule/tourmedia/tourapprove", element: <TourApprove /> },
-    ],
-  },
+ {
+  path: "guide",
+  children: [
+    { index: true, element: <ToursManagement /> },
+    { path: "createtour", element: <CreateTour /> },
+    { path: "schedule", element: <Schedule /> },
+    { path: "tourmedia", element: <TourMedia /> },
+    { path: "tourapprove", element: <TourApprove /> },
+  ],
+},
   {
     path: "admin",
 

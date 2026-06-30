@@ -7,9 +7,16 @@ import {
   FaCalendarCheck,
   FaCircleInfo,
 } from "react-icons/fa6";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { apiRequest } from "../../../services/api";
 
 function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
-  const data = scheduleData || {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const tripId = location.state?.tripId;
+
+  const initialData = scheduleData || {
     selectedText: "Oct 8 - Oct 12",
     days: [
       { day: 28, muted: true }, { day: 29, muted: true }, { day: 30, muted: true }, { day: 31, muted: true },
@@ -25,7 +32,63 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
     ],
   };
 
+  const [days, setDays] = useState(initialData.days);
+  const [slots, setSlots] = useState(initialData.slots);
+  const [loading, setLoading] = useState(false);
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const selectedDays = days.filter((day) => day.selected || day.active);
+
+  function toggleDay(index) {
+    setDays((prev) => prev.map((day, dayIndex) => (dayIndex === index ? { ...day, selected: !day.selected } : day)));
+  }
+
+  function addSlot() {
+    const newSlot = {
+      id: Date.now(),
+      startTime: "09:00AM",
+      endTime: "01:00 PM",
+      maxGuests: 12,
+    };
+
+    setSlots((prev) => [...prev, newSlot]);
+    if (onAddSlot) onAddSlot(newSlot);
+  }
+
+  function updateSlot(id, field, value) {
+    setSlots((prev) => prev.map((slot) => (slot.id === id ? { ...slot, [field]: value } : slot)));
+  }
+
+  function clearDates() {
+    setDays((prev) => prev.map((day) => ({ ...day, selected: false, active: false })));
+    if (onClearDates) onClearDates();
+  }
+
+  async function handleNext() {
+    setLoading(true);
+
+    try {
+      const selectedDates = selectedDays.map((day) => day.day);
+
+      if (tripId) {
+        await apiRequest(`/trips/${tripId}`, {
+          method: "PATCH",
+          body: JSON.stringify({ schedule: { dates: selectedDates, slots } }),
+        });
+      }
+
+      if (onNext) {
+        onNext();
+        return;
+      }
+
+      navigate("/guide/tourmedia", { state: { tripId } });
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className={styles.page}>
@@ -69,13 +132,14 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
             </div>
 
             <div className={styles.daysGrid}>
-              {data.days.map((item, index) => (
+              {days.map((item, index) => (
                 <button
                   key={`${item.day}-${index}`}
                   type="button"
                   className={`${styles.dayButton} ${item.muted ? styles.mutedDay : ""} ${
                     item.selected ? styles.selectedDay : ""
                   } ${item.active ? styles.activeDay : ""}`}
+                  onClick={() => toggleDay(index)}
                 >
                   {item.day}
                 </button>
@@ -85,10 +149,12 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
             <div className={styles.selectedBox}>
               <div className={styles.selectedText}>
                 <FaCalendarCheck />
-                <span>Selected: {data.selectedText}</span>
+                <span>
+                  Selected: {selectedDays.length === 0 ? "No dates yet" : `${selectedDays.length} dates`}
+                </span>
               </div>
 
-              <button type="button" className={styles.clearButton} onClick={onClearDates}>
+              <button type="button" className={styles.clearButton} onClick={clearDates}>
                 Clear
               </button>
             </div>
@@ -97,32 +163,40 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
           <section className={styles.card}>
             <div className={styles.timeHeader}>
               <h2>Time Slots</h2>
-              <button type="button" className={styles.addButton} onClick={onAddSlot}>
+              <button type="button" className={styles.addButton} onClick={addSlot}>
                 + ADD SLOT
               </button>
             </div>
 
             <div className={styles.slotsList}>
-              {data.slots.map((slot) => (
+              {slots.map((slot) => (
                 <div key={slot.id} className={styles.slotCard}>
                   <div className={styles.timeInputs}>
                     <label>
                       Start Time
-                      <input type="text" defaultValue={slot.startTime} />
+                      <input
+                        type="text"
+                        value={slot.startTime}
+                        onChange={(event) => updateSlot(slot.id, "startTime", event.target.value)}
+                      />
                     </label>
 
                     <label>
                       End Time
-                      <input type="text" defaultValue={slot.endTime} />
+                      <input
+                        type="text"
+                        value={slot.endTime}
+                        onChange={(event) => updateSlot(slot.id, "endTime", event.target.value)}
+                      />
                     </label>
                   </div>
 
                   <div className={styles.guestsRow}>
                     <span>Max Guests</span>
                     <div className={styles.counter}>
-                      <button type="button">-</button>
+                      <button type="button" onClick={() => updateSlot(slot.id, "maxGuests", Math.max(1, slot.maxGuests - 1))}>-</button>
                       <strong>{slot.maxGuests}</strong>
-                      <button type="button">+</button>
+                      <button type="button" onClick={() => updateSlot(slot.id, "maxGuests", slot.maxGuests + 1)}>+</button>
                     </div>
                   </div>
                 </div>
@@ -137,8 +211,8 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
               </p>
             </div>
 
-            <button type="button" className={styles.nextButton} onClick={onNext}>
-              Next Step <FaArrowRight />
+            <button type="button" className={styles.nextButton} onClick={handleNext}>
+              {loading ? "Saving..." : <>Next Step <FaArrowRight /></>}
             </button>
           </section>
         </div>

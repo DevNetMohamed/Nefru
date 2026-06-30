@@ -1,10 +1,7 @@
 import express from "express";
-// const router = express.Router();
-// import {authAdminController} from "../controllers/Auth/authAdmin.controller"
-import {getAccountsAll} from "../controllers/Admin/Admin.controller"
-// router.post("/login", authAdminController.loginAdmin);
+const router = express.Router();
+import {getAccountsAll} from "../controllers/Admin/Admin.controller.js"
 // Accounts (Tourists , Guide & Admins)
 // get all accounts
-asdkajsh
-router.get("/accounts/:page",getAccountsAll)
+router.get("/accounts/:role/:page",getAccountsAll)
 export default router;
