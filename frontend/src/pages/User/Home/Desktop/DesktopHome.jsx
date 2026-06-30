@@ -15,18 +15,43 @@ import DiscoverEgypt from "../Desktop/components/DiscoverEgypt/DiscoverEgypt"
 import ToursNearYou from "../Desktop/components/ToursNearYou/ToursNearYou"
 import TrustedGuides from "../Desktop/components/TrustedGuides/TrustedGuides"
 
-import pyramids from "../../../../assets/images/explore/pyramids.jpg";
+// import pyramids from "../../../../assets/images/explore/pyramids.jpg";
 
+
+
+
+import { useEffect, useState } from "react";
+import axios from "axios";
 const DesktopHome = () => {
+const [featuredTrips, setFeaturedTrips] = useState([]);
+  
+ useEffect(() => {
+  const fetchHomeData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/home"
+      );
+
+      setFeaturedTrips(response.data.data.featuredTrips);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchHomeData();
+}, []);
+
+
   return (
     <div>
       <DesktopNavbar />
-        <HeroSearch />
-        <RecommendedTours />
-        <AvailableToday />
-        <DiscoverEgypt/>
-        <ToursNearYou />
-        <TrustedGuides />
+    <HeroSearch />
+    <RecommendedTours trips={featuredTrips} />
+    <AvailableToday />
+    <DiscoverEgypt />
+    <ToursNearYou />
+    <TrustedGuides />
+    <Footer />
 
 
 
