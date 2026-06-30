@@ -33,8 +33,8 @@ function getInitials(fullName = "User") {
 
 export default function ProfileSidebar({ onLogout }) {
   const { user } = useSelector((state) => state.auth);
-  const fullName = user?.fullName || "Nefru Traveler";
-  const email = user?.email || "traveler@nefru.com";
+  const fullName = user?.fullName || "Not Logged In";
+  const email = user?.email || "Not Logged In";
 
   return (
     <aside className={styles.sidebar}>
