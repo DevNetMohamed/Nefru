@@ -57,10 +57,10 @@ import RecommendedTourCard from "./RecommendedTourCard";
 
 function RecommendedTours({ trips }) {
   return (
-    <section className={styles.section}>
+    <section className={styles.section} id="popular-tours">
       <div className={styles.header}>
         <div>
-          <h2>
+          <h2 >
             Recommended for your trip
           </h2>
 

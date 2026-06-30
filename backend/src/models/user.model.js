@@ -21,7 +21,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
     },
-    password: { type: String, required: true , minlength: [8, "Password must be at least 8 characters"], select: false },
+    password: {
+      type: String,
+      required: true,
+      minlength: [8, "Password must be at least 8 characters"],
+      select: false,
+    },
     role: { type: String, enum: USER_ROLES, default: "tourist" },
     avatar: {
       type: String,
@@ -30,6 +35,11 @@ const userSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    verificationStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
     passwordResetToken: {
       type: String,
@@ -40,7 +50,6 @@ const userSchema = new mongoose.Schema(
       type: Date,
       select: false,
     },
-
   },
   { timestamps: true },
 );

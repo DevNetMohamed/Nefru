@@ -33,23 +33,30 @@ function getInitials(fullName = "Traveler") {
     .toUpperCase();
 }
 
-export default function ProfileOverview() {
-  const { user } = useSelector((state) => state.auth);
+function formatGender(gender) {
+  if (!gender) return "Not added yet";
+  if (gender === "other") return "Prefer not to say";
 
-  const profile = useMemo(
+  return gender.charAt(0).toUpperCase() + gender.slice(1);
+}
+
+export default function ProfileOverview() {
+  const { user, profile } = useSelector((state) => state.auth);
+
+  const profileData = useMemo(
     () => ({
-      fullName: user?.fullName || "Yousef Mohamed",
-      email: user?.email || "yousef.m@example.com",
-      phoneNumber: user?.phoneNumber || "+20 100 123 4567",
-      nationality: user?.Nationality || user?.nationality || "Egyptian",
-      birthDate: user?.DoB || user?.birthDate || null,
-      gender: user?.gender && user.gender !== "other" ? user.gender : "Male",
+      fullName: user?.fullName || "Not added yet",
+      email: user?.email || "Not added yet",
+      phoneNumber: profile?.phoneNumber || "Not added yet",
+      nationality: profile?.nationality || "Not added yet",
+      dateOfBirth: profile?.dateOfBirth || null,
+      gender: profile?.gender || "",
       role: user?.role === "guide" ? "Guide" : "Traveler",
-      memberSince: user?.createdAt,
+      memberSince: user?.createdAt || null,
       verificationStatus: user?.verificationStatus || "pending",
       avatar: user?.avatar || "",
     }),
-    [user],
+    [user, profile]
   );
 
   return (
@@ -67,16 +74,22 @@ export default function ProfileOverview() {
       </header>
 
       <section className={styles.profileHero}>
-        {profile.avatar ? (
-          <img src={profile.avatar} alt={profile.fullName} className={styles.photo} />
+        {profileData.avatar ? (
+          <img
+            src={profileData.avatar}
+            alt={profileData.fullName}
+            className={styles.photo}
+          />
         ) : (
-          <div className={styles.photoFallback}>{getInitials(profile.fullName)}</div>
+          <div className={styles.photoFallback}>
+            {getInitials(profileData.fullName)}
+          </div>
         )}
 
         <div>
-          <h2>{profile.fullName}</h2>
-          <p>{profile.email}</p>
-          <span className={styles.roleBadge}>{profile.role}</span>
+          <h2>{profileData.fullName}</h2>
+          <p>{profileData.email}</p>
+          <span className={styles.roleBadge}>{profileData.role}</span>
         </div>
       </section>
 
@@ -89,12 +102,12 @@ export default function ProfileOverview() {
         <div className={styles.fieldsGrid}>
           <div className={styles.fieldBox}>
             <span>Email</span>
-            <strong>{profile.email}</strong>
+            <strong>{profileData.email}</strong>
           </div>
 
           <div className={styles.fieldBox}>
             <span>Phone Number</span>
-            <strong>{profile.phoneNumber}</strong>
+            <strong>{profileData.phoneNumber}</strong>
           </div>
         </div>
       </section>
@@ -108,22 +121,22 @@ export default function ProfileOverview() {
         <div className={styles.fieldsGrid}>
           <div className={styles.fieldBox}>
             <span>Full Name</span>
-            <strong>{profile.fullName}</strong>
+            <strong>{profileData.fullName}</strong>
           </div>
 
           <div className={styles.fieldBox}>
             <span>Birth Date</span>
-            <strong>{formatDate(profile.birthDate, "15 March 1990")}</strong>
+            <strong>{formatDate(profileData.dateOfBirth)}</strong>
           </div>
 
           <div className={styles.fieldBox}>
             <span>Gender</span>
-            <strong>{String(profile.gender).charAt(0).toUpperCase() + String(profile.gender).slice(1)}</strong>
+            <strong>{formatGender(profileData.gender)}</strong>
           </div>
 
           <div className={styles.fieldBox}>
             <span>Nationality</span>
-            <strong>{profile.nationality}</strong>
+            <strong>{profileData.nationality}</strong>
           </div>
         </div>
       </section>
@@ -138,31 +151,33 @@ export default function ProfileOverview() {
           <div className={styles.summaryItem}>
             <FiUser />
             <span>Role</span>
-            <strong>{profile.role}</strong>
+            <strong>{profileData.role}</strong>
           </div>
 
           <div className={styles.summaryItem}>
             <FiCalendar />
             <span>Member Since</span>
-            <strong>{formatDate(profile.memberSince, "Recently joined")}</strong>
+            <strong>{formatDate(profileData.memberSince, "Recently joined")}</strong>
           </div>
 
           <div className={styles.summaryItem}>
             <FiGlobe />
             <span>Nationality</span>
-            <strong>{profile.nationality}</strong>
+            <strong>{profileData.nationality}</strong>
           </div>
 
           <div className={styles.summaryItem}>
             <FiCheckCircle />
             <span>Verification Status</span>
-            <strong className={styles.status}>{profile.verificationStatus}</strong>
+            <strong className={styles.status}>
+              {profileData.verificationStatus}
+            </strong>
           </div>
 
           <div className={styles.summaryItem}>
             <FiMail />
             <span>Account Email</span>
-            <strong>{profile.email}</strong>
+            <strong>{profileData.email}</strong>
           </div>
         </div>
       </section>

@@ -21,6 +21,7 @@ app.use("/uploads", express.static("public/uploads"));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api', apiRouter);
 
+
 app.use(notFound);
 app.use(errorHandler);
 

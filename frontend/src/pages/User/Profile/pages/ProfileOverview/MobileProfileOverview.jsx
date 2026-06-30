@@ -28,8 +28,8 @@ export default function MobileProfileOverview() {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  const fullName = user?.fullName || "Nefru Traveler";
-  const email = user?.email || "traveler@nefru.com";
+  const fullName = user?.fullName || "Not added yet";
+  const email = user?.email || "Not added yet";
   const initials = useMemo(() => getInitials(fullName), [fullName]);
 
   const handleLogout = () => {
@@ -40,7 +40,12 @@ export default function MobileProfileOverview() {
   return (
     <>
       <section className={styles.profileCard}>
-        {user?.avatar ? <img src={user.avatar} alt={fullName} /> : <div className={styles.avatar}>{initials}</div>}
+        {user?.avatar ? (
+          <img src={user.avatar} alt={fullName} />
+        ) : (
+          <div className={styles.avatar}>{initials}</div>
+        )}
+
         <h2>{fullName}</h2>
         <p>{email}</p>
         <span>{user?.role === "guide" ? "Guide" : "Traveler"}</span>
@@ -88,6 +93,7 @@ export default function MobileProfileOverview() {
 
       <section className={styles.menuSection}>
         <h3>Support</h3>
+
         <Link to="/user/profile/support" className={styles.menuItem}>
           <FiHeadphones />
           <span>
@@ -98,7 +104,11 @@ export default function MobileProfileOverview() {
         </Link>
       </section>
 
-      <button type="button" className={styles.logoutButton} onClick={handleLogout}>
+      <button
+        type="button"
+        className={styles.logoutButton}
+        onClick={handleLogout}
+      >
         <FiLogOut />
         Log Out
       </button>
