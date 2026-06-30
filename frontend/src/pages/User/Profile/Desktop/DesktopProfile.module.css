@@ -1,0 +1,32 @@
+.page {
+  height: 100vh;
+  display: flex;
+  background: #f4f5f8;
+  color: var(--color-primary-dark);
+  overflow-y: auto;
+}
+
+.content {
+  flex: 1;
+  padding: 44px clamp(36px, 5vw, 72px);
+  min-width: 0;
+}
+
+.placeholder {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 12px 34px rgba(7, 31, 63, 0.08);
+  border: 1px solid rgba(0, 26, 51, 0.08);
+}
+
+.placeholder h2 {
+  font-size: 30px;
+  margin-bottom: 8px;
+  color: var(--color-primary-dark);
+}
+
+.placeholder p {
+  color: #64748b;
+  font-size: 16px;
+}

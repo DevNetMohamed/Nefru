@@ -1,14 +1,15 @@
 import styles from "./Footer.module.css";
-import LogoDark from "../../assets/images/Logo_Dark.png";
+import logo from "../../assets/images/logo.png";
 import Icons from "../../assets/icons";
 
 export default function Footer() {
   return (
     <footer className={`${styles.footer} container-fluid`}>
       
-      <div className={`${styles.brand} d-flex align-items-center`}>
-        <img src={LogoDark} alt="Nefru" className={styles.logo} />
-      </div>
+   <div className={styles.logoWrapper}>
+      <img src={logo} alt="Nefru Logo" className={styles.logo} />
+      <h3>Nefru</h3>
+    </div>
 
       <div className={`${styles.centerContent} d-flex flex-column align-items-center text-center`}>
         <p className={styles.tagline}>Unveiling the Timeless Wonders of the Nile.</p>
