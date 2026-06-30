@@ -3,7 +3,8 @@
   background: #fbf9f8;
   color: #00263b;
   padding-top: 80px;
-  padding-bottom: 70px;
+  padding-bottom: 120px;
+  overflow-x: hidden;
 }
 
 .topHeader {

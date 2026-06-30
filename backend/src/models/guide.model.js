@@ -40,6 +40,12 @@ const guideSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    title: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+      default: "",
+    },
     headline: {
       type: String,
       trim: true,
@@ -108,6 +114,3 @@ const guideSchema = new mongoose.Schema(
 const Guide = mongoose.model("Guide", guideSchema);
 
 export { Guide, GUIDE_SPECIALTIES };
-
-
-

@@ -4,6 +4,7 @@
   color: #00263b;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .header {
