@@ -120,7 +120,7 @@ const seedDatabase = async () => {
       location: "Cairo",
       price: 600,
       duration: "3 hours",
-      image: "",
+      image: "trips/historic-cairo.jpg",
       guide: guide._id,
       category: "History",
     });
@@ -132,7 +132,7 @@ const seedDatabase = async () => {
       location: "Giza",
       price: 900,
       duration: "Half Day",
-      image: "",
+      image: "trips/pyramids.webp",
       guide: guide._id,
       category: "Culture",
     });
@@ -144,7 +144,19 @@ const seedDatabase = async () => {
       location: "Alexandria",
       price: 800,
       duration: "Full Day",
-      image: "",
+      image: "trips/alexandria.jpg",
+      guide: guide._id,
+      category: "Culture",
+    });
+
+    const alexandTrip = await Trip.create({
+      title: "Alexandria Coastal Tour",
+      description:
+        "Discover the beauty of Alexandria's coastline and historic sites with a local guide.",
+      location: "Alexandria",
+      price: 800,
+      duration: "Full Day",
+      image: "trips/alexandria.jpg",
       guide: guide._id,
       category: "Culture",
     });
