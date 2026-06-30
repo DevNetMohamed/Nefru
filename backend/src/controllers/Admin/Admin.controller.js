@@ -5,6 +5,7 @@
 // import {Admin} from "../../models/admin.model"
 // create function
 import {User} from '../../models/user.model.js'
+import {Trip} from '../../models/trip.model.js'
 
 export const getAccountsAll = async (req, res) => {
   try {
@@ -45,3 +46,11 @@ export const getAccountsAll = async (req, res) => {
   }
 };
 
+export const getDashboard = async (req,res)=>{
+  try{
+    const trips = await Trip.find().limit(10)
+    // const 
+  }catch(error){
+
+  }
+}
