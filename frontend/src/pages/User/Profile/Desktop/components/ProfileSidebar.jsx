@@ -33,8 +33,8 @@ function getInitials(fullName = "User") {
 
 export default function ProfileSidebar({ onLogout }) {
   const { user } = useSelector((state) => state.auth);
-  const fullName = user?.fullName || "Nefru Traveler";
-  const email = user?.email || "traveler@nefru.com";
+  const fullName = user?.fullName || "Not Logged In";
+  const email = user?.email || "Not Logged In";
 
   return (
     <aside className={styles.sidebar}>
@@ -43,16 +43,6 @@ export default function ProfileSidebar({ onLogout }) {
         <div>
           <h2>{fullName}</h2>
           <p>{email}</p>
-        </div>
-
-        <div className={styles.progressBlock}>
-          <div className={styles.progressHeader}>
-            <span>Profile Completion</span>
-            <strong>60%</strong>
-          </div>
-          <div className={styles.progressTrack}>
-            <span />
-          </div>
         </div>
       </div>
 

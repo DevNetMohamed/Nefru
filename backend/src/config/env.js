@@ -14,9 +14,7 @@ export const env = {
   passwordTourist: process.env.PASSWORD_TOURIST || "Tourist123456",
   emailGuide: process.env.EMAIL_GUIDE || "guide@test.com",
   passwordGuide: process.env.PASSWORD_GUIDE || "Guide123456",
-
 };
-
 
 // EMAIL_TOURIST=tourist@test.com
 // PASSWORD_TOURIST=Tourist123456

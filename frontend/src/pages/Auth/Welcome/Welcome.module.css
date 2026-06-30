@@ -97,7 +97,7 @@
 
 .mainGrid {
   width: min(100%, 1366px);
-  margin: 0 auto;
+  margin: 80px auto;
   padding: 0 clamp(28px, 4vw, 60px) 10px;
   flex: 1;
   min-height: 0;
