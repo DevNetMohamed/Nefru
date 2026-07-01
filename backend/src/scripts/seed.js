@@ -97,21 +97,44 @@ const seedDatabase = async () => {
       preferredLanguage: "en",
     });
 
-    await Guide.create({
-      user: guideUser._id,
-      title: "Certified Local Guide",
-      headline: "Explore Egypt with a trusted local guide",
-      location: "Cairo, Egypt",
-      about:
-        "Passionate local guide helping travelers discover Egypt safely, clearly, and without hidden surprises.",
-      yearsExperience: 3,
-      languages: ["English", "Arabic"],
-      specialties: ["History & Culture", "Food & Culinary"],
-      heroImage: "",
-      gallery: [],
-      rating: 4.8,
-      reviewsCount: 24,
-    });
+    // await Guide.create({
+    //   user: guideUser._id,
+    //   title: "Certified Local Guide",
+    //   headline: "Explore Egypt with a trusted local guide",
+    //   location: "Cairo, Egypt",
+    //   about:
+    //     "Passionate local guide helping travelers discover Egypt safely, clearly, and without hidden surprises.",
+    //   yearsExperience: 3,
+    //   languages: ["English", "Arabic"],
+    //   specialties: ["History & Culture", "Food & Culinary"],
+    //   heroImage: "",
+    //   gallery: [],
+    //   rating: 4.8,
+    //   reviewsCount: 24,
+    // });
+
+
+
+
+
+    const guide = await Guide.create({
+  user: guideUser._id,
+  title: "Certified Local Guide",
+  headline: "Explore Egypt with a trusted local guide",
+  location: "Cairo, Egypt",
+  about:
+    "Passionate local guide helping travelers discover Egypt safely, clearly, and without hidden surprises.",
+  yearsExperience: 3,
+  languages: ["English", "Arabic"],
+  specialties: ["History & Culture", "Food & Culinary"],
+  heroImage: "",
+  gallery: [],
+  rating: 4.8,
+  reviewsCount: 24,
+});
+
+
+
 
     console.log("Demo profiles created");
 
