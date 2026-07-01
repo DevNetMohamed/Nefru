@@ -11,6 +11,58 @@ import {status, roles} from '../../../../assets/variables'
 
 export default function Table({title="", headers=[], data="", item=""}){
     const Item = item;
+    const [pagination, setPagination] = useState({
+      totalRecords: 100,
+      totalPages: 10,
+      currentPage: 1,
+      pageView: [1, 2],
+    });
+
+    const PAGE_VIEW_SIZE = 2;
+
+    function getPageView(page, totalPages) {
+      const start = Math.floor((page - 1) / PAGE_VIEW_SIZE) * PAGE_VIEW_SIZE + 1;
+
+      return Array.from(
+        { length: Math.min(PAGE_VIEW_SIZE, totalPages - start + 1) },
+        (_, i) => start + i
+      );
+    }
+
+    function onPageChange(page) {
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: page,
+        pageView: getPageView(page, prev.totalPages),
+      }));
+    }
+
+    function onPrevious() {
+      setPagination((prev) => {
+        const currentPage = Math.max(prev.currentPage - 1, 1);
+
+        return {
+          ...prev,
+          currentPage,
+          pageView: getPageView(currentPage, prev.totalPages),
+        };
+      });
+    }
+
+    function onNext() {
+      setPagination((prev) => {
+        const currentPage = Math.min(
+          prev.currentPage + 1,
+          prev.totalPages
+        );
+
+        return {
+          ...prev,
+          currentPage,
+          pageView: getPageView(currentPage, prev.totalPages),
+        };
+      });
+    }
     return(
         <>
         <div className={styles.container}>
@@ -28,6 +80,21 @@ export default function Table({title="", headers=[], data="", item=""}){
               ))}
             </tbody>
           </table>
+          <div className={styles.footer}>
+            <p>total records {">"} {pagination.totalRecords}</p>
+            <div className={styles.action}>
+              <Button type="outline" className={styles.actionBtn} onClick={onPrevious}>{"< "}Previous</Button>
+              {pagination.pageView.map((item,index)=>(
+                  <Button type={item === pagination.currentPage? "primary" : "outline"} className={styles.actionBtn} onClick={()=>onPageChange(1)} key={index}>{item}</Button>
+              ))}
+              { pagination.currentPage < pagination.totalPages - 1? <>
+                  <Button type="outline" className={styles.actionBtn} onClick={()=>onPageChange(3)}>...</Button>
+                  <Button type="outline" className={styles.actionBtn} onClick={()=>onPageChange(3)}>{pagination.totalPages}</Button>
+                  </> : <></>
+              }
+              <Button type="outline" className={styles.actionBtn} onClick={onNext}>Next{" >"}</Button>
+            </div>
+          </div>
         </div>
         </>
     )
@@ -85,7 +152,7 @@ export function AccountItem({ data }) {
             style={{
               backgroundColor: status[data.status].back,
               color:status[data.status].text,
-              border:`1px solid ${status[data.status].text}`
+              // border:`1px solid ${status[data.status].text}`
             }}
           >
             {data.status}
