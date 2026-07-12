@@ -14,8 +14,6 @@ export default function Accounts(){
         {label:"Admin", value:"admin"}
     ]
     const [selectedAccount, setSelectedAccount] = useState(ACCOUNT_TYPES[0].label);
-    
-    
     const [accounts, setAccounts] = useState([]);
 
     // the account currently selected in the table (feeds the detail card)

@@ -45,8 +45,6 @@ export default function Table({
         <table className={styles.table}>
           <thead className={styles.tableHead}>
             <tr>
-              <th></th>
-              <th></th>
               {headers.map((header) => (
                 <th
                   key={header}
@@ -133,28 +131,30 @@ export default function Table({
 export function TourItem({ data }) {
   return (
     <tr className={styles.item}>
-      <td>{data.id}</td>
-      <td>{data.tour}</td>
-      <td>{data.bookings}</td>
+      {/* <td>{data.id}</td> */}
+      <td>{data.title}</td>
+      <td>{data.location}</td>
+      {/* <td>{data.bookings}</td>
       <td>${data.revenue}</td>
-      <td>{data.convRate}%</td>
+      <td>{data.convRate}%</td> */}
 
-      <td>
-        <div className={styles.rate}>
-          <Icons.star /> {data.rating}
-        </div>
-      </td>
+      
 
       <td>
         <div
           className={styles.status}
           style={{
-            backgroundColor: status[data.status].back,
-            color: status[data.status].text,
-            border: `1px solid ${status[data.status].text}`,
+            // backgroundColor: status[data.status].back,
+            // color: status[data.status].text,
+            // border: `1px solid ${status[data.status].text}`,
           }}
         >
           {data.status}
+        </div>
+      </td>
+      <td>
+        <div className={styles.rate}>
+          <Icons.star /> {data.rating}
         </div>
       </td>
     </tr>
