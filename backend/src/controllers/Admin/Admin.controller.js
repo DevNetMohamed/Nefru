@@ -1,10 +1,4 @@
-﻿// import {adminSchema} from "../validation/authAdminValidation"
-//require jwt
-// import {jwt} from "jsonwebtoken"
-// require admin model
-// import {Admin} from "../../models/admin.model"
-// create function
-import {User} from '../../models/user.model.js'
+﻿import {User} from '../../models/user.model.js'
 import {Trip} from '../../models/trip.model.js'
 
 export const getAccountsAll = async (req, res) => {
@@ -35,8 +29,9 @@ export const getAccountsAll = async (req, res) => {
       "data": users,
       "meta": {
         totalRecords:total,
-        totalPages:parseInt(total/LIMIT),
-        currentPage:parseInt(page)
+        totalPages:Math.ceil(total/LIMIT),
+        currentPage:parseInt(page),
+        headers:["NAME","EMAIL","JOINED"]
       }
     })
   } catch(error) {
@@ -48,8 +43,7 @@ export const getAccountsAll = async (req, res) => {
 
 export const getDashboard = async (req,res)=>{
   try{
-    const trips = await Trip.find().limit(10)
-    // const 
+    // get users
   }catch(error){
 
   }
