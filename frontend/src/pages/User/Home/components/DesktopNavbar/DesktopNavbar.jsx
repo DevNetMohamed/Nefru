@@ -5,11 +5,10 @@ import logo from "../../../../../assets/images/logo.png";
 import { useState } from "react";
 import profileImage from "../../../../../assets/images/user/user1.png";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { logout } from "../../../../../store/slices/authSlice";
+import NotificationPopover from "../../../Notifications/components/NotificationPopover";
 
 function DesktopNavbar() {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -18,6 +17,14 @@ function DesktopNavbar() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
+  const notifications = useSelector(
+    (state) => state.notifications.notifications
+  );
+
+  const unreadNotificationsCount = notifications.filter(
+    (notification) => !notification.isRead
+  ).length;
+
   const fullName = user?.fullName || "Not Logged In";
   const email = user?.email || "Not Logged In";
 
@@ -63,17 +70,30 @@ function DesktopNavbar() {
 
       {/* Actions */}
       <div className={styles.actions}>
-        {/* Notifiction Bell with Dropdown */}
+        {/* Notification Bell with Popover */}
         <div className={styles.notificationWrapper}>
-          <Bell
-            size={20}
+          <button
+            type="button"
+            className={styles.notificationButton}
             onClick={() => {
               setShowNotifications(!showNotifications);
               setShowProfile(false);
             }}
-          />
+            aria-label="Open notifications"
+          >
+            <Bell size={20} />
+            {unreadNotificationsCount > 0 && (
+              <span className={styles.notificationBadge}>
+                {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
+              </span>
+            )}
+          </button>
 
-          {showNotifications && <div className={styles.dropdown}>...</div>}
+          {showNotifications && (
+            <NotificationPopover
+              onClose={() => setShowNotifications(false)}
+            />
+          )}
         </div>
 
         {/* <Heart size={20} /> */}
