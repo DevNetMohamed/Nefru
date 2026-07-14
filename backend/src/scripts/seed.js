@@ -75,6 +75,22 @@ const seedDatabase = async () => {
       avatar: "",
     });
 
+    const users = [];
+
+    for (let i = 101; i <= 200; i++) {
+      User.create({
+        fullName: `Demo Guide ${i}`,
+        email: `guide${i}@test.com`,
+        password: "$2b$10$Lvv6O4uv2YFsdNQMx43GhufhpqiK761pfbexdubNhHqLqc0o5o2US",
+        role: "guide",
+        avatar: "",
+        isActive: true,
+        verificationStatus: "approved",
+      });
+    }
+
+    // db.users.insertMany(users);
+
     const guideUser = await User.create({
       fullName: "Demo Guide",
       email: env.emailGuide,

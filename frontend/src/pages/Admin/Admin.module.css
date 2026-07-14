@@ -1,6 +1,7 @@
 :root{
   --admin-primary:#0D1C2F;
   --admin-secondary:#B59441;
+  --admin-border:#D0C5B2
 }
 .dashboard {
   display: flex;

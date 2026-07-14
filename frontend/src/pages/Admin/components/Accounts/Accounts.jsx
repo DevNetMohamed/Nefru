@@ -8,13 +8,8 @@ import Icons from '../../.././../assets/icons'
 import {getAccount} from '../../api'
 
 export default function Accounts(){
-    const ACCOUNT_TYPES = [
-        {label:"Tourist", value:"tourist"},
-        {label:"Guide", value:"guide"},
-        {label:"Admin", value:"admin"}
-    ]
-    const [selectedAccount, setSelectedAccount] = useState(ACCOUNT_TYPES[0].label);
-    
+    const [accountTypes, setAccountTypes] = useState([])
+    const [selectedAccount, setSelectedAccount] = useState();
     
     const [accounts, setAccounts] = useState([]);
 
@@ -30,9 +25,17 @@ export default function Accounts(){
 
     const loadUsers = useCallback(async (pageNum = 1) => {
         try {
-            const data = await getAccount(selectedAccount.toLowerCase(), pageNum);
-            if (!data.error) setAccounts(data);
-
+            let data = {}
+            if (selectedAccount) {
+                data = await getAccount(selectedAccount, pageNum);
+            }else{
+                data = await getAccount("tourist", pageNum);
+                setSelectedAccount(data.meta.types[0])
+            }
+            if (!data.error) {
+                setAccounts(data)   
+                setAccountTypes(data.meta.types)
+            }
         } catch (err) {
             if (err.name === "AbortError") return;
 
@@ -63,14 +66,19 @@ export default function Accounts(){
                 <div className={styles.body}>
                     <div className={styles.tabs}>
                         {
-                            ACCOUNT_TYPES.map((item,index)=>(
+                            accountTypes?.map((item,index)=>(
+                                <div 
+                                className={styles.containerTab} 
+                                data-state={selectedAccount === item?"true":""}
+                                onClick={()=>{setSelectedAccount(item)}}
+                                key={index}>
                                 <Button 
                                     className={styles.tab}
-                                    type={selectedAccount === item.label?"primary":"normal"}
-                                    key={index}
-                                    onClick={()=>{setSelectedAccount(item.label); setPage(1);}}>
-                                        {item.label}
+                                    >
+                                        {item}
                                 </Button>
+                                <p className={styles.count}>123</p>
+                                </div>
                             ))
                         }
                     </div>

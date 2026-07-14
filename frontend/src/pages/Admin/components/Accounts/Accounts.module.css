@@ -5,7 +5,6 @@
     width:100%;
     flex:1;
     min-height:0;
-
 }
 .title{
     display:flex;
@@ -24,11 +23,36 @@
 .tabs{
     display:flex;
     width:fit-content;
+    align-items: center;
+    border-bottom:1px solid var(--admin-border);
+    width:100%;
+    gap:20px;
+}
+.containerTab{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    gap:5px;
+    cursor: pointer;
+}
+.containerTab[data-state="true"]{
+    border-bottom:2px solid var(--admin-secondary)
 }
 .tab{
     font-weight:normal;
     min-height:0;
     height:40px;
+    background-color: #ffffff00;
+    width:fit-content;
+    padding:0px;
+    font-size:16px;
+    text-transform: capitalize;
+}
+.count{
+    background-color:var(--color-secondary-mute);
+    border-radius:15px;
+    padding:1px 15px;
+    font-size:12px
 }
 .info{
     display:flex;
@@ -38,7 +62,7 @@
 }
 
 .edit{
-    border:1px solid var(--color-border);
+    border:1px solid var(--admin-border);
     display:flex;
     flex-direction:column;
     padding:10px;

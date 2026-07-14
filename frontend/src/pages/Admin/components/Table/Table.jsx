@@ -74,7 +74,7 @@ export default function Table({
               ))
             ) : (
               <tr>
-                <td colSpan={(headers.length || 0) + 2}>
+                <td style={{display:"flex",justifyContent:"center"}}>
                   No data available.
                 </td>
               </tr>
@@ -220,3 +220,4 @@ export function AccountItem({ data, selected, onSelect }) {
     </tr>
   );
 }
+

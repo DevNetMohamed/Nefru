@@ -1,5 +1,5 @@
 .container{
-    border:1px solid var(--color-border);
+    border:1px solid var(--admin-border);
     background-color:white;
     border-radius:10px;
     flex-direction:column;
@@ -39,14 +39,14 @@
 }
 .item{
     height:50px;
-    border-top:1px solid var(--color-border);
+    border-top:1px solid var(--admin-border);
     margin:10px 0;
     cursor:pointer;
     justify-content:center;
     transition: background-color 0.15s ease;
 }
 .selectedRow{
-    background-color:var(--color-primary-mute);
+    background-color:var(--color-secondary-mute);
 }
 .itempad{
     margin-left:20px;
@@ -56,7 +56,7 @@
     display:flex;
     justify-content:center;
     align-items:center;
-    background-color:var(--color-primary-mute);
+    background-color:var(--color-secondary-mute);
     box-sizing:border-box;
     border-radius:50%;
     width:fit-content;
@@ -102,12 +102,12 @@
 }
 .footer{
     display:flex;
-    background-color:var(--color-primary-mute);
+    background-color:var(--color-secondary-mute);
     width:100%;
     padding:0 10px;
     align-items:center;
     justify-content:space-between;
-    border-top:1px solid var(--color-border);
+    border-top:1px solid var(--admin-border);
     border-radius: 0 0 var(--border-radius) var(--border-radius);
     height:50px;
 }

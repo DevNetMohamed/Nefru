@@ -6,6 +6,16 @@ export const getAccountsAll = async (req, res) => {
     const {role,page} = req.params
     const LIMIT = 10;
     const SKIP = (page-1)*LIMIT
+
+    if(!role && !page){
+      const [users, total] = await Promise.all([
+        User.find({role:"tourist"})
+        .skip(SKIP)
+        .limit(LIMIT)
+        .sort({createdAt:-1}),
+        User.countDocuments({role:"tourist"})
+      ])
+    }
     const [users, total] = await Promise.all([
       User.find({role:role})
       .skip(SKIP)
@@ -31,7 +41,8 @@ export const getAccountsAll = async (req, res) => {
         totalRecords:total,
         totalPages:Math.ceil(total/LIMIT),
         currentPage:parseInt(page),
-        headers:["NAME","EMAIL","JOINED"]
+        headers:["NAME","EMAIL","JOINED"],
+        types:["tourist","guide","admin"]
       }
     })
   } catch(error) {
