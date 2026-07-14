@@ -8,18 +8,9 @@ import Icons from '../../.././../assets/icons'
 import {getAccount} from '../../api'
 
 export default function Accounts(){
-<<<<<<< HEAD
     const [accountTypes, setAccountTypes] = useState([])
-    const [selectedAccount, setSelectedAccount] = useState();
     
-=======
-    const ACCOUNT_TYPES = [
-        {label:"Tourist", value:"tourist"},
-        {label:"Guide", value:"guide"},
-        {label:"Admin", value:"admin"}
-    ]
-    const [selectedAccount, setSelectedAccount] = useState(ACCOUNT_TYPES[0].label);
->>>>>>> 46f2bf78b8d438fcc94862ef2207cfd5b21e0f37
+    const [selectedAccount, setSelectedAccount] = useState();
     const [accounts, setAccounts] = useState([]);
 
     // the account currently selected in the table (feeds the detail card)
