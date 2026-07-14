@@ -89,8 +89,7 @@ const seedDatabase = async () => {
       });
     }
 
-    // db.users.insertMany(users);
-
+ 
     const guideUser = await User.create({
       fullName: "Demo Guide",
       email: env.emailGuide,
