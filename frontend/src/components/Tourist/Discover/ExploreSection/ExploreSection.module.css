@@ -16,9 +16,7 @@
 
 .header h2 {
 
-white-space: nowrap;
-
-    font-size: 25px;
+    font-size: clamp(20px, 4vw, 28px);
 }
 
 
@@ -35,19 +33,23 @@ white-space: nowrap;
 
 .blogs {
 
-    display: flex;
+    display: grid;
 
     gap: 16px;
-    flex-direction: column;
+    grid-template-columns: 1fr;
 
-    /* overflow-x: auto; */
-
-    /* scrollbar-width: none; */
+    /* for touch devices */
+    -webkit-overflow-scrolling: touch;
 }
 
 .blogs::-webkit-scrollbar {
-
     display: none;
+}
+
+@media (min-width: 768px) {
+    .blogs {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
 }
 
 .seeAll {

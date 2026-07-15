@@ -18,6 +18,9 @@ function ExploreCard({ blog }) {
                 </span>
 
                 <h3 className={styles.title}>
+                        <LuChevronRight
+                            className={styles.arrow}
+                        />
                     {blog.title}
                 </h3>
 
@@ -38,9 +41,6 @@ function ExploreCard({ blog }) {
 
                     </div>
 
-                    <LuChevronRight
-                        className={styles.arrow}
-                    />
 
                 </div>
 

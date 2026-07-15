@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { Button } from "../../../../shared/components/Button/Button";
 import { Input } from "../../../../shared/components/inputs/inputs";
-import Footer from "../../../../shared/Footer/Footer";
+import Footer from "../../../../shared/components/Footer/Footer";
 import Icons from "../../../../assets/icons";
 import LogoLight from "../../../../assets/images/Logo_Light.png";
 import styles from "./Login.module.css";
