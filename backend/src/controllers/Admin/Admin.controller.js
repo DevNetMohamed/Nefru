@@ -41,8 +41,12 @@ export const getAccountsAll = async (req, res) => {
         totalRecords:total,
         totalPages:Math.ceil(total/LIMIT),
         currentPage:parseInt(page),
+<<<<<<< HEAD
         headers:["NAME","EMAIL","JOINED"],
         types:["tourist","guide","admin"]
+=======
+        headers:["SELECT","IMAGE","NAME","EMAIL","JOINED"]
+>>>>>>> 46f2bf78b8d438fcc94862ef2207cfd5b21e0f37
       }
     })
   } catch(error) {
@@ -57,5 +61,37 @@ export const getDashboard = async (req,res)=>{
     // get users
   }catch(error){
 
+  }
+}
+
+export const getTrips = async(req,res)=>{
+  try{
+    //get all trips
+    const {page} = req.params
+    const LIMIT = 10;
+    const SKIP = (page-1)*LIMIT
+
+    const [trips, total] = await Promise.all([
+      Trip.find()
+      .skip(SKIP)
+      .limit(LIMIT)
+      .sort({createdAt:-1}),
+      Trip.countDocuments()
+    ])
+    return res.status(200).json({
+      "success": true,
+      "message": "Operation completed successfully",
+      "data": trips,
+      "meta": {
+        totalRecords:total,
+        totalPages:Math.ceil(total/LIMIT),
+        currentPage:parseInt(page),
+        headers:["TITLE","LOCATION","STATUS","RATE"]
+      }
+    })
+  }catch(error){
+    res.status(400).json({
+      msg:"Failed",
+      data:error})
   }
 }
