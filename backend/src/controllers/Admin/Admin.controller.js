@@ -41,12 +41,8 @@ export const getAccountsAll = async (req, res) => {
         totalRecords:total,
         totalPages:Math.ceil(total/LIMIT),
         currentPage:parseInt(page),
-<<<<<<< HEAD
         headers:["NAME","EMAIL","JOINED"],
         types:["tourist","guide","admin"]
-=======
-        headers:["SELECT","IMAGE","NAME","EMAIL","JOINED"]
->>>>>>> 46f2bf78b8d438fcc94862ef2207cfd5b21e0f37
       }
     })
   } catch(error) {
