@@ -23,12 +23,15 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
   const [price, setPrice] = useState(tourData.price || "");
   const [groupSize, setGroupSize] = useState(tourData.groupSize || 12);
   const [durationValue, setDurationValue] = useState(tourData.durationValue || "");
-  const [unit, setUnit] = useState(tourData.unit || "Hours");
   const [description, setDescription] = useState(tourData.description || "");
   const [selectedCategories, setSelectedCategories] = useState(
     tourData.categories || [categories[0]],
   );
   const [loading, setLoading] = useState(false);
+
+  function handleBack() {
+    navigate("/guide");
+  }
 
   function toggleCategory(category) {
     setSelectedCategories((prev) => {
@@ -62,7 +65,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
       description,
       location: city,
       price: Number(price),
-      duration: `${durationValue} ${unit}`,
+      duration: `${durationValue} Hours`,
       category: categoryMap[selectedCategories[0] || "History & Culture"] || "History",
       groupSize: Number(groupSize) || 12,
       schedule: { dates: [], slots: [] },
@@ -99,7 +102,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <button type="button" className={styles.backButton} onClick={onBack}>
+        <button type="button" className={styles.backButton} onClick={handleBack}>
           <FaArrowLeft />
         </button>
 
@@ -134,16 +137,14 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
 
           <div className={styles.formGroup}>
             <label className={styles.label}>DESTINATION CITY</label>
-            <div className={styles.selectBox}>
+           
               <input
                 className={styles.input}
                 type="text"
-                placeholder="e.g., Cairo"
+                placeholder="e.g. Cairo"
                 value={city}
                 onChange={(event) => setCity(event.target.value)}
               />
-              <FaChevronDown />
-            </div>
           </div>
 
           <div className={styles.separator} />
@@ -175,32 +176,16 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
           <div className={styles.separator} />
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>DURATION</label>
+            <label className={styles.label}>DURATION (HOURS)</label>
             <div className={styles.durationRow}>
               <input
                 className={styles.durationInput}
-                type="text"
+                type="number"
                 placeholder="e.g. 4"
                 value={durationValue}
                 onChange={(event) => setDurationValue(event.target.value)}
               />
-
-              <div className={styles.toggleBox}>
-                <button
-                  type="button"
-                  className={unit === "Hours" ? styles.toggleActive : styles.toggleItem}
-                  onClick={() => setUnit("Hours")}
-                >
-                  Hours
-                </button>
-                <button
-                  type="button"
-                  className={unit === "Days" ? styles.toggleActive : styles.toggleItem}
-                  onClick={() => setUnit("Days")}
-                >
-                  Days
-                </button>
-              </div>
+              <span className={styles.durationUnit}>Hours</span>
             </div>
           </div>
 
