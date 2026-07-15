@@ -6,12 +6,11 @@ export const getAccountsAll = async (req, res) => {
     const {role,page} = req.params
     const LIMIT = 10;
     const SKIP = (page-1)*LIMIT
-    const [users, total] = await Promise.all([
+    const [users] = await Promise.all([
       User.find({role:role})
       .skip(SKIP)
       .limit(LIMIT)
       .sort({createdAt:-1}),
-      User.countDocuments({role:role})
     ])
     if (users.length == 0){
       return res.status(404).json({
@@ -23,6 +22,7 @@ export const getAccountsAll = async (req, res) => {
         }
       })
     }
+    const total = users.length
     return res.status(200).json({
       "success": true,
       "message": "Operation completed successfully",
@@ -35,7 +35,7 @@ export const getAccountsAll = async (req, res) => {
       }
     })
   } catch(error) {
-    res.status(400).json({
+    return res.status(400).json({
       msg:"Failed",
       data:error})
   }
