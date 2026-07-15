@@ -90,6 +90,22 @@
   font-size: 14px;
 }
 
+.logoWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.logoWrapper h2 {
+  font-family: "Cormorant Garamond", serif;
+  margin: 0;
+}
+
 @media (max-width: 900px) {
   .footer {
     display: none;

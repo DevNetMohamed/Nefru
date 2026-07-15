@@ -15,10 +15,9 @@ export default function CMS(){
         { id: 6, tour: "Siwa Adventure", bookings: 87, revenue: 5100, convRate: "4.9", rating: 4.4, status: "suspended" }
     ];
     const [activeTab,setActiveTab] = useState("Tours")
-    const tabs = [
-        {label:"Tours"},
-        {label:"Explore"}
-    ]
+    const tabs = ["Tours","Explore"]
+    const [selectedAccount, setSelectedAccount] = useState();
+
     return(
         <>
             <div className={styles.container}>
@@ -29,6 +28,25 @@ export default function CMS(){
                 <div className={styles.body}>
                     <div className={styles.tabs}>
                         {
+                            tabs?.map((item,index)=>(
+                                <div 
+                                className={styles.containerTab} 
+                                data-state={selectedAccount === item?"true":""}
+                                onClick={()=>{setSelectedAccount(item)}}
+                                key={index}>
+                                <Button 
+                                    className={styles.tab}
+                                    
+                                    >
+                                        {item}
+                                </Button>
+                                <p className={styles.count}>123</p>
+                                </div>
+                            ))
+                        }
+                    </div>
+                    {/* <div className={styles.tabs}>
+                        {
                             tabs.map((item,index)=>(
                                 <Button 
                                     type={activeTab === item.label?"primary":"normal"}
@@ -38,7 +56,7 @@ export default function CMS(){
                                 </Button>
                             ))
                         }
-                    </div>
+                    </div> */}
                     <div className={styles.info}>
                         <Table 
                             data={users}

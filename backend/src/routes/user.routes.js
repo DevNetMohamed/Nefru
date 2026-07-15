@@ -1,14 +1,16 @@
-import { Router } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
+import { Router } from "express";
 import { protect } from "../middlewares/authMiddleware.js";
 import { getMe } from "../controllers/user.controller.js";
+import {
+  getMyProfile,
+  updateMyProfile,
+} from "../controllers/profile.controller.js";
 
 const userRouter = Router();
 
-// Skeleton endpoints for Users
-userRouter.get('/profile', asyncHandler(async (req, res) => {
-  res.json({ success: true, message: 'User profile fetched (skeleton)' });
-}));
+userRouter.get("/profile/me", protect, getMyProfile);
+userRouter.patch("/profile/me", protect, updateMyProfile);
 
-userRouter.get('/me', protect, getMe);
+userRouter.get("/me", protect, getMe);
+
 export default userRouter;

@@ -10,14 +10,19 @@ function RecommendedTourCard({
   rating,
   guide,
   price,
+  category,
+
 }) {
   return (
     <div className={styles.card}>
       <div className={styles.imageContainer}>
-        <img src={image} alt={title} />
+        <img
+        src={`http://localhost:5000/uploads/${image}`}
+              alt={title}
+          />
 
         <span className={styles.badge}>
-          {badge}
+          {category}
         </span>
 
         <button className={styles.favoriteBtn}>
@@ -41,17 +46,17 @@ function RecommendedTourCard({
         </div>
 
         <div className={styles.rating}>
-          <Star size={14} />
-          {rating}
+          <Star size={14}/>
+          New Tour
         </div>
 
         <p className={styles.guide}>
-          {guide}
+          {guide?.name || "Unknown Guide"}
         </p>
 
         <div className={styles.footer}>
           <span>
-            From <strong>${price}</strong>
+              From <strong>EGP {price}</strong>
           </span>
 
           <button>

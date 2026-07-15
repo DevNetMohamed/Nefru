@@ -1,3 +1,4 @@
+// wil be used for authentication and authorization only
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
@@ -20,7 +21,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
     },
-    password: { type: String, required: true , minlength: [8, "Password must be at least 8 characters"], select: false },
+    password: {
+      type: String,
+      required: true,
+      minlength: [8, "Password must be at least 8 characters"],
+      select: false,
+    },
     role: { type: String, enum: USER_ROLES, default: "tourist" },
     avatar: {
       type: String,
@@ -30,19 +36,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-
-    // Future document verification
-    // We are not uploading files now.
-    // Later we can add:
-    // document: {
-    //   url: { type: String , default: ""},
-    //   publicId: { type: String , default: ""},
-    //   fileType: { type: String ,enum: ["image", "pdf", ""], default: ""},
-    //   type: {
-    //     type: String,
-    //     enum: ["passport", "national_id", "guide_license"],
-    //   },
-    // },
     verificationStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"],

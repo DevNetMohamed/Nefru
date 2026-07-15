@@ -25,6 +25,13 @@ import Status from "../pages/User/Trips/Book/components/Status/Status";
 import Guide from "../pages/User/Trips/Guide/Guide";
 import Saved from "../pages/User/Saved/Saved";
 import Profile from "../pages/User/Profile/Profile";
+import ProfileOverview from "../pages/User/Profile/pages/ProfileOverview/ProfileOverview";
+import EditProfile from "../pages/User/Profile/pages/EditProfile/EditProfile";
+import ChangePassword from "../pages/User/Profile/pages/ChangePassword/ChangePassword";
+import MyBookings from "../pages/User/Profile/pages/MyBookings/MyBookings";
+import PaymentMethods from "../pages/User/Profile/pages/PaymentMethods/PaymentMethods";
+import ReviewsWritten from "../pages/User/Profile/pages/ReviewsWritten/ReviewsWritten";
+import HelpSupport from "../pages/User/Profile/pages/HelpSupport/HelpSupport";
 import Settings from "../pages/User/Settings/Settings";
 
 //Tourist Discover Page
@@ -84,7 +91,19 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "saved", element: <Saved /> },
-      { path: "profile", element: <Profile /> },
+      {
+        path: "profile",
+        element: <Profile />,
+        children: [
+          { index: true, element: <ProfileOverview /> },
+          { path: "edit", element: <EditProfile /> },
+          { path: "change-password", element: <ChangePassword /> },
+          { path: "bookings", element: <MyBookings /> },
+          { path: "payments", element: <PaymentMethods /> },
+          { path: "reviews", element: <ReviewsWritten /> },
+          { path: "support", element: <HelpSupport /> },
+        ],
+      },
       { path: "settings", element: <Settings /> },
     ],
 

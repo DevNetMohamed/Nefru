@@ -4,6 +4,8 @@ import tripRouter from "./trip.routes.js";
 import bookingRouter from "./booking.routes.js";
 import guideRouter from "./guide.routes.js";
 import authUserRoutes from "./authUser.routes.js";
+import adminRoutes from "./admin.routes.js";
+import homeRouter from "./home.routes.js";
 
 const apiRouter = Router();
 
@@ -14,10 +16,12 @@ apiRouter.get("/health", (req, res) => {
   });
 });
 
-apiRouter.use("/auth", authUserRoutes);
-apiRouter.use("/users", userRouter);
+apiRouter.use('/auth', authUserRoutes);
+apiRouter.use('/users', userRouter);
+apiRouter.use('/trips', tripRouter);
+apiRouter.use('/bookings', bookingRouter);
+apiRouter.use('/admin',adminRoutes);
+apiRouter.use("/home", homeRouter);
 apiRouter.use("/guides", guideRouter);
-apiRouter.use("/trips", tripRouter);
-apiRouter.use("/bookings", bookingRouter);
 
 export default apiRouter;

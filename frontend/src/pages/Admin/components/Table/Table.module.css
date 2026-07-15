@@ -1,15 +1,24 @@
 .container{
-    border:1px solid var(--color-border);
+    border:1px solid var(--admin-border);
     background-color:white;
     border-radius:10px;
     flex-direction:column;
     width:100%;
     height:100%;
     gap:8px;
+    display:flex;
+    justify-content:space-between;
+    min-height:0;
+    overflow:hidden;
+}
+.tableScroll{
+    flex:1;
+    min-height:0;
+    overflow:auto;
 }
 .table{
     width:100%;
-    height:100%;
+    /* height:100%; */
 }
 .tableHead{
     height:50px;
@@ -17,6 +26,10 @@
     justify-content:space-between;
     padding:0 10px;
     margin:0;
+    position:sticky;
+    top:0;
+    background-color:white;
+    z-index:1;
 }
 .tableHeadItem {
     font-weight:500;
@@ -26,18 +39,35 @@
 }
 .item{
     height:50px;
-    border-top:1px solid var(--color-border);
+    border-top:1px solid var(--admin-border);
     margin:10px 0;
     cursor:pointer;
+    justify-content:center;
+    transition: background-color 0.15s ease;
+}
+.selectedRow{
+    background-color:var(--color-secondary-mute);
 }
 .itempad{
     margin-left:20px;
     /* border:1px solid red; */
 }
-.avatar{
+.containerAvatar{
     display:flex;
+    justify-content:center;
     align-items:center;
-    gap:8px;
+    background-color:var(--color-secondary-mute);
+    box-sizing:border-box;
+    border-radius:50%;
+    width:fit-content;
+    height:fit-content;
+    height:35px;
+    width:35px;
+}
+.avatar{
+    width:100%;
+    height:100%;
+    border-radius:50%;
 }
 .avatar :first-child{
     background-color:var(--color-secondary-mute);
@@ -69,4 +99,26 @@
     align-items:center;
     display:flex;
     gap:5px;
+}
+.footer{
+    display:flex;
+    background-color:var(--color-secondary-mute);
+    width:100%;
+    padding:0 10px;
+    align-items:center;
+    justify-content:space-between;
+    border-top:1px solid var(--admin-border);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    height:50px;
+}
+.action{
+    display:flex;
+    gap:8px;
+}
+.actionBtn{
+    height:35px;
+    width:fit-content;
+    min-height:auto;
+    font-weight:500;
+    font-size:14px;
 }

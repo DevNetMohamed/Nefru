@@ -93,7 +93,7 @@ export default function GuideProfile({
           </div>
 
           <h1 className={styles.name}>{fullName}</h1>
-          <p className={styles.subtitle}>{subtitle}</p>
+          <p className={`${styles.subtitle} fs-5`}>{subtitle}</p>
         </div>
       </section>
 
