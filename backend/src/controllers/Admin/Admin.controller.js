@@ -1,6 +1,12 @@
 ﻿import {User} from '../../models/user.model.js'
 import {Trip} from '../../models/trip.model.js'
 
+export const getAllUsers = async(req,res) =>{
+  try{
+    
+  }catch(error){}
+}
+
 export const getAccountsAll = async (req, res) => {
   try {
     const {role,page} = req.params
@@ -13,7 +19,9 @@ export const getAccountsAll = async (req, res) => {
         .skip(SKIP)
         .limit(LIMIT)
         .sort({createdAt:-1}),
-        User.countDocuments({role:"tourist"})
+        User.countDocuments({role:"tourist"}),
+        User.countDocuments({role:"guide"}),
+        User.countDocuments({role:"admin"})
       ])
     }
     const [users, total] = await Promise.all([

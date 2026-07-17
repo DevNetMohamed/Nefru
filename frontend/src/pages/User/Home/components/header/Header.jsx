@@ -3,9 +3,10 @@ import {Button} from '../../../../../shared/components/Button/Button'
 import { MdOutlineLocationOn , MdSearch } from "react-icons/md";
 import { FaRegBell } from "react-icons/fa";
 import { Input } from '../../../../../shared/components/Inputs/Inputs'
-
+import {useNavigate} from 'react-router-dom'
 export default function 
 Header(){
+    const navigate = useNavigate();
     return (
         <>
             <div className={styles.header}>
@@ -20,7 +21,7 @@ Header(){
                     </div>
                 </div>
                 <div>
-                    <Button icon={<FaRegBell style={{fontSize:"25px"}} />} className={styles.icon_button} />
+                    <Button icon={<FaRegBell style={{fontSize:"25px"}} />} onClick={() => navigate('/user/notifications')} className={styles.icon_button} />
 
                 </div>
             </div>

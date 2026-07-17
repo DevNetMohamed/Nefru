@@ -46,6 +46,7 @@
   max-width: 900px;
   margin: 0 auto;
   padding: 24px 16px 32px;
+  background: var(--color-primary-mute);
 }
 
 .stepper {
@@ -187,6 +188,13 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chipActive {
+  background: #00263b;
+  color: #ffffff;
+  border-color: #00263b;
 }
 
 .durationRow {
@@ -198,6 +206,12 @@
 
 .durationInput {
   max-width: 140px;
+}
+
+.durationUnit {
+  font-size: 14px;
+  color: #41474d;
+  font-weight: 600;
 }
 
 .toggleBox {

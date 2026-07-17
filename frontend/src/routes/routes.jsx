@@ -33,7 +33,7 @@ import PaymentMethods from "../pages/User/Profile/pages/PaymentMethods/PaymentMe
 import ReviewsWritten from "../pages/User/Profile/pages/ReviewsWritten/ReviewsWritten";
 import HelpSupport from "../pages/User/Profile/pages/HelpSupport/HelpSupport";
 import Settings from "../pages/User/Settings/Settings";
-
+import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
 //Tourist Discover Page
 import Discover from "../pages/User/Discover/Discover";
 
@@ -105,6 +105,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "settings", element: <Settings /> },
+      {path: "notifications", element: <NotificationsPage />},
     ],
 
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT
