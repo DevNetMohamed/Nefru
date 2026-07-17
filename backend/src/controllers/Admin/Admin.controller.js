@@ -49,7 +49,7 @@ export const getAccountsAll = async (req, res) => {
         totalRecords:total,
         totalPages:Math.ceil(total/LIMIT),
         currentPage:parseInt(page),
-        headers:["NAME","EMAIL","JOINED"],
+        headers:["USER","EMAIL","JOINED"],
         types:["tourist","guide","admin"]
       }
     })

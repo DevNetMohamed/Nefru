@@ -1,6 +1,6 @@
 export const status = { 
-      true:{text:"var(--color-active)",back:"var(--color-active-mute)"},
-      false:{text:"var(--color-warning)",back:"var(--color-warning-mute)"},
+      active:{text:"var(--color-active)",back:"var(--color-active-mute)"},
+      draft:{text:"var(--color-warning)",back:"var(--color-warning-mute)"},
     //   pending:{text:"var(--color-secondary)",back:"var(--color-secondary-mute)"}
 };
 export const roles={

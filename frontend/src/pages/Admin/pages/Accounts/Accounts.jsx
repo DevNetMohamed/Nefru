@@ -1,9 +1,11 @@
 import styles from './Accounts.module.css'
-import Table,{AccountItem} from '../Table/Table'
+import Table,{AccountItem} from '../../components/Table/Table'
 import {Button }from '../../../../shared/components/Button/Button'
 import {Input }from '../../../../shared/components/Inputs/Inputs'
 import {useCallback, useEffect, useState} from 'react'
-import Icons from '../../.././../assets/icons'
+import Icons from '../../../../assets/icons'
+import Form, {FormInput, FormSelect} from '../../components/Form/Form'
+import { Card } from '../../components/Status/Status'
 
 import {getAccount} from '../../api'
 
@@ -53,7 +55,7 @@ export default function Accounts(){
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
-        setSelectedRow(null); // clear the detail card when moving to another page
+        setSelectedRow(null);
     };
 
     return(
@@ -62,6 +64,10 @@ export default function Accounts(){
                 <div className={styles.title}>
                     <h2 style={{fontSize:"32px"}}>Accounts Management</h2>
                     <p style={{fontSize:"14px"}}>Manage accounts status across the Nefru platform.</p>
+                </div>
+                    
+                <div className={styles.status}>
+
                 </div>
                 <div className={styles.body}>
                     <div className={styles.tabs}>
@@ -89,54 +95,14 @@ export default function Accounts(){
                             onRowSelect={setSelectedRow}
                             onPageChange={handlePageChange}
                         />
-                        <div className={styles.edit}>
-                            {selectedRow ? (
-                                <>
-                                    <div className={styles.section_1}>
-                                        <div className={styles.containerAvatar}>
-                                        
-                                        {selectedRow.avatar? 
-                                            <img className={styles.avatar} src={selectedRow.avatar} /> 
-                                            : 
-                                            <p>{selectedRow.fullName.split(" ").map(word => word[0]).join("")}</p>
-                                        }</div>
-                                        <p>{selectedRow.fullName}</p>
-                                    </div>
-                                    <div className={styles.item}>
-                                        <p>Email</p>
-                                        <p>{selectedRow.email}</p>
-                                    </div>
-                                    <div className={styles.item}>
-                                        <p>Phone</p>
-                                        <p>{selectedRow.phone ?? "—"}</p>
-                                    </div>
-                                    <div className={styles.item}>
-                                        <p>Created at</p>
-                                        <p>{selectedRow.createdAt?.split('T')[0] ?? "—"}</p>
-                                    </div>
-                                    <div className={styles.item}>
-                                        <p>Type</p>
-                                        <p className={styles.itemTag}>{selectedRow.role ?? "—"}</p>
-                                    </div>
-                                    <div className={styles.item}>
-                                        <p>Status</p>
-                                        <p className={styles.status}
-                                            style={{
-                                            color:"var(--color-active)",backgroundColor:"var(--color-active-mute)"
-                                            }}>{selectedRow.verificationStatus ?? "—"}</p>
-                                    </div>
-
-                                    <div className={styles.actions}>
-                                        <Button icon={<Icons.CheckCircle/>} type="primary">Approve</Button>
-                                        <Button icon={<Icons.circleWrong/>} type="normal">Suspend</Button>
-                                    </div>
-                                </>
-                            ) : (
-                                <p className={styles.emptyHint}>Select an account to see its details.</p>
-                            )}
-                        </div>
+                        <Form>
+                            <FormInput title="User Name" placeholder="Enter User Name"/>
+                            <FormInput title="Email" placeholder="Enter Email"/>
+                            <FormInput title="Role" placeholder="Enter Role"/>
+                            <FormInput title="User Name" placeholder="Enter User Name"/>
+                            <FormSelect title="Verification" values={["Pending", "Approved", "Rejected"]}/>
+                        </Form>
                     </div>
-
                 </div>
             </div>
         </>

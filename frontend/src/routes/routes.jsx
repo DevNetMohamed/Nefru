@@ -38,11 +38,11 @@ import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
 import Discover from "../pages/User/Discover/Discover";
 
 import Admin from "../pages/Admin/Admin";
-import DashboardStatus from "../pages/Admin/components/DashboardStatus/DashboardStatus";
-import Accounts from "../pages/Admin/components/Accounts/Accounts";
-import CMS from "../pages/Admin/components/CMS/CMS";
-import Analytics from "../pages/Admin/components/Analytics/Analytics";
-import Booking from "../pages/Admin/components/Booking/Booking";
+import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
+import Accounts from "../pages/Admin/pages/Accounts/Accounts";
+import CMS from "../pages/Admin/pages/CMS/CMS";
+import Analytics from "../pages/Admin/pages/Analytics/Analytics";
+import Booking from "../pages/Admin/pages/Booking/Booking";
 
 // Guide Pages
 import ToursManagement from "../pages/Guide/ToursManagement/ToursManagement";

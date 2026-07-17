@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "./Table.module.css";
 import { Button } from "../../../../shared/components/Button/Button";
 import Icons from '../../../../assets/icons'
+import {status} from '../../../../assets/variables'
 
 export default function Table({
   data = null,
@@ -45,11 +46,13 @@ export default function Table({
         <table className={styles.table}>
           <thead className={styles.tableHead}>
             <tr>
+              <th></th>
               {headers.map((header) => (
                 <th
                   key={header}
                   className={styles.tableHeadItem}
                 >
+                  
                   {header}
                 </th>
               ))}
@@ -128,25 +131,42 @@ export default function Table({
   );
 }
 
-export function TourItem({ data }) {
+export function TourItem({ data, selected, onSelect}) {
   return (
-    <tr className={styles.item}>
-      {/* <td>{data.id}</td> */}
-      <td>{data.title}</td>
+    <tr
+      className={`${styles.item} ${selected ? styles.selectedRow : ""}`}
+      onClick={onSelect}>
+      <td>
+        <input
+          type="radio"
+          name="account-row"
+          checked={selected}
+          onChange={(e) => {
+            // Prevent the radio click from also bubbling to the row handler.
+            e.stopPropagation();
+            onSelect();
+          }}
+        />
+      </td>
+      <td>
+        <div className={styles.containerAccount}>
+          <div className={styles.avatar}>
+            {data.avatar? 
+              <img className={styles.avatarImg} src={data.avatar} /> 
+              : 
+              <p>{data.title.split(" ").map(word => word[0]).join("")}</p>}
+          </div>
+          <p>{data.title}</p>
+        </div>
+      </td>
       <td>{data.location}</td>
-      {/* <td>{data.bookings}</td>
-      <td>${data.revenue}</td>
-      <td>{data.convRate}%</td> */}
-
-      
-
       <td>
         <div
           className={styles.status}
           style={{
-            // backgroundColor: status[data.status].back,
-            // color: status[data.status].text,
-            // border: `1px solid ${status[data.status].text}`,
+            backgroundColor: status[data.status].back,
+            color: status[data.status].text,
+            border: `1px solid ${status[data.status].text}`,
           }}
         >
           {data.status}
@@ -180,42 +200,17 @@ export function AccountItem({ data, selected, onSelect }) {
         />
       </td>
       <td>
-       <div className={styles.containerAvatar}>
-        {data.avatar? 
-          <img className={styles.avatar} src={data.avatar} /> 
-          : 
-          <p>{data.fullName.split(" ").map(word => word[0]).join("")}</p>}
+        <div className={styles.containerAccount}>
+          <div className={styles.avatar}>
+            {data.avatar? 
+              <img className={styles.avatarImg} src={data.avatar} /> 
+              : 
+              <p>{data.fullName.split(" ").map(word => word[0]).join("")}</p>}
+          </div>
+          <p>{data.fullName}</p>
         </div>
       </td>
-      <td>
-        <div>
-          {data.fullName}
-        </div>
-      </td>
-
       <td>{data.email}</td>
-
-      {/* <td>
-        <div
-          className={styles.role}
-        >
-          {data.role}
-        </div>
-      </td> */}
-
-      {/* <td>
-        <div
-          className={styles.status}
-          style={{
-            // backgroundColor: status[data.status].back,
-            // color: status[data.status].text,
-            // border: `1px solid ${status[data.status].text}`,
-          }}
-        >
-          {data.verificationStatus}
-        </div>
-      </td> */}
-
       <td>{data.createdAt.split('T')[0]}</td>
     </tr>
   );
