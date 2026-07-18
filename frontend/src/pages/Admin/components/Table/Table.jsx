@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Table.module.css";
 import { Button } from "../../../../shared/components/Button/Button";
 import Icons from '../../../../assets/icons'
+import {status} from '../../../../assets/variables'
 
 export default function Table({
   data = null,
@@ -22,13 +23,13 @@ export default function Table({
   // ---- single-selection state (radio behaviour) ------------------------
   // Only ONE row can be active at a time, so we store a single id (or null)
   // instead of a Set. Selecting a new row simply overwrites the old value.
+  const [paginationView, setPaginationView] = useState([1])
   const [selectedId, setSelectedId] = useState(null);
   const selectId = (id) => setSelectedId(id);
   // -----------------------------------------------------------------------
 
   function onPrevious() {
     if (pagination.currentPage <= 1) return;
-
     onPageChange(pagination.currentPage - 1);
   }
 
@@ -38,18 +39,37 @@ export default function Table({
     onPageChange(pagination.currentPage + 1);
   }
 
+  function getView(){
+    // console.log(paginationView)
+    if (pagination.totalPages === 1){
+      setPaginationView([1])
+    }else if(pagination.currentPage == pagination.totalPages && pagination.totalPages > 1){
+      setPaginationView([pagination.currentPage-1,pagination.currentPage])
+    }
+    else{
+      setPaginationView([pagination.currentPage,pagination.currentPage+1])
+    }
+  }
   
+   useEffect(() => {
+        const controller = new AbortController();
+        getView();
+        return () => controller.abort();
+    }, [meta.totalRecords]);
+
   return (
     <div className={styles.container}>
       <div className={styles.tableScroll}>
         <table className={styles.table}>
           <thead className={styles.tableHead}>
             <tr>
+              <th></th>
               {headers.map((header) => (
                 <th
                   key={header}
                   className={styles.tableHeadItem}
                 >
+                  
                   {header}
                 </th>
               ))}
@@ -94,7 +114,7 @@ export default function Table({
             {"< "}Previous
           </Button>
 
-          {Array.from(
+          {/* {Array.from(
             { length: pagination.totalPages },
             (_, i) => i + 1
           ).map((page) => (
@@ -108,10 +128,25 @@ export default function Table({
               className={styles.actionBtn}
               onClick={() => onPageChange(page)}
             >
+              {pagination.currentPage}
+            </Button>
+          ))} */}
+          {
+            paginationView?.map((page)=>(
+              <Button
+              key={page}
+              type={
+                page === pagination.currentPage
+                  ? "primary"
+                  : "outline"
+              }
+              className={styles.actionBtn}
+              onClick={() => onPageChange(page)}
+            >
               {page}
             </Button>
-          ))}
-
+            ))
+          }
           <Button
             type="outline"
             className={styles.actionBtn}
@@ -128,18 +163,35 @@ export default function Table({
   );
 }
 
-export function TourItem({ data }) {
+export function TourItem({ data, selected, onSelect}) {
   return (
-    <tr className={styles.item}>
-      {/* <td>{data.id}</td> */}
-      <td>{data.title}</td>
+    <tr
+      className={`${styles.item} ${selected ? styles.selectedRow : ""}`}
+      onClick={onSelect}>
+      <td>
+        <input
+          type="radio"
+          name="account-row"
+          checked={selected}
+          onChange={(e) => {
+            // Prevent the radio click from also bubbling to the row handler.
+            e.stopPropagation();
+            onSelect();
+          }}
+        />
+      </td>
+      <td>
+        <div className={styles.containerAccount}>
+          <div className={styles.avatar}>
+            {data.avatar? 
+              <img className={styles.avatarImg} src={data.avatar} /> 
+              : 
+              <p>{data.title.split(" ").map(word => word[0]).join("")}</p>}
+          </div>
+          <p>{data.title}</p>
+        </div>
+      </td>
       <td>{data.location}</td>
-      {/* <td>{data.bookings}</td>
-      <td>${data.revenue}</td>
-      <td>{data.convRate}%</td> */}
-
-      
-
       <td>
         <div
           className={styles.status}
@@ -180,42 +232,17 @@ export function AccountItem({ data, selected, onSelect }) {
         />
       </td>
       <td>
-       <div className={styles.containerAvatar}>
-        {data.avatar? 
-          <img className={styles.avatar} src={data.avatar} /> 
-          : 
-          <p>{data.fullName.split(" ").map(word => word[0]).join("")}</p>}
+        <div className={styles.containerAccount}>
+          <div className={styles.avatar}>
+            {data.avatar? 
+              <img className={styles.avatarImg} src={data.avatar} /> 
+              : 
+              <p>{data.fullName.split(" ").map(word => word[0]).join("")}</p>}
+          </div>
+          <p>{data.fullName}</p>
         </div>
       </td>
-      <td>
-        <div>
-          {data.fullName}
-        </div>
-      </td>
-
       <td>{data.email}</td>
-
-      {/* <td>
-        <div
-          className={styles.role}
-        >
-          {data.role}
-        </div>
-      </td> */}
-
-      {/* <td>
-        <div
-          className={styles.status}
-          style={{
-            // backgroundColor: status[data.status].back,
-            // color: status[data.status].text,
-            // border: `1px solid ${status[data.status].text}`,
-          }}
-        >
-          {data.verificationStatus}
-        </div>
-      </td> */}
-
       <td>{data.createdAt.split('T')[0]}</td>
     </tr>
   );

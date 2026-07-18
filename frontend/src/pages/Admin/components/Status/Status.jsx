@@ -18,7 +18,7 @@ export default function Status() {
   );
 }
 
-function Card({icon, iconColor,color, label, counter, tag}){
+export function Card({icon, iconColor,color, label, counter, tag}){
   const Icon = icon;
   return(<>
     <div className={styles.card}>

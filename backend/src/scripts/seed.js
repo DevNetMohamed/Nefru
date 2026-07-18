@@ -603,6 +603,7 @@ async function createBookings(trips, guideUsers, touristUsers) {
       const isPastFinal = ["completed", "no_show", "refunded"].includes(status);
       const isCancelled = ["cancelled", "refunded"].includes(status);
 
+
       return {
         trip: trip._id,
         tourist: touristUsers[touristIndex]._id,
@@ -636,12 +637,15 @@ async function createBookings(trips, guideUsers, touristUsers) {
   return Booking.create(bookingDocs);
 }
 
-async function createReviews(bookings, trips, guideUsers, touristUsers) {
+async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffset,hour, minute) {
   const reviewDocs = reviewSeedData.map((review, index) => {
     const booking = bookings[review.bookingIndex];
     const tripIndex = bookingSeedData[review.bookingIndex][1];
     const touristIndex = bookingSeedData[review.bookingIndex][0];
-
+    
+    const date = dateAt(dayOffset, hour, minute);
+    console.log(Date(bookings[review.bookingIndex]))
+    // console.log(date.getTime())
     return {
       booking: booking._id,
       trip: booking.trip,
@@ -657,7 +661,7 @@ async function createReviews(bookings, trips, guideUsers, touristUsers) {
         index % 3 === 0
           ? "Thank you for the thoughtful feedback. I am glad you enjoyed the experience."
           : "",
-      createdAt: new Date(bookings[review.bookingIndex].date.getTime() + DAY_MS),
+      // createdAt: new Date(bookings[review.bookingIndex],date.getTime() + DAY_MS),
     };
   });
 
@@ -719,7 +723,7 @@ async function createNotifications({ admin, guideUsers, touristUsers, trips, boo
           user: booking.tourist,
           type: "booking",
           title: "Booking confirmed",
-          message: `Your booking for ${trip.title} is confirmed for ${booking.date.toLocaleDateString("en-US")}.`,
+          message: `Your booking for ${trip.title} is confirmed for.`,
           isRead: index % 3 === 0,
           link: "/user/profile/bookings",
           entityType: "booking",

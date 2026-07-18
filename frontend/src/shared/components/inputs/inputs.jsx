@@ -28,6 +28,7 @@ export default function Input({
   onFocus,
 
   onBlur,
+  className
 }) {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -40,7 +41,7 @@ export default function Input({
   const inputName = name || id || generatedId;
 
   return (
-    <div className={style.input_icon_container}>
+    <div className={`${className} ${style.input_icon_container}`}>
       <label htmlFor={inputId} style={{ cursor: "pointer" }}>
         {title}
       </label>
