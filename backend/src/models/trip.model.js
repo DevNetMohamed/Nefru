@@ -85,7 +85,13 @@ const tripSchema = new mongoose.Schema(
     },
     schedule: {
       type: Object,
-      default: { dates: [], slots: [] },
+      default: { 
+        dates: [], 
+        slots: {
+        startTime: Date,
+        endTime: Date,
+        availableSpots: Number
+      } },
     },
     gallery: {
       type: [String],
