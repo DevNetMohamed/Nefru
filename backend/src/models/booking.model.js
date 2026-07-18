@@ -37,7 +37,7 @@ const bookingSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    date: {
+    Time_Slot: {
       type: Date,
       required: true,
       index: true,
@@ -132,6 +132,13 @@ const bookingSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    countPerson: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
+   
+
   },
   { timestamps: true },
 );
