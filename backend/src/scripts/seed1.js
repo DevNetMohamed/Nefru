@@ -12,7 +12,7 @@ import { Interaction } from "../models/interaction.model.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const PLATFORM_FEE_RATE = 0.12;
-const SEED_EMAIL_SUFFIX = "@nefru-seed.test";
+const SEED_EMAIL_SUFFIX = "@nefru.com";
 
 function dateAt(daysFromNow, hour = 9, minute = 0) {
   const date = new Date(Date.now() + daysFromNow * DAY_MS);
@@ -69,7 +69,7 @@ const guideSeedData = [
   },
   {
     fullName: "Mariam El-Sayed",
-    email: `mariam.guide${SEED_EMAIL_SUFFIX}`,
+    email: `mariamguide${SEED_EMAIL_SUFFIX}`,
     verificationStatus: "approved",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=47",
@@ -84,7 +84,7 @@ const guideSeedData = [
   },
   {
     fullName: "Omar Khalil",
-    email: `omar.guide${SEED_EMAIL_SUFFIX}`,
+    email: `omarguide${SEED_EMAIL_SUFFIX}`,
     verificationStatus: "approved",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=15",
@@ -99,7 +99,7 @@ const guideSeedData = [
   },
   {
     fullName: "Salma Nassar",
-    email: `salma.guide${SEED_EMAIL_SUFFIX}`,
+    email: `salmaguide${SEED_EMAIL_SUFFIX}`,
     verificationStatus: "pending",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=44",
@@ -114,7 +114,7 @@ const guideSeedData = [
   },
   {
     fullName: "Youssef Farouk",
-    email: `youssef.guide${SEED_EMAIL_SUFFIX}`,
+    email: `youssefguide${SEED_EMAIL_SUFFIX}`,
     verificationStatus: "approved",
     isActive: false,
     avatar: "https://i.pravatar.cc/300?img=11",

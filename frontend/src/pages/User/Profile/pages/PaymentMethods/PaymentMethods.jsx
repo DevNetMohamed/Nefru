@@ -40,7 +40,9 @@ export default function PaymentMethods() {
 
           {paymentMethods.length === 0 ? (
             <div className={styles.emptyState}>
-              <FiCreditCard />
+              <div className={styles.emptyStateIcon}>
+                <FiCreditCard />
+              </div>
               <h3>No payment methods yet</h3>
               <p>Your saved cards will appear here after you add a payment method.</p>
             </div>

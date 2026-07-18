@@ -236,8 +236,13 @@ export default function EditProfile() {
             type="submit"
             className={styles.primaryButton}
             disabled={isSubmitting}
+            aria-busy={isSubmitting}
           >
-            <FiSave />
+            {isSubmitting ? (
+              <span className={styles.loadingSpinner} aria-hidden="true" />
+            ) : (
+              <FiSave />
+            )}
             {isSubmitting ? "Saving..." : "Save Changes"}
           </button>
         </div>
