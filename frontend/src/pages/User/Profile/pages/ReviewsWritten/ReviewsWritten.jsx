@@ -69,7 +69,9 @@ export default function ReviewsWritten() {
       <section className={styles.card}>
         {filteredReviews.length === 0 ? (
           <div className={styles.emptyState}>
-            <FiStar />
+            <div className={styles.emptyStateIcon}>
+              <FiStar />
+            </div>
             <h3>No reviews yet</h3>
             <p>Your reviews will appear here after you complete a booking and share feedback.</p>
           </div>
