@@ -95,7 +95,9 @@ export default function MyBookings() {
       <section className={styles.card}>
         {filteredBookings.length === 0 ? (
           <div className={styles.emptyState}>
-            <FiCalendar />
+            <div className={styles.emptyStateIcon}>
+              <FiCalendar />
+            </div>
             <h3>No bookings yet</h3>
             <p>
               Your {activeTab} bookings will appear here once you book a tour through Nefru.
