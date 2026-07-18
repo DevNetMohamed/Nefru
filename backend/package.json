@@ -10,7 +10,6 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "seed": "node src/scripts/seed.js",
-    "seed:scenarios": "node src/scripts/seed1.js",
     "export:ml": "node src/scripts/export-ml-dataset.js"
   },
   "dependencies": {
