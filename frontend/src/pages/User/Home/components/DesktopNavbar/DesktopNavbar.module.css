@@ -216,3 +216,38 @@
 .logoutBtn:hover {
   background: #fee2e2;
 }
+.notificationButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #111;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+}
+
+.notificationButton:hover {
+  background: #f5f5f5;
+}
+
+.notificationBadge {
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #c9962f;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  border: 2px solid #ffffff;
+}

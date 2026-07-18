@@ -1,9 +1,10 @@
 .page {
   min-height: 100vh;
   background: #ffffff;
-  color: #00263b;
+  color: var(--color-primary);
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 .header {
@@ -45,12 +46,12 @@
   right: 0;
   top: 20px;
   height: 2px;
-  background: #e4e2e1;
+  background: var(--color-primary-mute);
 }
 
 .activeLine {
   right: 17%;
-  background: #00263b;
+  background: var(--color-primary);
 }
 
 .step {
@@ -58,7 +59,7 @@
   height: 48px;
   border-radius: 50%;
   background: #eae8e7;
-  border: 3px solid #e4e2e1;
+  border: 3px solid var(--color-primary-mute);
   color: #41474d;
   display: flex;
   align-items: center;
@@ -69,8 +70,8 @@
 }
 
 .activeStep {
-  background: #00263b;
-  border-color: #00263b;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #ffffff;
 }
 
@@ -108,7 +109,7 @@
   height: 56px;
   border: 0;
   border-radius: 8px;
-  background: #00263b;
+  background: var(--color-primary);
   color: #ffffff;
   font-size: 22px;
   font-weight: 700;

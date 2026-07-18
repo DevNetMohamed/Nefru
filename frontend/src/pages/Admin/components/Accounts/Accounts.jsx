@@ -2,28 +2,60 @@ import styles from './Accounts.module.css'
 import Table,{AccountItem} from '../Table/Table'
 import {Button }from '../../../../shared/components/Button/Button'
 import {Input }from '../../../../shared/components/Inputs/Inputs'
-import {useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import Icons from '../../.././../assets/icons'
 
+import {getAccount} from '../../api'
+
 export default function Accounts(){
-    const users = [
-        { name: "Ahmed Hassan", email: "ahmed.hassan@example.com", role: "admin", status: "active", joined: "2023-01-15" },
-        { name: "Sara Mohamed", email: "sara.mohamed@example.com", role: "tourist", status: "pending", joined: "2023-03-22" },
-        { name: "Omar Ali", email: "omar.ali@example.com", role: "guide", status: "active", joined: "2023-05-10" },
-        { name: "Mona Ibrahim", email: "mona.ibrahim@example.com", role: "tourist", status: "suspended", joined: "2023-07-18" },
-        { name: "Youssef Khaled", email: "youssef.khaled@example.com", role: "admin", status: "active", joined: "2023-09-05" },
-        { name: "Nour Abdelrahman", email: "nour.abdelrahman@example.com", role: "guide", status: "pending", joined: "2023-11-12" },
-        { name: "Karim Mostafa", email: "karim.mostafa@example.com", role: "tourist", status: "active", joined: "2024-02-08" },
-        { name: "Laila Samir", email: "laila.samir@example.com", role: "guide", status: "active", joined: "2024-04-25" },
-        { name: "Hassan Adel", email: "hassan.adel@example.com", role: "admin", status: "suspended", joined: "2024-06-14" },
-        { name: "Fatma Tarek", email: "fatma.tarek@example.com", role: "tourist", status: "pending", joined: "2024-08-30" }
-        ]
-    const [activeTab,setActiveTab] = useState("Tourists")
-    const tabs = [
-        {label:"Tourists"},
-        {label:"Guides"},
-        {label:"Admins"},
-    ]
+    const [accountTypes, setAccountTypes] = useState([])
+    
+    const [selectedAccount, setSelectedAccount] = useState();
+    const [accounts, setAccounts] = useState([]);
+
+    // the account currently selected in the table (feeds the detail card)
+    const [selectedRow, setSelectedRow] = useState(null);
+
+    // current page for server-side pagination
+    const [page, setPage] = useState(1);
+
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(true)
+
+
+    const loadUsers = useCallback(async (pageNum = 1) => {
+        try {
+            let data = {}
+            if (selectedAccount) {
+                data = await getAccount(selectedAccount, pageNum);
+            }else{
+                data = await getAccount("tourist", pageNum);
+                setSelectedAccount(data.meta.types[0])
+            }
+            if (!data.error) {
+                setAccounts(data)   
+                setAccountTypes(data.meta.types)
+            }
+        } catch (err) {
+            if (err.name === "AbortError") return;
+
+            setError(err.message || "Failed to load users.");
+        } finally {
+            setLoading(false);
+        }
+    }, [selectedAccount]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        loadUsers(page);
+        return () => controller.abort();
+    }, [loadUsers, page]);
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+        setSelectedRow(null); // clear the detail card when moving to another page
+    };
+
     return(
         <>
             <div className={styles.container}>
@@ -34,58 +66,74 @@ export default function Accounts(){
                 <div className={styles.body}>
                     <div className={styles.tabs}>
                         {
-                            tabs.map((item,index)=>(
+                            accountTypes?.map((item,index)=>(
+                                <div 
+                                className={styles.containerTab} 
+                                data-state={selectedAccount === item?"true":""}
+                                onClick={()=>{setSelectedAccount(item)}}
+                                key={index}>
                                 <Button 
-                                    type={activeTab === item.label?"primary":"normal"}
-                                    key={index}
-                                    onClick={()=>setActiveTab(item.label)}>
-                                        {item.label}
+                                    className={styles.tab}
+                                    >
+                                        {item}
                                 </Button>
+                                <p className={styles.count}>123</p>
+                                </div>
                             ))
                         }
                     </div>
                     <div className={styles.info}>
-                        <Table 
-                            data={users}
-                            headers={["NAME","EMAIL","ROLE","STATUS","JOINED"]}
-                            item={AccountItem}/>
+                        <Table
+                            data={accounts}
+                            item={AccountItem}
+                            onRowSelect={setSelectedRow}
+                            onPageChange={handlePageChange}
+                        />
                         <div className={styles.edit}>
-                            <div className={styles.section_1}>
-                                <Icons.User/>
-                                <p>Sarah Mahmoud</p>
-                            </div>
-                            <div className={styles.item}>
-                                <p>Email</p>
-                                <p>sarah.m@example.com</p>
-                            </div>
-                            <div className={styles.item}>
-                                <p>Phone</p>
-                                <p>+20 101 223 4455</p>
-                            </div>
-                            <div className={styles.item}>
-                                <p>Created at</p>
-                                <p>May 15, 2025</p>
-                            </div>
-                            <div className={styles.item}>
-                                <p>Joined at</p>
-                                <p>May 14, 2025</p>
-                            </div>
-                            <div className={styles.item}>
-                                <p>Type</p>
-                                <p className={styles.itemTag}>GUIDE</p>
-                            </div>
-                            <div className={styles.item}>
-                                <p>Status</p>
-                                <p className={styles.status}
-                                    style={{
-                                    color:"var(--color-active)",backgroundColor:"var(--color-active-mute)"
-                                    }}>Pending</p>
-                            </div>
-                            
-                            <div className={styles.actions}>
-                                <Button icon={<Icons.CheckCircle/>} type="primary">Approve</Button>
-                                <Button icon={<Icons.circleWrong/>} type="normal">Suspend</Button>
-                            </div>
+                            {selectedRow ? (
+                                <>
+                                    <div className={styles.section_1}>
+                                        <div className={styles.containerAvatar}>
+                                        
+                                        {selectedRow.avatar? 
+                                            <img className={styles.avatar} src={selectedRow.avatar} /> 
+                                            : 
+                                            <p>{selectedRow.fullName.split(" ").map(word => word[0]).join("")}</p>
+                                        }</div>
+                                        <p>{selectedRow.fullName}</p>
+                                    </div>
+                                    <div className={styles.item}>
+                                        <p>Email</p>
+                                        <p>{selectedRow.email}</p>
+                                    </div>
+                                    <div className={styles.item}>
+                                        <p>Phone</p>
+                                        <p>{selectedRow.phone ?? "—"}</p>
+                                    </div>
+                                    <div className={styles.item}>
+                                        <p>Created at</p>
+                                        <p>{selectedRow.createdAt?.split('T')[0] ?? "—"}</p>
+                                    </div>
+                                    <div className={styles.item}>
+                                        <p>Type</p>
+                                        <p className={styles.itemTag}>{selectedRow.role ?? "—"}</p>
+                                    </div>
+                                    <div className={styles.item}>
+                                        <p>Status</p>
+                                        <p className={styles.status}
+                                            style={{
+                                            color:"var(--color-active)",backgroundColor:"var(--color-active-mute)"
+                                            }}>{selectedRow.verificationStatus ?? "—"}</p>
+                                    </div>
+
+                                    <div className={styles.actions}>
+                                        <Button icon={<Icons.CheckCircle/>} type="primary">Approve</Button>
+                                        <Button icon={<Icons.circleWrong/>} type="normal">Suspend</Button>
+                                    </div>
+                                </>
+                            ) : (
+                                <p className={styles.emptyHint}>Select an account to see its details.</p>
+                            )}
                         </div>
                     </div>
 
@@ -94,4 +142,3 @@ export default function Accounts(){
         </>
     )
 }
-

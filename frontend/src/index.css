@@ -2,7 +2,7 @@
 
 :root {
   --color-primary: #003D5B;
-  --color-primary-mute: #EFF4FF;
+  --color-primary-mute: #F4F5F8;
   --color-secondary: #EDAE49;
   --color-secondary-mute: #FFF8E7;
   --color-tertiary:#9333EA;
@@ -20,6 +20,7 @@
   --color-primary-dark: #001A33;
 
   --color-bg: #ffffff;
+
   --color-card: rgba(255, 255, 255, 0.92);
   --color-input-bg: #ffffff;
 
@@ -55,7 +56,8 @@ body {
   background-color: var(--color-bg);
   font-family: "Poppins", sans-serif;
   color: var(--color-text);
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 p,

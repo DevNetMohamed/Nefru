@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 import { Guide } from "../models/guide.model.js";
 import { Trip } from "../models/trip.model.js";
 
-const GUIDE_USER_FIELDS =
-  "fullName avatar verificationStatus isActive";
+const GUIDE_USER_FIELDS = "fullName avatar verificationStatus isActive";
 
 function toGuideResponse(guide, tours) {
   const user = guide.user;
@@ -13,6 +12,7 @@ function toGuideResponse(guide, tours) {
     name: user.fullName,
     profileImage: user.avatar,
     heroImage: guide.heroImage,
+    title: guide.title,
     headline: guide.headline,
     location: guide.location,
     verified: user.verificationStatus === "approved",
@@ -44,9 +44,7 @@ function toGuideResponse(guide, tours) {
 }
 
 async function getGuideResponse(guideQuery) {
-  const guide = await guideQuery
-    .populate("user", GUIDE_USER_FIELDS)
-    .lean();
+  const guide = await guideQuery.populate("user", GUIDE_USER_FIELDS).lean();
 
   if (!guide?.user) return null;
 

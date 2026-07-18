@@ -1,6 +1,10 @@
+:root{
+  --admin-primary:#0D1C2F;
+  --admin-secondary:#B59441;
+  --admin-border:#D0C5B2
+}
 .dashboard {
   display: flex;
-  background: #f8fafc;
   height:100vh;
 }
 .sidebar{
@@ -20,4 +24,10 @@
   display:flex;
   align-items:center;
   justify-content:space-between;
+}
+.page{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
 }

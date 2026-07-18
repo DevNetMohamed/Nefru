@@ -12,17 +12,20 @@ import {
   FaUtensils,
   FaWifi,
 } from "react-icons/fa6";
+import { useLocation, useNavigate } from "react-router-dom";
+import { apiRequest } from "../../../services/api";
 
 function TourMedia({ mediaData = {}, tourId, onBack }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const tripId = tourId || location.state?.tripId;
+
   const [coverPhoto, setCoverPhoto] = useState(null);
   const [galleryPhotos, setGalleryPhotos] = useState([]);
-  const [highlights, setHighlights] = useState(
-    mediaData.highlights || ["", ""]
-  );
-  const [included, setIncluded] = useState(
-    mediaData.included || ["Bottled Water", "Transportation"]
-  );
+  const [highlights, setHighlights] = useState(mediaData.highlights || ["", ""]);
+  const [included, setIncluded] = useState(mediaData.included || ["Bottled Water", "Transportation"]);
   const [customIncluded, setCustomIncluded] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const allIncluded = [
     { name: "Bottled Water", icon: <FaDroplet /> },
@@ -70,22 +73,57 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
   }
 
   async function submitForm() {
-    const formData = new FormData();
+    setLoading(true);
 
-    if (tourId) formData.append("tourId", tourId);
-    if (coverPhoto) formData.append("coverPhoto", coverPhoto);
+    try {
+      if (!tripId) {
+        navigate("/guide/tourapprove");
+        return;
+      }
 
-    galleryPhotos.forEach((file) => {
-      formData.append("galleryPhotos", file);
-    });
+      const formData = new FormData();
 
-    formData.append("highlights", JSON.stringify(highlights));
-    formData.append("included", JSON.stringify(included));
+      if (coverPhoto) {
+        formData.append("coverImage", coverPhoto);
+      }
 
-    await fetch("/api/tours/media", {
-      method: "POST",
-      body: formData,
-    });
+      galleryPhotos.forEach((file) => {
+        formData.append("galleryImages", file);
+      });
+
+      const uploadResponse = await fetch(`http://localhost:5000/api/trips/${tripId}/upload-media`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: formData,
+      });
+
+      const uploadData = await uploadResponse.json();
+
+      if (!uploadResponse.ok) {
+        throw new Error(uploadData.message || "Upload failed");
+      }
+
+      const payload = {
+        image: uploadData?.data?.coverImage || "",
+        gallery: uploadData?.data?.galleryImages || [],
+        highlights: highlights.filter(Boolean),
+        longDescription: highlights.filter(Boolean).join(" | "),
+      };
+
+      await apiRequest(`/trips/${tripId}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
+
+      navigate("/guide/tourapprove", { state: { tripId } });
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -234,7 +272,7 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
 
       <footer className={styles.footer}>
         <button type="button" onClick={submitForm}>
-          Submit For Review
+          {loading ? "Saving..." : "Submit For Review"}
         </button>
       </footer>
     </div>

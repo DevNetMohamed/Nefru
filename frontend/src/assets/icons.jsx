@@ -25,12 +25,19 @@ import { IoIosSearch } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 import { IoArrowBack, IoCloseCircleOutline } from "react-icons/io5";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { CiLocationOn } from "react-icons/ci";
+import { HiOutlineUsers } from "react-icons/hi2";
+import { IoAnalytics } from "react-icons/io5";
+import { AiOutlineSchedule } from "react-icons/ai";
+import { MdContentCopy } from "react-icons/md";
 /**
  * Centralized Icon Registry
  * Use these variables throughout the app for consistency.
  */
 const Icons = {
   Home: GoHome,
+  Layout:LuLayoutDashboard,
   Profile: HiOutlineUser,
   Trips: MdOutlineCardTravel,
   Saved: HiOutlineHeart,
@@ -40,12 +47,16 @@ const Icons = {
   Twitter: RiTwitterXFill,
   CheckCircle: FaCheckCircle,
   Eye: FaEye,
+  Analytics:IoAnalytics,
+  Book:AiOutlineSchedule,
+  Copy:MdContentCopy,
   EyeSlash: FaEyeSlash,
   EmailOutline: MdOutlineEmail,
   HourglassHalf: FaHourglassHalf,
   Check: FaCheckSquare,
   Email_fill: BsFillEnvelopeFill,
   User: CiUser,
+  Users:HiOutlineUsers,
   Lock: CiLock,
   Passport: GiPassport,
   Checkbox: IoMdCheckbox,
@@ -64,7 +75,7 @@ const Icons = {
   share: IoMdShare,
   chevronLeft:IoIosArrowBack,
   chevronRight:IoIosArrowForward ,
+  Location:CiLocationOn
   // Add more icons as needed for the tourist/guide platform
 };
-
 export default Icons;

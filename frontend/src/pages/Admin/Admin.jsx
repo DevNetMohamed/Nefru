@@ -7,9 +7,10 @@ import Navbar from './components/Navbar/Navbar'
 import {Outlet, Link} from 'react-router-dom'
 import { IoEyeOutline } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
-
+import {useState }from 'react'
 
 export default function Admin() {
+  const [data,setData] = useState()
   return (
     <div className={styles.dashboard}>
       <div className={styles.sidebar}>

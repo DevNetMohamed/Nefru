@@ -1,17 +1,20 @@
 import { Router } from "express";
 import * as BookController from "../controllers/Book.controller.js";
+import { protect } from "../middlewares/authMiddleware.js";
 const bookingRouter = Router();
 
-// Skeleton endpoints for Bookings
-bookingRouter.get("/", BookController.CreateBooking);
+bookingRouter.post("/create",
+    protect,
+    BookController.CreateBooking);
+bookingRouter.get("/", protect, BookController.getBookingByID);
+bookingRouter.get("/all-booking", protect, BookController.getAllBooking)
+bookingRouter.patch("/:Book_id", protect, BookController.updateBooking)
+bookingRouter.delete("/:Book_id", protect, BookController.deleteBooking)
+bookingRouter.patch(
+    "/cancel/:Book_id",
+    protect,
+    BookController.cancelBooking
+);
 
-// bookingRouter.post(
-//   "/",
-//   asyncHandler(async (req, res) => {
-//     res
-//       .status(201)
-//       .json({ success: true, message: "Booking created (skeleton)" });
-//   }),
-// );
 
 export default bookingRouter;

@@ -4,16 +4,52 @@ import Status from '../Status/Status'
 import Table, {TourItem} from '../Table/Table'
 import {LineChart} from '../Status/Status'
 import Icons from '../../../../assets/icons'
+import {useEffect, useState, useCallback} from 'react'
+
+import {getAccount, getTrips} from '../../api'
 
 export default function DashboardStatus(){
-    const tours = [
-        { id: 1, tour: "Cairo Tour", bookings: 245, revenue: 12500, convRate: "8.4", rating: 4.8, status: "active" },
-        { id: 2, tour: "Luxor Escape", bookings: 189, revenue: 9800, convRate: "7.2", rating: 4.7, status: "active" },
-        { id: 3, tour: "Nile Cruise", bookings: 320, revenue: 18200, convRate: "10.1", rating: 4.9, status: "suspended" },
-        { id: 4, tour: "Desert Safari", bookings: 98, revenue: 4300, convRate: "5.8", rating: 4.5, status: "pending" },
-        { id: 5, tour: "Alex Day Trip", bookings: 156, revenue: 7600, convRate: "6.9", rating: 4.6, status: "active" },
-        { id: 6, tour: "Siwa Adventure", bookings: 87, revenue: 5100, convRate: "4.9", rating: 4.4, status: "suspended" }
-    ];
+    // const tours = [
+    //     { id: 1, tour: "Cairo Tour", bookings: 245, revenue: 12500, convRate: "8.4", rating: 4.8, status: "active" },
+    //     { id: 2, tour: "Luxor Escape", bookings: 189, revenue: 9800, convRate: "7.2", rating: 4.7, status: "active" },
+    //     { id: 3, tour: "Nile Cruise", bookings: 320, revenue: 18200, convRate: "10.1", rating: 4.9, status: "suspended" },
+    //     { id: 4, tour: "Desert Safari", bookings: 98, revenue: 4300, convRate: "5.8", rating: 4.5, status: "pending" },
+    //     { id: 5, tour: "Alex Day Trip", bookings: 156, revenue: 7600, convRate: "6.9", rating: 4.6, status: "active" },
+    //     { id: 6, tour: "Siwa Adventure", bookings: 87, revenue: 5100, convRate: "4.9", rating: 4.4, status: "suspended" }
+    // ];
+
+
+    const [tours, setTrips] = useState([]);
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(true)
+
+    const loadTrips = useCallback(async (pageNum = 1) => {
+        try {
+            const data = await getTrips("tours", pageNum);
+            if (!data.error) setTrips(data);
+
+        } catch (err) {
+            if (err.name === "AbortError") return;
+
+            setError(err.message || "Failed to load tours");
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        loadTrips(page);
+        return () => controller.abort();
+    }, [loadTrips, page]);
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+        setSelectedRow(null); // clear the detail card when moving to another page
+    };
+
     return(
         <>
         <div className={styles.container}>
@@ -33,18 +69,12 @@ export default function DashboardStatus(){
                 </div>
                 <div className={styles.section_2}>
                     <div className={styles.chart}>
-                        {/* <Table 
-                            data={
-                                tours.map((item,index)=>(
-                                    <TourItem key={index} data={item}/>
-                                ))}
-                            headers={['#','Tour',"BOOKINGS","REVENUE","CONVERSION RATE","RATING","STATUS"]}/> */}
-                        {/* <Table title="Top Performing Trips" data={tours} headers={['#','Tour',"BOOKINGS","REVENUE","CONVERSION RATE","RATING","STATUS"]}/> */}
-                        <Table 
+                        <Table
                             data={tours}
-                            headers={['#','Tour',"BOOKINGS","REVENUE","CONVERSION RATE","RATING","STATUS"]}
                             item={TourItem}
-                            />
+                            onRowSelect={setSelectedRow}
+                            onPageChange={handlePageChange}
+                        />
                     </div>
                     <List title="Recent System Logs"/>
                 </div>
