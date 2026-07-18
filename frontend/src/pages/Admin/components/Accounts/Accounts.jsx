@@ -9,8 +9,8 @@ import {getAccount} from '../../api'
 
 export default function Accounts(){
     const [accountTypes, setAccountTypes] = useState([])
-    const [selectedAccount, setSelectedAccount] = useState();
     
+    const [selectedAccount, setSelectedAccount] = useState();
     const [accounts, setAccounts] = useState([]);
 
     // the account currently selected in the table (feeds the detail card)
