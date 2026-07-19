@@ -75,7 +75,7 @@ export default function Table({
       </div>
 
       <div className={styles.footer}>
-        <p>showing {pagination.recordsCount} records of total {pagination.totalRecords}</p>
+        <p>showing page {pagination.currentPage} of {pagination.totalPages}</p>
 
         <div className={styles.action}>
           <Button

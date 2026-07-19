@@ -17,7 +17,7 @@ export default function Accounts(){
 
     // the account currently selected in the table (feeds the detail card)
     const [selectedRow, setSelectedRow] = useState(null);
-
+    const [recordsCount, setRecordsCount] = useState()
     // current page for server-side pagination
     const [page, setPage] = useState(1);
 
@@ -37,6 +37,7 @@ export default function Accounts(){
             if (!data.error) {
                 setAccounts(data)   
                 setAccountTypes(data.meta.types)
+                setRecordsCount(data.meta.totalRecords)
             }
         } catch (err) {
             if (err.name === "AbortError") return;
@@ -103,7 +104,7 @@ export default function Accounts(){
                                     >
                                         {item}
                                 </Button>
-                                <p className={styles.count}>123</p>
+                                {selectedAccount === item?<p className={styles.count}>{recordsCount}</p>:<></>}
                                 </div>
                             ))
                         }
