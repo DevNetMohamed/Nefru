@@ -4,7 +4,7 @@ import {Button }from '../../../../shared/components/Button/Button'
 import {Input }from '../../../../shared/components/Inputs/Inputs'
 import {useCallback, useEffect, useState} from 'react'
 import Icons from '../../../../assets/icons'
-import Form, {FormInput, FormSelect} from '../../components/Form/Form'
+import Form, {FormInput, FormSelect, FormAction} from '../../components/Form/Form'
 import { Card , LineChart } from '../../components/Status/Status'
 
 import {getAccount} from '../../api'
@@ -124,7 +124,8 @@ export default function Accounts(){
                                 <FormInput title="Email" placeholder="Enter Email"/>
                                 <FormInput title="Role" placeholder="Enter Role"/>
                                 <FormInput title="User Name" placeholder="Enter User Name"/>
-                                <FormSelect title="Verification" values={["Pending", "Approved", "Rejected"]}/>
+                                <FormAction title="Verification" placeholder=""/>
+                                {/* <FormSelect title="Verification" values={["Pending", "Approved", "Rejected"]}/> */}
                             </Form>
                         </div>
                     </div>

@@ -12,19 +12,16 @@ export default function Table({
 }) {
   const rows = data?.data ?? [];
   const meta = data?.meta ?? {};
-
   const headers = meta.headers ?? [];
   const pagination = {
     currentPage: meta.currentPage ?? 1,
     totalPages: meta.totalPages ?? 1,
     totalRecords: meta.totalRecords ?? 0,
+    pagingView:meta.pagingView ?? [1],
+    recordsCount:meta.recordsCount ?? 0
   };
-
-  // const [paginationView, setPaginationView] = useState([1])
-  // let paginationView = [1]
   const [selectedId, setSelectedId] = useState(null);
   const selectId = (id) => setSelectedId(id);
-  // -----------------------------------------------------------------------
 
   function onPrevious() {
     if (pagination.currentPage <= 1) return;
@@ -33,27 +30,8 @@ export default function Table({
 
   function onNext() {
     if (pagination.currentPage >= pagination.totalPages) return;
-
     onPageChange(pagination.currentPage + 1);
   }
-
-  const [paginationView, setPaginationView] = useState([1]);
-
-useEffect(() => {
-  if (pagination.totalPages <= 1) {
-    setPaginationView([1]);
-  } else if (pagination.currentPage === pagination.totalPages) {
-    setPaginationView([
-      pagination.currentPage - 1,
-      pagination.currentPage,
-    ]);
-  } else {
-    setPaginationView([
-      pagination.currentPage,
-      pagination.currentPage + 1,
-    ]);
-  }
-}, [pagination.currentPage, pagination.totalPages]);
   return (
     <div className={styles.container}>
       <div className={styles.tableScroll}>
@@ -66,7 +44,6 @@ useEffect(() => {
                   key={header}
                   className={styles.tableHeadItem}
                 >
-                  
                   {header}
                 </th>
               ))}
@@ -79,7 +56,6 @@ useEffect(() => {
                 <Item
                   key={row._id}
                   data={row}
-                  // Consumed by AccountItem; other items ignore these safely.
                   selected={selectedId === row._id}
                   onSelect={() => {
                     selectId(row._id);
@@ -99,7 +75,7 @@ useEffect(() => {
       </div>
 
       <div className={styles.footer}>
-        <p>Total records: {pagination.totalRecords}</p>
+        <p>showing {pagination.recordsCount} records of total {pagination.totalRecords}</p>
 
         <div className={styles.action}>
           <Button
@@ -110,26 +86,8 @@ useEffect(() => {
           >
             {"< "}Previous
           </Button>
-
-          {/* {Array.from(
-            { length: pagination.totalPages },
-            (_, i) => i + 1
-          ).map((page) => (
-            <Button
-              key={page}
-              type={
-                page === pagination.currentPage
-                  ? "primary"
-                  : "outline"
-              }
-              className={styles.actionBtn}
-              onClick={() => onPageChange(page)}
-            >
-              {pagination.currentPage}
-            </Button>
-          ))} */}
           {
-            paginationView?.map((page)=>(
+            pagination.pagingView?.map((page)=>(
               <Button
               key={page}
               type={

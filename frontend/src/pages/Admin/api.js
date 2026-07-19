@@ -2,7 +2,7 @@ import {apiRequest} from '../../services/api'
 
 export const getAccount = async (accountType="tourists",page=1) =>{
     try{
-        const data = await apiRequest(`/admin/accounts/${accountType}/${page}`)
+        const data = await apiRequest(`/admin/accounts?role=${accountType}&page=${page}`)
         return data
     }catch(error){
         return {

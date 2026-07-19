@@ -39,3 +39,32 @@
   padding:0 8px;
   cursor: pointer;
 }
+.actionContainer{
+  display: flex;
+  grid-row: 1;
+  gap:8px;
+  flex:1;
+  flex-shrink: 1;
+}
+.formAction{
+  font-weight: normal;
+  background-color: #ffffff00;
+  border: 1px solid var(--admin-border);
+  font-size: 18px;
+  padding: 5px;
+  gap:2;
+}
+.approve{
+  color:var(--color-active)
+}
+.approve:active{
+  color:white;
+  background-color:var(--color-active)
+}
+.reject{
+  color:var(--color-warning)
+}
+.reject:active{
+  color:white;
+  background-color:var(--color-warning)
+}
