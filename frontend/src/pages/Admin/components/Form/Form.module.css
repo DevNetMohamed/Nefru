@@ -5,8 +5,8 @@
   display: flex;
   flex-direction: column;
   gap:24px;
-  width: 20%;
-  min-width: 300px;
+  width: 100%;
+  height: 100%;
 }
 .title{
   font-size: 18px;

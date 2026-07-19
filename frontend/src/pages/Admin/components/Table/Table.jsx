@@ -20,10 +20,8 @@ export default function Table({
     totalRecords: meta.totalRecords ?? 0,
   };
 
-  // ---- single-selection state (radio behaviour) ------------------------
-  // Only ONE row can be active at a time, so we store a single id (or null)
-  // instead of a Set. Selecting a new row simply overwrites the old value.
-  const [paginationView, setPaginationView] = useState([1])
+  // const [paginationView, setPaginationView] = useState([1])
+  // let paginationView = [1]
   const [selectedId, setSelectedId] = useState(null);
   const selectId = (id) => setSelectedId(id);
   // -----------------------------------------------------------------------
@@ -39,24 +37,23 @@ export default function Table({
     onPageChange(pagination.currentPage + 1);
   }
 
-  function getView(){
-    // console.log(paginationView)
-    if (pagination.totalPages === 1){
-      setPaginationView([1])
-    }else if(pagination.currentPage == pagination.totalPages && pagination.totalPages > 1){
-      setPaginationView([pagination.currentPage-1,pagination.currentPage])
-    }
-    else{
-      setPaginationView([pagination.currentPage,pagination.currentPage+1])
-    }
-  }
-  
-   useEffect(() => {
-        const controller = new AbortController();
-        getView();
-        return () => controller.abort();
-    }, [meta.totalRecords]);
+  const [paginationView, setPaginationView] = useState([1]);
 
+useEffect(() => {
+  if (pagination.totalPages <= 1) {
+    setPaginationView([1]);
+  } else if (pagination.currentPage === pagination.totalPages) {
+    setPaginationView([
+      pagination.currentPage - 1,
+      pagination.currentPage,
+    ]);
+  } else {
+    setPaginationView([
+      pagination.currentPage,
+      pagination.currentPage + 1,
+    ]);
+  }
+}, [pagination.currentPage, pagination.totalPages]);
   return (
     <div className={styles.container}>
       <div className={styles.tableScroll}>
@@ -229,6 +226,7 @@ export function AccountItem({ data, selected, onSelect }) {
             e.stopPropagation();
             onSelect();
           }}
+          className={styles.radio}
         />
       </td>
       <td>

@@ -4,7 +4,6 @@
     gap:8px;
     width:100%;
     flex:1;
-    min-height:0;
 }
 .title{
     display:flex;
@@ -12,13 +11,37 @@
     flex-direction: column;
     justify-content:left
 }
+.status{
+    display: flex;
+    /* border:1px solid red; */
+    height: fit-content;
+    flex:1;
+    flex-direction: column;
+    gap:8px;
+}
+.cardContainer{
+    display:flex;
+    width:100%;
+    gap:8px;
+}
+.chart{
+    width:100%;
+    border:1px solid var(--admin-border);
+    border-radius: var(--border-radius);
+    padding:10px;
+    box-sizing: border-box;
+    background-color: var(--color-primary-mute);
+    height:100%;
+}
+.statusCard{
+    height:150px;
+}
 .body{
     display:flex;
     flex-direction:column;
     gap:8px;
     width:100%;
-    flex:1;
-    min-height:0;
+    height: 670px;
 }
 .tabs{
     display:flex;
@@ -58,18 +81,17 @@
     display:flex;
     gap:8px;
     flex:1;
-    min-height:0;
+    width:100%;
+    /* border:1px solid red; */
 }
-
-.edit{
-    border:1px solid var(--admin-border);
-    display:flex;
-    flex-direction:column;
-    padding:10px;
-    border-radius:var(--border-radius);
-    background-color:white;
-    gap:12px;
-    align-self:flex-start;
+.table{
+    width:100%;
+    max-width: 70%;
+}
+.form{
+    width:100%;
+    max-width: 30%;
+    height: 100%;
 }
 .section_1{
     display:flex;
@@ -114,14 +136,7 @@
     height:30px;
     border-radius:var(--border-radius);
 }
-.status{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0 10px;
-    height:30px;
-    border-radius:var(--border-radius);
-}
+
 .actions{
     display:flex;
     gap:8px;

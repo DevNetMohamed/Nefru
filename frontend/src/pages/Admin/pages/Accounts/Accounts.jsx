@@ -5,7 +5,7 @@ import {Input }from '../../../../shared/components/Inputs/Inputs'
 import {useCallback, useEffect, useState} from 'react'
 import Icons from '../../../../assets/icons'
 import Form, {FormInput, FormSelect} from '../../components/Form/Form'
-import { Card } from '../../components/Status/Status'
+import { Card , LineChart } from '../../components/Status/Status'
 
 import {getAccount} from '../../api'
 
@@ -67,7 +67,23 @@ export default function Accounts(){
                 </div>
                     
                 <div className={styles.status}>
-
+                    <div className={styles.cardContainer}>
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
+                    </div>
+                    <div className={styles.chart}>
+                        
+                        <LineChart 
+                        // x={}
+                        points={[1,2,5,5.7,2,3.4]}
+                        max={10}
+                        step={2}
+                        lineColor={"#edae49"}
+                        pointColor={"#edae49"}
+                        />
+                    </div>
                 </div>
                 <div className={styles.body}>
                     <div className={styles.tabs}>
@@ -76,7 +92,11 @@ export default function Accounts(){
                                 <div 
                                 className={styles.containerTab} 
                                 data-state={selectedAccount === item?"true":""}
-                                onClick={()=>{setSelectedAccount(item)}}
+                                onClick={() => {
+                                    setSelectedAccount(item);
+                                    setPage(1);
+                                    setSelectedRow(null);
+                                }}
                                 key={index}>
                                 <Button 
                                     className={styles.tab}
@@ -89,19 +109,24 @@ export default function Accounts(){
                         }
                     </div>
                     <div className={styles.info}>
-                        <Table
-                            data={accounts}
-                            item={AccountItem}
-                            onRowSelect={setSelectedRow}
-                            onPageChange={handlePageChange}
-                        />
-                        <Form>
-                            <FormInput title="User Name" placeholder="Enter User Name"/>
-                            <FormInput title="Email" placeholder="Enter Email"/>
-                            <FormInput title="Role" placeholder="Enter Role"/>
-                            <FormInput title="User Name" placeholder="Enter User Name"/>
-                            <FormSelect title="Verification" values={["Pending", "Approved", "Rejected"]}/>
-                        </Form>
+                        <div className={styles.table}>
+                            <Table
+                                data={accounts}
+                                item={AccountItem}
+                                onRowSelect={setSelectedRow}
+                                onPageChange={handlePageChange}
+                                />
+                        </div>
+                        <div className={styles.form}>
+
+                            <Form>
+                                <FormInput title="User Name" placeholder="Enter User Name"/>
+                                <FormInput title="Email" placeholder="Enter Email"/>
+                                <FormInput title="Role" placeholder="Enter Role"/>
+                                <FormInput title="User Name" placeholder="Enter User Name"/>
+                                <FormSelect title="Verification" values={["Pending", "Approved", "Rejected"]}/>
+                            </Form>
+                        </div>
                     </div>
                 </div>
             </div>
