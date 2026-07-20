@@ -9,7 +9,11 @@ import {
 import NotificationItem from "./NotificationItem";
 import styles from "./NotificationPopover.module.css";
 
-export default function NotificationPopover({ onClose }) {
+export default function NotificationPopover({
+  onClose,
+  viewAllTo = "/user/notifications",
+  resolveLink,
+}) {
   const dispatch = useDispatch();
 
   const notifications = useSelector(
@@ -63,19 +67,25 @@ export default function NotificationPopover({ onClose }) {
             <p>You’ll see booking updates and account alerts here.</p>
           </div>
         ) : (
-          latestNotifications.map((notification) => (
-            <NotificationItem
-              key={notification.id}
-              notification={notification}
-              compact
-              onRead={handleRead}
-            />
-          ))
+          latestNotifications.map((notification) => {
+            const resolvedNotification = resolveLink
+              ? { ...notification, link: resolveLink(notification) }
+              : notification;
+
+            return (
+              <NotificationItem
+                key={notification.id}
+                notification={resolvedNotification}
+                compact
+                onRead={handleRead}
+              />
+            );
+          })
         )}
       </div>
 
       <footer className={styles.footer}>
-        <Link to="/user/notifications" onClick={onClose}>
+        <Link to={viewAllTo} onClick={onClose}>
           View all notifications
         </Link>
       </footer>
