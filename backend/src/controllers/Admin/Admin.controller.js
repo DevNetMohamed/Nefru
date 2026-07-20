@@ -1,12 +1,30 @@
 ﻿import {User} from '../../models/user.model.js'
 import {Trip} from '../../models/trip.model.js'
 
+export const getAllUsers = async(req,res) =>{
+  try{
+    
+  }catch(error){}
+}
+
 export const getAccountsAll = async (req, res) => {
   try {
     const {role,page} = req.params
     const LIMIT = 10;
     const SKIP = (page-1)*LIMIT
-    const [users] = await Promise.all([
+
+    if(!role && !page){
+      const [users, total] = await Promise.all([
+        User.find({role:"tourist"})
+        .skip(SKIP)
+        .limit(LIMIT)
+        .sort({createdAt:-1}),
+        User.countDocuments({role:"tourist"}),
+        User.countDocuments({role:"guide"}),
+        User.countDocuments({role:"admin"})
+      ])
+    }
+    const [users, total] = await Promise.all([
       User.find({role:role})
       .skip(SKIP)
       .limit(LIMIT)
@@ -22,7 +40,7 @@ export const getAccountsAll = async (req, res) => {
         }
       })
     }
-    const total = users.length
+    // const total = users.length
     return res.status(200).json({
       "success": true,
       "message": "Operation completed successfully",
@@ -31,7 +49,8 @@ export const getAccountsAll = async (req, res) => {
         totalRecords:total,
         totalPages:Math.ceil(total/LIMIT),
         currentPage:parseInt(page),
-        headers:["SELECT","IMAGE","NAME","EMAIL","JOINED"]
+        headers:["USER","EMAIL","JOINED"],
+        types:["tourist","guide","admin"]
       }
     })
   } catch(error) {

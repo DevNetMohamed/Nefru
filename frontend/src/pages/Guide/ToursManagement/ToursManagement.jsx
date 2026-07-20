@@ -20,29 +20,28 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
   const [backendTours, setBackendTours] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const headerData = pageData || {
-    exploreText: "Explore",
-    title: "Discover Egypt",
-    notificationCount: 1,
-  };
+  const notificationCount = pageData?.notificationCount || 0;
 
-  const tours = Array.isArray(toursData) && toursData.length > 0 ? toursData : backendTours;
+  let tours = backendTours;
 
-  useEffect(() => {
-    async function loadTours() {
-      try {
-        const response = await apiRequest("/trips/guide/me");
-        setBackendTours(response?.data?.tours || []);
-      } catch (error) {
-        console.error(error);
-        setBackendTours([]);
-      } finally {
-        setLoading(false);
-      }
+if (Array.isArray(toursData) && toursData.length > 0) {
+  tours = toursData;
+}
+
+ useEffect(() => {
+  const loadTours = async () => {
+    try {
+      const response = await apiRequest("/trips/guide/me");
+      setBackendTours(response.data.tours);
+    } catch (error) {
+      console.log(error);
     }
 
-    loadTours();
-  }, []);
+    setLoading(false);
+  };
+
+  loadTours();
+}, []);
 
   const tabs = useMemo(() => {
     const allCount = tours.length;
@@ -97,14 +96,14 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
           </div>
 
           <div>
-            <p className={styles.smallText}>{headerData.exploreText}</p>
-            <h1 className={styles.topTitle}>{headerData.title}</h1>
+           <p className={styles.smallText}>Explore</p>
+           <h1 className={styles.topTitle}>Discover Egypt</h1>
           </div>
         </div>
 
         <button type="button" className={styles.roundButton}>
           <FaBell />
-          {headerData.notificationCount > 0 ? <span className={styles.dot} /> : null}
+         {notificationCount > 0 && <span className={styles.dot} />}
         </button>
       </header>
 
@@ -112,7 +111,7 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
         <section className={styles.hero}>
           <h2 className={styles.heroTitle}>My Tours</h2>
           <p className={styles.heroText}>
-            Manage your curated experiences and track their performance.
+            Create, manage, and track your tour experiences.
           </p>
 
           <button type="button" className={styles.createButton} onClick={handleCreateTour}>
@@ -181,7 +180,7 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
         )}
       </main>
 
-      <footer className={styles.bottomNav}>
+      {/* <footer className={styles.bottomNav}>
         <button type="button" className={styles.navItem}>
           <FaHouse />
           <span>Home</span>
@@ -201,7 +200,9 @@ function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
           <FaEnvelope />
           <span>Inbox</span>
         </button>
-      </footer>
+      </footer> */}
+
+
     </div>
   );
 }

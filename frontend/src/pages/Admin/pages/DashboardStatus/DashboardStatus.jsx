@@ -1,8 +1,8 @@
 import styles from './DashboardStatus.module.css'
 
-import Status from '../Status/Status'
-import Table, {TourItem} from '../Table/Table'
-import {LineChart} from '../Status/Status'
+import Status from '../../components/Status/Status'
+import Table, {TourItem} from '../../components/Table/Table'
+import {LineChart} from '../../components/Status/Status'
 import Icons from '../../../../assets/icons'
 import {useEffect, useState, useCallback} from 'react'
 

@@ -1,4 +1,4 @@
-import {env} from "../config/env.js";
+import { env } from "../config/env.js";
 export const validate = (schema) => {
   return (req, res, next) => {
     const { error, value } = schema.validate(req.body, {

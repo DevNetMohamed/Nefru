@@ -33,16 +33,16 @@ import PaymentMethods from "../pages/User/Profile/pages/PaymentMethods/PaymentMe
 import ReviewsWritten from "../pages/User/Profile/pages/ReviewsWritten/ReviewsWritten";
 import HelpSupport from "../pages/User/Profile/pages/HelpSupport/HelpSupport";
 import Settings from "../pages/User/Settings/Settings";
-
+import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
 //Tourist Discover Page
 import Discover from "../pages/User/Discover/Discover";
 
 import Admin from "../pages/Admin/Admin";
-import DashboardStatus from "../pages/Admin/components/DashboardStatus/DashboardStatus";
-import Accounts from "../pages/Admin/components/Accounts/Accounts";
-import CMS from "../pages/Admin/components/CMS/CMS";
-import Analytics from "../pages/Admin/components/Analytics/Analytics";
-import Booking from "../pages/Admin/components/Booking/Booking";
+import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
+import Accounts from "../pages/Admin/pages/Accounts/Accounts";
+import CMS from "../pages/Admin/pages/CMS/CMS";
+import Analytics from "../pages/Admin/pages/Analytics/Analytics";
+import Booking from "../pages/Admin/pages/Booking/Booking";
 
 // Guide Pages
 import ToursManagement from "../pages/Guide/ToursManagement/ToursManagement";
@@ -105,6 +105,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "settings", element: <Settings /> },
+      {path: "notifications", element: <NotificationsPage />},
     ],
 
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT

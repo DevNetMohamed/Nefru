@@ -1,122 +1,14 @@
-.sidebar {
-  width: 330px;
-  flex-shrink: 0;
-  padding: 38px 26px;
-  background: #f4f5f8;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.summaryCard,
-.navCard {
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(7, 31, 63, 0.07);
-  border: 1px solid rgba(0, 26, 51, 0.06);
-}
-
-.summaryCard {
-  padding: 22px;
-}
-
-.avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: var(--color-primary-dark);
-  color: var(--color-secondary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 14px;
-}
-
-.summaryCard h2 {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 4px;
-  color: var(--color-primary-dark);
-}
-
-.summaryCard p {
-  font-size: 13px;
-  color: #64748b;
-  word-break: break-word;
-}
-
-.progressBlock {
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(0, 26, 51, 0.09);
-}
-
-.progressHeader {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  margin-bottom: 10px;
-}
-
-.progressHeader strong {
-  color: var(--color-primary-dark);
-}
-
-.progressTrack {
-  height: 8px;
-  border-radius: 999px;
-  background: #eef2f7;
-  overflow: hidden;
-}
-
-.progressTrack span {
-  display: block;
-  width: 60%;
-  height: 100%;
-  background: var(--color-secondary);
-  border-radius: inherit;
-}
-
-.navCard {
-  padding: 8px;
-}
-
-.navItem {
-  width: 100%;
-  min-height: 58px;
-  border: none;
-  border-radius: 12px;
-  background: transparent;
-  color: var(--color-primary-dark);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 0 18px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: left;
-  text-decoration: none;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-
-.navItem:not(:last-child) {
-  border-bottom: 1px solid rgba(0, 26, 51, 0.07);
-}
-
-.navItem svg {
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.navItem:hover,
-.navItemActive {
-  background: #fff8e7;
-  color: var(--color-primary-dark);
-}
-
-.navItemActive {
-  box-shadow: inset 4px 0 0 var(--color-primary-dark);
-}
+.sidebar { width: 100%; position: sticky; top: calc(80px + var(--space-5)); display: flex; flex-direction: column; gap: var(--space-4); }
+.summaryCard, .navCard { background: var(--color-surface); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-md); border: 1px solid var(--color-border-soft); }
+.summaryCard { padding: var(--space-5); }
+.avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--color-primary-dark); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: 800; margin-bottom: var(--space-3); }
+.summaryCard h2 { color: var(--color-primary-dark); font-size: var(--font-size-lg); font-weight: 800; line-height: 1.35; margin-bottom: var(--space-1); overflow-wrap: anywhere; }
+.summaryCard p { color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5; word-break: break-word; }
+.navCard { padding: var(--space-2); }
+.navItem { width: 100%; min-height: 54px; border: none; border-radius: var(--border-radius-md); background: transparent; color: var(--color-primary-dark); display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--space-4); font-size: var(--font-size-md); font-weight: 600; cursor: pointer; text-align: left; text-decoration: none; transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast); }
+.navItem:not(:last-child) { margin-bottom: var(--space-1); }
+.navItem svg { width: 21px; height: 21px; flex-shrink: 0; }
+.navItem:hover { background: var(--color-primary-mute); transform: translateX(2px); }
+.navItemActive { background: var(--color-secondary-mute); color: var(--color-primary-dark); box-shadow: inset 4px 0 0 var(--color-secondary); }
+.navItem:last-child { color: var(--color-danger); margin-top: var(--space-2); border-top: 1px solid var(--color-border-soft); border-radius: 0 0 var(--border-radius-md) var(--border-radius-md); }
+.navItem:last-child:hover { background: var(--color-danger-mute); }
