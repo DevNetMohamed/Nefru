@@ -3,7 +3,7 @@
 :root {
   --color-primary: #003d5b;
   --color-primary-dark: #001a33;
-  --color-primary-mute: #f4f7f9;
+  --color-primary-mute: #f4f5f8;
   --color-primary-soft: #e8f2f8;
   --color-secondary: #edae49;
   --color-secondary-dark: #9b6b19;
@@ -11,7 +11,7 @@
   --color-secondary-soft: #f7ead1;
   --color-secondary-hover: #ffefc9;
   --color-tertiary: #9333ea;
-  --color-tertiary-mute: #f3e8ff;
+  --color-tertiary-mute: #f4f5f8;
   --color-active: #059669;
   --color-active-mute: #dcfce7;
   --color-warning: #ba1a1a;
