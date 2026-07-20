@@ -9,7 +9,7 @@ import {
 router.get("/dashboard",getDashboard)
 router.get("/accounts/admin/users",getAllUsers)
 router.get("/accounts/admin/users/:id",getAccountsAll)
-router.get("/accounts/:role/:page",getAccountsAll)
+router.get("/accounts",getAccountsAll)
 
 router.get("/trips/:page",getTrips)
 

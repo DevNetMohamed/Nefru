@@ -8,16 +8,13 @@
     gap:8px;
     display:flex;
     justify-content:space-between;
-    min-height:0;
-    width:80%;
-    min-width:700px;
-    overflow:hidden;
+    overflow: hidden;
 }
 .tableScroll{
     flex:1;
     min-height:0;
     overflow:auto;
-    max-height: 550px;
+    /* max-height: 550px; */
 }
 .table{
     width:100%;
@@ -130,4 +127,13 @@
     min-height:auto;
     font-weight:500;
     font-size:14px;
+}
+.radio{
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-self: center;
+    accent-color: var(--color-primary);
 }

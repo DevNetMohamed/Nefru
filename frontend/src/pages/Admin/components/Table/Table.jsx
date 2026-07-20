@@ -12,21 +12,16 @@ export default function Table({
 }) {
   const rows = data?.data ?? [];
   const meta = data?.meta ?? {};
-
   const headers = meta.headers ?? [];
   const pagination = {
     currentPage: meta.currentPage ?? 1,
     totalPages: meta.totalPages ?? 1,
     totalRecords: meta.totalRecords ?? 0,
+    pagingView:meta.pagingView ?? [1],
+    recordsCount:meta.recordsCount ?? 0
   };
-
-  // ---- single-selection state (radio behaviour) ------------------------
-  // Only ONE row can be active at a time, so we store a single id (or null)
-  // instead of a Set. Selecting a new row simply overwrites the old value.
-  const [paginationView, setPaginationView] = useState([1])
   const [selectedId, setSelectedId] = useState(null);
   const selectId = (id) => setSelectedId(id);
-  // -----------------------------------------------------------------------
 
   function onPrevious() {
     if (pagination.currentPage <= 1) return;
@@ -35,28 +30,8 @@ export default function Table({
 
   function onNext() {
     if (pagination.currentPage >= pagination.totalPages) return;
-
     onPageChange(pagination.currentPage + 1);
   }
-
-  function getView(){
-    // console.log(paginationView)
-    if (pagination.totalPages === 1){
-      setPaginationView([1])
-    }else if(pagination.currentPage == pagination.totalPages && pagination.totalPages > 1){
-      setPaginationView([pagination.currentPage-1,pagination.currentPage])
-    }
-    else{
-      setPaginationView([pagination.currentPage,pagination.currentPage+1])
-    }
-  }
-  
-   useEffect(() => {
-        const controller = new AbortController();
-        getView();
-        return () => controller.abort();
-    }, [meta.totalRecords]);
-
   return (
     <div className={styles.container}>
       <div className={styles.tableScroll}>
@@ -69,7 +44,6 @@ export default function Table({
                   key={header}
                   className={styles.tableHeadItem}
                 >
-                  
                   {header}
                 </th>
               ))}
@@ -82,7 +56,6 @@ export default function Table({
                 <Item
                   key={row._id}
                   data={row}
-                  // Consumed by AccountItem; other items ignore these safely.
                   selected={selectedId === row._id}
                   onSelect={() => {
                     selectId(row._id);
@@ -102,7 +75,7 @@ export default function Table({
       </div>
 
       <div className={styles.footer}>
-        <p>Total records: {pagination.totalRecords}</p>
+        <p>showing page {pagination.currentPage} of {pagination.totalPages}</p>
 
         <div className={styles.action}>
           <Button
@@ -113,26 +86,8 @@ export default function Table({
           >
             {"< "}Previous
           </Button>
-
-          {/* {Array.from(
-            { length: pagination.totalPages },
-            (_, i) => i + 1
-          ).map((page) => (
-            <Button
-              key={page}
-              type={
-                page === pagination.currentPage
-                  ? "primary"
-                  : "outline"
-              }
-              className={styles.actionBtn}
-              onClick={() => onPageChange(page)}
-            >
-              {pagination.currentPage}
-            </Button>
-          ))} */}
           {
-            paginationView?.map((page)=>(
+            pagination.pagingView?.map((page)=>(
               <Button
               key={page}
               type={
@@ -229,6 +184,7 @@ export function AccountItem({ data, selected, onSelect }) {
             e.stopPropagation();
             onSelect();
           }}
+          className={styles.radio}
         />
       </td>
       <td>
