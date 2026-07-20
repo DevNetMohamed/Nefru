@@ -30,7 +30,18 @@ export function FormSelect({title, values}){
         <p>value</p>
         <Icons.chevronDown/>
       </div>
-      {/* <input className={styles.input} placeholder={placeholder}/> */}
+    </div>
+  )
+}
+
+export function FormAction({title}){
+return (
+  <div className={styles.inputContainer}>
+      <p>{title}</p>
+      <div className={styles.actionContainer}>
+        <Button className={`${styles.formAction} ${styles.approve}`}><Icons.circleCheck/> Approve</Button>
+        <Button className={`${styles.formAction} ${styles.reject}`}><Icons.circleWrong/> Reject</Button>
+      </div>
     </div>
   )
 }
