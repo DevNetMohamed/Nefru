@@ -39,9 +39,15 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
     setCoverPhoto(e.target.files[0]);
   }
 
-  function chooseGallery(e) {
-    const files = Array.from(e.target.files);
-    setGalleryPhotos(files.slice(0, 6));
+  function chooseGallery(index, e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setGalleryPhotos((prev) => {
+      const next = [...prev];
+      next[index] = file;
+      return next.slice(0, 6);
+    });
   }
 
   function changeHighlight(index, value) {
@@ -87,7 +93,7 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
         formData.append("coverImage", coverPhoto);
       }
 
-      galleryPhotos.forEach((file) => {
+      galleryPhotos.filter(Boolean).forEach((file) => {
         formData.append("galleryImages", file);
       });
 
@@ -175,31 +181,30 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
         <section className={styles.section}>
           <div className={styles.sectionTitleRow}>
             <h2>Gallery Photos</h2>
-            <span>{galleryPhotos.length} / 6 uploaded</span>
+            <span>{galleryPhotos.filter(Boolean).length} / 6 uploaded</span>
           </div>
 
-          <label className={styles.galleryGrid}>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={chooseGallery}
-            />
-
+          <div className={styles.galleryGrid}>
             {Array.from({ length: 6 }).map((_, index) => {
               const file = galleryPhotos[index];
 
               return (
-                <div key={index} className={styles.galleryItem}>
+                <label key={index} className={styles.galleryItem}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => chooseGallery(index, e)}
+                  />
+
                   {file ? (
                     <img src={URL.createObjectURL(file)} alt="Gallery preview" />
                   ) : (
                     <FaPlus />
                   )}
-                </div>
+                </label>
               );
             })}
-          </label>
+          </div>
         </section>
 
         <div className={styles.divider}></div>

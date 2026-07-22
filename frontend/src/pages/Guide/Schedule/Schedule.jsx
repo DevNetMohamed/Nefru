@@ -7,7 +7,7 @@ import {
   FaCalendarCheck,
   FaCircleInfo,
 } from "react-icons/fa6";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiRequest } from "../../../services/api";
 
@@ -16,8 +16,7 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
   const location = useLocation();
   const tripId = location.state?.tripId;
 
-  const initialData = scheduleData || {
-    selectedText: "Oct 8 - Oct 12",
+  const initialData = {
     days: [
       { day: 28, muted: true }, { day: 29, muted: true }, { day: 30, muted: true }, { day: 31, muted: true },
       { day: 1 }, { day: 2 }, { day: 3 },
@@ -27,26 +26,104 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
       { day: 25 }, { day: 26 }, { day: 27 }, { day: 28 },
     ],
     slots: [
-      { id: 1, startTime: "09:00AM", endTime: "01:00 PM", maxGuests: 12 },
-      { id: 2, startTime: "02:00 PM", endTime: "06:00 PM", maxGuests: 8 },
+      { id: 1, startTime: "09:00", endTime: "13:00", maxGuests: 12 },
+      { id: 2, startTime: "14:00", endTime: "18:00", maxGuests: 8 },
     ],
   };
 
-  const [days, setDays] = useState(initialData.days);
-  const [slots, setSlots] = useState(initialData.slots);
+  const scheduleDates = scheduleData?.dates ?? scheduleData?.schedule?.dates;
+  const scheduleSlots = scheduleData?.slots ?? scheduleData?.schedule?.slots;
+
+  function buildDays(selectedDates = []) {
+    return initialData.days.map((day) => ({
+      ...day,
+      selected: selectedDates?.includes(day.day) || day.selected || false,
+    }));
+  }
+
+  function normalizeTimeString(value) {
+    if (!value) return "";
+
+    const normalized = `${value}`.trim();
+    const amPmMatch = normalized.match(/^(\d{1,2}):(\d{2})\s*([AaPp][Mm])$/);
+
+    if (amPmMatch) {
+      let [_, hour, minute, period] = amPmMatch;
+      hour = Number(hour);
+      if (period.toUpperCase() === "PM" && hour < 12) hour += 12;
+      if (period.toUpperCase() === "AM" && hour === 12) hour = 0;
+      return `${hour.toString().padStart(2, "0")}:${minute}`;
+    }
+
+    const timeMatch = normalized.match(/^(\d{1,2}):(\d{2})$/);
+    if (timeMatch) {
+      const [_, hour, minute] = timeMatch;
+      return `${hour.padStart(2, "0")}:${minute}`;
+    }
+
+    return normalized;
+  }
+
+  function normalizeSlots(incomingSlots) {
+    if (!Array.isArray(incomingSlots) || incomingSlots.length === 0) {
+      return initialData.slots;
+    }
+
+    return incomingSlots.map((slot) => ({
+      id: slot.id ?? Date.now() + Math.random(),
+      startTime: normalizeTimeString(slot.startTime || "09:00"),
+      endTime: normalizeTimeString(slot.endTime || "13:00"),
+      maxGuests: slot.maxGuests || 1,
+    }));
+  }
+
+  const [days, setDays] = useState(() => buildDays(scheduleDates));
+  const [slots, setSlots] = useState(() => normalizeSlots(scheduleSlots));
   const [loading, setLoading] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(false);
+  const [fetchError, setFetchError] = useState("");
   const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const selectedDays = days.filter((day) => day.selected || day.active);
 
+  useEffect(() => {
+    async function loadSchedule() {
+      if (!tripId) return;
+
+      setLoadingInitial(true);
+      setFetchError("");
+
+      try {
+        const response = await apiRequest(`/trips/${tripId}`);
+        const schedule = response?.data?.schedule || { dates: [], slots: [] };
+
+        setDays(buildDays(schedule.dates));
+        setSlots(normalizeSlots(schedule.slots));
+      } catch (error) {
+        console.error(error);
+        setFetchError("Unable to load the saved schedule. Please try again.");
+      } finally {
+        setLoadingInitial(false);
+      }
+    }
+
+    loadSchedule();
+  }, [tripId]);
+
   function toggleDay(index) {
-    setDays((prev) => prev.map((day, dayIndex) => (dayIndex === index ? { ...day, selected: !day.selected } : day)));
+    setDays((prev) =>
+      prev.map((day, dayIndex) =>
+        dayIndex === index && !day.muted
+          ? { ...day, selected: !day.selected }
+          : day,
+      ),
+    );
   }
 
   function addSlot() {
     const newSlot = {
       id: Date.now(),
-      startTime: "09:00AM",
-      endTime: "01:00 PM",
+      startTime: "09:00",
+      endTime: "13:00",
       maxGuests: 12,
     };
 
@@ -54,12 +131,24 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
     if (onAddSlot) onAddSlot(newSlot);
   }
 
+  function removeSlot(id) {
+    setSlots((prev) => prev.filter((slot) => slot.id !== id));
+  }
+
   function updateSlot(id, field, value) {
-    setSlots((prev) => prev.map((slot) => (slot.id === id ? { ...slot, [field]: value } : slot)));
+    const nextValue = field === "startTime" || field === "endTime" ? normalizeTimeString(value) : value;
+
+    setSlots((prev) =>
+      prev.map((slot) =>
+        slot.id === id
+          ? { ...slot, [field]: nextValue }
+          : slot,
+      ),
+    );
   }
 
   function clearDates() {
-    setDays((prev) => prev.map((day) => ({ ...day, selected: false, active: false })));
+    setDays((prev) => prev.map((day) => ({ ...day, selected: false })));
     if (onClearDates) onClearDates();
   }
 
@@ -140,6 +229,7 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
                     item.selected ? styles.selectedDay : ""
                   } ${item.active ? styles.activeDay : ""}`}
                   onClick={() => toggleDay(index)}
+                  disabled={item.muted}
                 >
                   {item.day}
                 </button>
@@ -158,6 +248,9 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
                 Clear
               </button>
             </div>
+
+            {fetchError && <p className={styles.errorText}>{fetchError}</p>}
+
           </section>
 
           <section className={styles.card}>
@@ -175,7 +268,7 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
                     <label>
                       Start Time
                       <input
-                        type="text"
+                        type="time"
                         value={slot.startTime}
                         onChange={(event) => updateSlot(slot.id, "startTime", event.target.value)}
                       />
@@ -184,7 +277,7 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
                     <label>
                       End Time
                       <input
-                        type="text"
+                        type="time"
                         value={slot.endTime}
                         onChange={(event) => updateSlot(slot.id, "endTime", event.target.value)}
                       />
@@ -199,6 +292,14 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
                       <button type="button" onClick={() => updateSlot(slot.id, "maxGuests", slot.maxGuests + 1)}>+</button>
                     </div>
                   </div>
+
+                  <button
+                    type="button"
+                    className={styles.deleteSlotButton}
+                    onClick={() => removeSlot(slot.id)}
+                  >
+                    Delete Slot
+                  </button>
                 </div>
               ))}
             </div>
@@ -211,7 +312,7 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
               </p>
             </div>
 
-            <button type="button" className={styles.nextButton} onClick={handleNext}>
+            <button type="button" className={styles.nextButton} onClick={handleNext} disabled={loading || loadingInitial}>
               {loading ? "Saving..." : <>Next Step <FaArrowRight /></>}
             </button>
           </section>

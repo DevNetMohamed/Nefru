@@ -19,8 +19,15 @@ export default function ProtectedRoute({ allowedRoles }) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to={getHomePathByRole(user.role)} replace />;
+  const role = user?.role;
+
+  if (allowedRoles && !role) {
+    // If allowedRoles provided but role is missing, redirect to login as a safe fallback
+    return <Navigate to="/auth/login" replace />;
+  }
+
+  if (allowedRoles && role && !allowedRoles.includes(role)) {
+    return <Navigate to={getHomePathByRole(role)} replace />;
   }
 
   return <Outlet />;
