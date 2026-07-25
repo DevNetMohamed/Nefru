@@ -22,7 +22,7 @@ const filteredTrips = mockSearchData.popularTrips.filter((trip) =>
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>  
-            <DialogContent className="p-0 overflow-hidden">
+            <DialogContent className="p-0 overflow-hidden sm:max-w-4xl md:max-w-5xl lg:max-w-6xl w-[94vw]">
 
         <Command>
             <CommandInput
