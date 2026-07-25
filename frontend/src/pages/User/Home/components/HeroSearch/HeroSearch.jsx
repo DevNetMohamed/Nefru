@@ -7,9 +7,13 @@ import aswan from "../../../../../assets/images/hero/aswan.jpeg";
 import alexandria from "../../../../../assets/images/hero/alexandria.jpg";
 import { useSelector } from "react-redux";
 
+import SearchModal from "@/components/Search/SearchModal";
+
 const images = [cairo, luxor, aswan, alexandria];
 
 function HeroSearch() {
+
+  const [openSearch, setOpenSearch] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
@@ -36,8 +40,12 @@ function HeroSearch() {
         </h1>
 
         <div className={styles.searchBar}>
-          <input type="text" placeholder="Search tours, places, or guides..." />
-
+          <input
+            type="text"
+            placeholder="Search tours, places, or guides..."
+            readOnly
+            onClick={() => setOpenSearch(true)}
+          />
           <button>Find Available Tours</button>
         </div>
 
@@ -55,7 +63,14 @@ function HeroSearch() {
       <div className={styles.right}>
         <img src={images[currentImage]} alt="Egypt Destination" />
       </div>
+                  <SearchModal
+              open={openSearch}
+              onOpenChange={setOpenSearch}
+            />
+            
     </section>
+
+    
   );
 }
 

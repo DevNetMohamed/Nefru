@@ -1,32 +1,60 @@
 import styles from "./RecommendedTours.module.css";
 import { Heart, MapPin, Clock, Star } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const getImgSrc = (img) => {
+  if (!img) return "";
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:"))
+  ) {
+    return img;
+  }
+  if (typeof img !== "string") return img;
+  return `http://localhost:5000/uploads/${img}`;
+};
 
 function RecommendedTourCard({
+  _id,
   image,
   badge,
   title,
   location,
   duration,
   rating,
+  reviewsCount,
   guide,
   price,
   category,
-
 }) {
+  const navigate = useNavigate();
+  const [isSaved, setIsSaved] = useState(false);
+
   return (
     <div className={styles.card}>
       <div className={styles.imageContainer}>
-        <img
-        src={`http://localhost:5000/uploads/${image}`}
-              alt={title}
-          />
+        <img src={getImgSrc(image)} alt={title} />
 
         <span className={styles.badge}>
-          {category}
+          {category || badge || "Featured"}
         </span>
 
-        <button className={styles.favoriteBtn}>
-          <Heart size={16} />
+        <button
+          className={styles.favoriteBtn}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsSaved(!isSaved);
+          }}
+          aria-label="Save tour"
+        >
+          <Heart
+            size={16}
+            fill={isSaved ? "#ef4444" : "none"}
+            color={isSaved ? "#ef4444" : "#4b5563"}
+          />
         </button>
       </div>
 
@@ -34,32 +62,42 @@ function RecommendedTourCard({
         <h3>{title}</h3>
 
         <div className={styles.meta}>
-          <span>
-            <MapPin size={14} />
-            {location}
-          </span>
+          {location && (
+            <span>
+              <MapPin size={14} />
+              {location}
+            </span>
+          )}
 
-          <span>
-            <Clock size={14} />
-            {duration}
-          </span>
+          {duration && (
+            <span>
+              <Clock size={14} />
+              {duration}
+            </span>
+          )}
         </div>
 
         <div className={styles.rating}>
-          <Star size={14}/>
-          New Tour
+          <Star size={14} fill="#f59e0b" color="#f59e0b" />
+          <span>
+            {rating || "4.8"}{" "}
+            {reviewsCount ? `(${reviewsCount})` : ""}
+          </span>
         </div>
 
         <p className={styles.guide}>
-          {guide?.name || "Unknown Guide"}
+          Guide:{" "}
+          {typeof guide === "object"
+            ? guide?.name || "Local Expert"
+            : guide || "Local Expert"}
         </p>
 
         <div className={styles.footer}>
           <span>
-              From <strong>EGP {price}</strong>
+            From <strong>${price || 45}</strong>
           </span>
 
-          <button>
+          <button onClick={() => navigate("/user/discover")}>
             View Tour
           </button>
         </div>
