@@ -45,6 +45,9 @@ const [featuredTrips, setFeaturedTrips] = useState([]);
   return (
     <div>
       <DesktopNavbar />
+      <h1 className="text-4xl font-bold text-red-500">
+    Tailwind Works
+</h1>
     <HeroSearch />
     <RecommendedTours trips={featuredTrips} />
     <AvailableToday />
