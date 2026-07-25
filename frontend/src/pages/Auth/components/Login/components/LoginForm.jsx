@@ -52,11 +52,16 @@ function LoginForm() {
         const role = response.data.user.role;
 
         if (role === "admin") {
-          navigate("/admin/overview");
+          navigate("/admin/overview", { replace: true });
           return;
         }
 
-        navigate("/user/home");
+        if (role === "guide") {
+          navigate("/guide/dashboard", { replace: true });
+          return;
+        }
+
+        navigate("/user/home", { replace: true });
       } catch (error) {
         setApiError(error.message || "Login failed. Please try again.");
       } finally {

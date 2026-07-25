@@ -18,10 +18,10 @@ export default function Status() {
   );
 }
 
-function Card({icon, iconColor,color, label, counter, tag}){
+export function Card({icon, iconColor,color, label, counter, tag, className}){
   const Icon = icon;
   return(<>
-    <div className={styles.card}>
+    <div className={`${className} ${styles.card}`}>
           <div className={styles.header}>
             <p className={styles.label}>{label}</p>
             <div className={styles.icon} style={{backgroundColor:color}}>
@@ -54,15 +54,15 @@ ChartJS.register(
   Legend
 );
 
-export function LineChart() {
+export function LineChart({x, y, points, max, step, lineColor, pointColor}) {
   const data = {
-    labels: ["May 12", "May 13", "May 14", "May 15", "May 16", "May 17", "May 18"],
+    labels: x || ["May 12", "May 13", "May 14", "May 15", "May 16", "May 17", "May 18"],
     datasets: [
       {
         label: "",
-        data: [120, 280, 200, 450],
-        borderColor: "#1FA37A",
-        backgroundColor:"#1FA37A",
+        data: points || [120, 280, 200, 450],
+        borderColor:lineColor|| "#a3681f",
+        backgroundColor:pointColor|| "#a32a1f",
         tension: 0.4,
         borderWidth: 3,
         pointRadius: 4,
@@ -106,10 +106,10 @@ export function LineChart() {
 
       y: {
         beginAtZero: true,
-        max: 2500,
+        max: max || 2500,
 
         ticks: {
-          stepSize: 500,
+          stepSize: step || 500,
           color: "#9CA3AF",
         },
 
@@ -121,15 +121,8 @@ export function LineChart() {
   };
 
   return (
-    <div className="bg-white border rounded-4 p-3 h-100">
-      <div className="mb-3">
-        <h3 >Revenue Overview</h3>
-
-        <p className="text-muted small">
-          Revenue through month in every week
-        </p>
-      </div>
-      <div style={{ height: "320px" }}>
+    <div>
+      <div className={styles.chart}>
         <Line data={data} options={options} />
       </div>
     </div>

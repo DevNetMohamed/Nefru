@@ -1,0 +1,17 @@
+.item { width: 100%; min-width: 0; display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border-soft); border-radius: var(--border-radius-lg); background: var(--color-surface); color: inherit; text-decoration: none; text-align: left; cursor: pointer; position: relative; transition: background-color var(--transition-base), border-color var(--transition-base), transform var(--transition-fast), box-shadow var(--transition-base); font: inherit; }
+.item:hover { background: var(--color-surface-soft); border-color: var(--color-border-strong); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+.item:focus-visible { outline: none; box-shadow: var(--shadow-focus), var(--shadow-sm); }
+.unread { background: var(--color-surface-accent); border-color: var(--color-secondary-border-strong); box-shadow: inset 3px 0 0 var(--color-secondary); }
+.compact { padding: var(--space-3); border-radius: var(--border-radius-md); }
+.iconBox { width: 42px; height: 42px; border-radius: var(--border-radius-md); background: var(--color-primary-mute); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.item[data-type="payment"] .iconBox { background: var(--color-active-mute); color: var(--color-success); }
+.item[data-type="support"] .iconBox { background: var(--color-tertiary-mute); color: var(--color-tertiary); }
+.item[data-type="account"] .iconBox { background: var(--color-primary-soft); color: var(--color-primary); }
+.unread .iconBox { background: var(--color-secondary-soft); color: var(--color-secondary-dark); }
+.content { flex: 1; min-width: 0; }
+.titleRow { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-1); }
+.titleRow h3 { min-width: 0; color: var(--color-primary-dark); font-size: var(--font-size-md); font-weight: 800; line-height: 1.4; overflow-wrap: anywhere; }
+.content p { margin: 0 0 var(--space-2); color: var(--color-text-body); font-size: var(--font-size-sm); line-height: 1.55; overflow-wrap: anywhere; }
+.content time { display: block; color: var(--color-text-subtle); font-size: var(--font-size-xs); line-height: 1.4; }
+.dot { width: 8px; height: 8px; border-radius: var(--border-radius-pill); background: var(--color-secondary); flex: 0 0 auto; }
+@media (max-width: 575px) { .item { gap: var(--space-3); padding: 14px 13px; border-radius: var(--border-radius-md); } .iconBox { width: 40px; height: 40px; } .titleRow h3 { font-size: 13.5px; } .content p { font-size: 12.5px; } }
