@@ -9,16 +9,6 @@ import {useEffect, useState, useCallback} from 'react'
 import {getAccount, getTrips} from '../../api'
 
 export default function DashboardStatus(){
-    // const tours = [
-    //     { id: 1, tour: "Cairo Tour", bookings: 245, revenue: 12500, convRate: "8.4", rating: 4.8, status: "active" },
-    //     { id: 2, tour: "Luxor Escape", bookings: 189, revenue: 9800, convRate: "7.2", rating: 4.7, status: "active" },
-    //     { id: 3, tour: "Nile Cruise", bookings: 320, revenue: 18200, convRate: "10.1", rating: 4.9, status: "suspended" },
-    //     { id: 4, tour: "Desert Safari", bookings: 98, revenue: 4300, convRate: "5.8", rating: 4.5, status: "pending" },
-    //     { id: 5, tour: "Alex Day Trip", bookings: 156, revenue: 7600, convRate: "6.9", rating: 4.6, status: "active" },
-    //     { id: 6, tour: "Siwa Adventure", bookings: 87, revenue: 5100, convRate: "4.9", rating: 4.4, status: "suspended" }
-    // ];
-
-
     const [tours, setTrips] = useState([]);
     const [selectedRow, setSelectedRow] = useState(null);
     const [page, setPage] = useState(1);
@@ -53,22 +43,19 @@ export default function DashboardStatus(){
     return(
         <>
         <div className={styles.container}>
-            <div className={styles.title}>
+            <div className={styles.header}>
                 <h2 style={{fontSize:"32px"}}>Dahsboard Overview</h2>
                 <p style={{fontSize:"14px"}}>Real-time insights and key metrics for the Nefru tourism platform</p>
             </div>
             <div className={styles.status}>
                 <Status/>
-                <div className={styles.section_1}>
-                    <div className={styles.chart}>
-                        <LineChart/>
+            </div>
+            <div className={styles.body}>
+                <div className={styles.section}>
+                    <div className={styles.layout}>
+                            <LineChart/>
                     </div>
-                    <List title="Pending Approvals">
-                        <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                    </List>
-                </div>
-                <div className={styles.section_2}>
-                    <div className={styles.chart}>
+                    <div className={styles.layout}>
                         <Table
                             data={tours}
                             item={TourItem}
@@ -76,9 +63,21 @@ export default function DashboardStatus(){
                             onPageChange={handlePageChange}
                         />
                     </div>
-                    <List title="Recent System Logs"/>
+                </div>
+                <div className={styles.section}>
+                    <div className={styles.layout}>
+                        <List title="Pending Approvals">
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                        </List>
+                    </div>
+                    <div className={styles.layout}>
+                        <List title="Pending Approvals">
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                        </List>
+                    </div>
                 </div>
             </div>
+
         </div>
         </>
     )

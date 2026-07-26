@@ -69,21 +69,10 @@ export default function Accounts(){
                     
                 <div className={styles.status}>
                     <div className={styles.cardContainer}>
-                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
-                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
-                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
-                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
-                    </div>
-                    <div className={styles.chart}>
-                        
-                        <LineChart 
-                        // x={}
-                        points={[1,2,5,5.7,2,3.4]}
-                        max={10}
-                        step={2}
-                        lineColor={"#edae49"}
-                        pointColor={"#edae49"}
-                        />
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="Total Tourists" color="#FFDF97" counter="12" tag="+2 new"/>
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="Tourist Aquisition" color="#FFDF97" counter="12" tag="+2 new"/>
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="Total Guides" color="#FFDF97" counter="12" tag="+2 new"/>
+                        <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="Guide Aquisition" color="#FFDF97" counter="12" tag="+2 new"/>
                     </div>
                 </div>
                 <div className={styles.body}>
