@@ -1,5 +1,4 @@
 .container{
-    border:1px solid var(--admin-border);
     background-color:white;
     border-radius:10px;
     flex-direction:column;

@@ -53,7 +53,7 @@ export default function DashboardStatus(){
             <div className={styles.body}>
                 <div className={styles.section}>
                     <div className={styles.layout}>
-                            <LineChart/>
+                        <LineChart/>
                     </div>
                     <div className={styles.layout}>
                         <Table
@@ -64,7 +64,7 @@ export default function DashboardStatus(){
                         />
                     </div>
                 </div>
-                <div className={styles.section}>
+                <div className={`${styles.section} ${styles.list}`}>
                     <div className={styles.layout}>
                         <List title="Pending Approvals">
                             <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
@@ -73,6 +73,15 @@ export default function DashboardStatus(){
                     <div className={styles.layout}>
                         <List title="Pending Approvals">
                             <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+
                         </List>
                     </div>
                 </div>
@@ -86,7 +95,7 @@ export default function DashboardStatus(){
 function List({title="",children}){
     return(
         <>
-        <div className={styles.layout}>
+        <div className={styles.listLayout}>
             <div className={styles.layoutTitle}>
                 <p>{title}</p>
                 <p>View all</p>
@@ -106,23 +115,21 @@ function PendingItem({info, name, tag, duration}){
     return(
         <>
         <div className={styles.itemContainer}>
-            <div className={styles.itemInfo}>
-                <div className={styles.itemAvatar}>
-                    <Icons.Profile/>
-                </div>
-                <div className={styles.itemLable}>
-                    <p>{info}</p>
-                    <p>{name}</p>
-                </div>
-                <div 
-                    className={styles.itemTag}
-                    style={{backgroundColor:"var(--color-secondary)"}}>
-                        <p>{tag}</p>
-                </div>
+            <div className={styles.itemAvatar}>
+                <Icons.Profile/>
+            </div>
+            <div className={styles.itemLable}>
+                <p>{info}</p>
+                <p>{name}</p>
+            </div>
+            <div 
+                className={styles.itemTag}
+                style={{backgroundColor:"var(--color-secondary)"}}>
+                    <p>{tag}</p>
             </div>
             <div className={styles.itemAction}>
                 <p>{duration}</p>
-                <Icons.ArrowRight/>
+                <Icons.chevronRight/>
             </div>
         </div>
         </>
