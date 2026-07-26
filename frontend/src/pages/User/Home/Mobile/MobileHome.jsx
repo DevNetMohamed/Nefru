@@ -13,11 +13,11 @@ import {
   Briefcase,
   Heart,
   User,
-  Anchor,
   Sparkles,
   Calendar,
   Award,
 } from "lucide-react";
+import logo from "@/assets/images/logo.png";
 
 import SearchModal from "@/components/Search/SearchModal";
 
@@ -233,12 +233,10 @@ const MobileHome = () => {
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-24 font-sans">
       {/* 1. Header Bar */}
       <div className="bg-white sticky top-0 z-40 px-4 py-3 border-b border-gray-100 flex items-center justify-between shadow-xs">
-        <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate("/")}>
-          <div className="w-9 h-9 rounded-xl bg-[#003D5B] flex items-center justify-center text-white shadow-sm">
-            <Anchor className="w-5 h-5 stroke-[2.5]" />
-          </div>
-          <span className="font-extrabold text-xl tracking-wider text-[#003D5B]">
-            NEFRU
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/user/home")}>
+          <img src={logo} alt="Nefru Logo" className="h-9 w-auto object-contain" />
+          <span className="text-2xl font-semibold text-[#003D5B]" style={{ fontFamily: '"Cormorant Garamond", serif' }}>
+            Nefru
           </span>
         </div>
         <button
