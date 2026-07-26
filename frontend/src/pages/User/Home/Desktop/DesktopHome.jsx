@@ -50,6 +50,7 @@ const DesktopHome = () => {
     <div className="relative min-h-screen">
       <video
         autoPlay
+        loop
         muted
         playsInline
         className="fixed top-0 left-0 w-full h-full object-cover -z-10 opacity-15"
@@ -57,7 +58,7 @@ const DesktopHome = () => {
         <source src={backgroundVideo} type="video/mp4" />
       </video>
 
-      <div className="relative z-10">
+      <div className="relative z-10" style={{ zoom: 0.9 }}>
         <DesktopNavbar />
 
         {loading ? (
