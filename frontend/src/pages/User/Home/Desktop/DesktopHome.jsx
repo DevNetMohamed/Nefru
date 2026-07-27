@@ -53,7 +53,7 @@ const DesktopHome = () => {
         loop
         muted
         playsInline
-        className="fixed top-0 left-0 w-full h-full object-cover -z-10 opacity-25"
+        className="fixed top-0 left-0 w-full h-full object-cover -z-10 opacity-25 blur-[3px]"
       >
         <source src={backgroundVideo} type="video/mp4" />
       </video>
