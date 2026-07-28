@@ -75,7 +75,7 @@ const tripSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["draft", "reviewing", "active"],
+      enum: ["draft", "pedning", "approved","rejected"],
       default: "draft",
     },
     groupSize: {

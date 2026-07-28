@@ -1,15 +1,27 @@
 import styles from './DashboardStatus.module.css'
 
 import Status from '../../components/Status/Status'
-import Table, {TourItem} from '../../components/Table/Table'
+import Table, {TopTourItem} from '../../components/Table/Table'
 import {LineChart} from '../../components/Status/Status'
 import Icons from '../../../../assets/icons'
 import {useEffect, useState, useCallback} from 'react'
+import { DoughnutChart } from '../../components/charts/charts'
 
-import {getAccount, getTrips} from '../../api'
+import {getAccount, getTrips, getDashboard} from '../../api'
 
 export default function DashboardStatus(){
     const [tours, setTrips] = useState([]);
+    const [dashboard, setDashboard] = useState({
+        totalUsers: 0,
+        totalTours: 0,
+        totalBookings: 0,
+        paidBookings: 0,
+        toursStatus: {
+            approved: 0,
+            rejected: 0,
+            pending: 0
+        }
+    })
     const [selectedRow, setSelectedRow] = useState(null);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false)
@@ -17,13 +29,11 @@ export default function DashboardStatus(){
 
     const loadTrips = useCallback(async (pageNum = 1) => {
         try {
-            const data = await getTrips("tours", pageNum);
-            if (!data.error) setTrips(data);
-
+            const data = await getDashboard();
+            if (!data.error) setDashboard(data);
         } catch (err) {
             if (err.name === "AbortError") return;
-
-            setError(err.message || "Failed to load tours");
+            setError(err.message || "Failed to load dashboard");
         } finally {
             setLoading(false);
         }
@@ -43,34 +53,34 @@ export default function DashboardStatus(){
     return(
         <>
         <div className={styles.container}>
-            <div className={styles.header}>
-                <h2 style={{fontSize:"32px"}}>Dahsboard Overview</h2>
-                <p style={{fontSize:"14px"}}>Real-time insights and key metrics for the Nefru tourism platform</p>
-            </div>
             <div className={styles.status}>
-                <Status/>
+                <Status data={[
+                    {title:"Total Users",}
+                ]}/>
             </div>
             <div className={styles.body}>
                 <div className={styles.section}>
-                    <div className={styles.layout}>
+                    <div className={`${styles.layout} ${styles.chart}`}>
+                        <p style={{fontWeight:"500",fontSize:"18px"}}>Bookings Overview</p>
                         <LineChart/>
                     </div>
-                    <div className={styles.layout}>
-                        <Table
-                            data={tours}
-                            item={TourItem}
-                            onRowSelect={setSelectedRow}
-                            onPageChange={handlePageChange}
-                        />
+                    <div className={`${styles.layout} ${styles.chart}`}
+                        style={{maxWidth:"400px"}}>
+                        <p style={{fontWeight:"500",fontSize:"18px"}}>Tours by Status</p>
+                        <DoughnutChart/>
                     </div>
                 </div>
-                <div className={`${styles.section} ${styles.list}`}>
-                    <div className={styles.layout}>
-                        <List title="Pending Approvals">
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                        </List>
+                <div className={styles.section}>
+                    <div className={styles.layout} style={{padding:"20px"}}>
+                        <Table
+                            data={tours}
+                            item={TopTourItem}
+                            onRowSelect={setSelectedRow}
+                            onPageChange={handlePageChange}
+                            isPagination={false}
+                        />
                     </div>
-                    <div className={styles.layout}>
+                    <div className={`${styles.layout} ${styles.list}`}>
                         <List title="Pending Approvals">
                             <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
                             <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>

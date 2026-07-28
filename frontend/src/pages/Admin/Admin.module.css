@@ -13,10 +13,8 @@
 }
 .body{
   width:100vw;
-  padding:20px;
   display:flex;
   flex-direction:column;
-  gap:16px;
   overflow:auto;
   background-color:#F7F9FB
 }
@@ -28,6 +26,7 @@
 .page{
   flex:1;
   min-height:0;
+  padding:20px;
   /* border:1px solid red; */
   display:flex;
   flex-direction:column;

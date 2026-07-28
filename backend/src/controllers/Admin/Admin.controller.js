@@ -3,6 +3,8 @@
 import {User} from '../../models/user.model.js'
 import {Trip} from '../../models/trip.model.js'
 
+import {getDashboardData} from './services.js'
+
 export const getUserById = async(req,res) =>{
   try{
     const userId = req.params.id;
@@ -165,9 +167,37 @@ export const updateUserById = async(req,res)=>{
 
 export const getDashboard = async (req,res)=>{
   try{
-    // get users
-  }catch(error){
+    // in selected duration
+    // get total users, total tours, total book, revenue
+    // bookings through the month
 
+    // get all tours by status
+    
+    // {
+    //   totalUser:"",
+    //   totalTours:"",
+    //   totalBookings:"",
+    //   revenue:"",
+    //   bookingsChart:[1,2,2,23,12],
+    //   toursStatus:{
+    //     approved:12,
+    //     rejected:2,
+    //     pending:5
+    //   },
+    //   topTours:[{...}]
+    // }
+    const data = await getDashboardData()
+    res.status(200).json({
+      success: true,
+      message: "Operation completed successfully",
+      data
+    })
+  }catch(error){
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while retreiving dashboard data",
+      error: { code: "INTERNAL_SERVER_ERROR", details: [] }
+    });
   }
 }
 
@@ -184,9 +214,9 @@ export const banUserById = async(req,res)=>{
       });
     const user = await User.findByIdAndUpdate(userId,{isActive:false},{returnDocument: 'after'})
     return res.status(200).json({
-      "success": true,
-      "message": "Operation completed successfully",
-      "data":user
+      success: true,
+      message: "Operation completed successfully",
+      data:user
     })
   }catch(error){
     if (error.name === "CastError") {
