@@ -3,15 +3,40 @@
   justify-content:space-between;
   align-items:center;
   width:100%;
-  border-bottom:2px solid var(--color-border)
+  border-bottom:1px solid var(--admin-border);
+  background-color:white;
+  padding:20px;
 }
-.account{
+.section{
   display:flex;
   gap:10px;
   justify-content:center;
   align-items:center;
   height:50px;
 }
-.path{
-
+.button{
+  border:1px solid var(--admin-border);
+  background-color:rgba(255, 255, 255, 0);
+  font-size:16px;
+  width:fit-content;
+  height:40px;
+  min-height:0;
+  font-weight:normal;
+}
+.iconButton{
+  background-color:rgba(255, 255, 255, 0);
+  font-size:20px;
+  height:40px;
+  width:40px;
+  padding:0;
+  justify-content:center;
+  border-radius:50%;
+  min-height:0;
+  font-weight:normal;
+}
+.avatar{
+  background-color:var(--color-primary);
+  color:white;
+  height:35px;
+  width:35px;
 }
