@@ -11,11 +11,13 @@ import { IoMdShare } from "react-icons/io";
 
 const Book = () => {
   const [activeSlot, setActiveSlot] = useState("Morning");
+  
   const TIME_SLOTS = [
-    { label: "Morning", icon: Icons.sun },
-    { label: "Afternoon", icon: Icons.afternoon },
-    { label: "Evening", icon: Icons.event },
+    { label: "Morning", Icon: Icons.sun },
+    { label: "Afternoon", Icon: Icons.afternoon },
+    { label: "Evening", Icon: Icons.event },
   ];
+
   return (
     <>
       {/* Header */}
@@ -23,42 +25,44 @@ const Book = () => {
         <div>
           <Link to={"/user/trips"} className={`${Style.backButton}`}>
             <IoArrowBack />
-            {/* {Icons.back} */}
           </Link>
         </div>
         <div>Full Day Giza Pyramids & Sphinx</div>
-        {/* <div>{Icons.share}</div> */}
         <div className={`${Style.backButton}`}>
           <IoMdShare />
         </div>
       </div>
-      {/* Scadule */}
+
+      {/* Schedule */}
       <Date />
+      
       <div className="container">
         <div className="py-2">Select Time Slot</div>
         <div className={Style.slotsRow}>
-          {TIME_SLOTS.map((slot, index) => (
-            <div className={Style.timeSlot}>
-              <Button
-                className={`${Style.timeSlot}`}
-                type="primary"
-                key={index}
-                onClick={() => setActiveSlot(slot.label)}
-                type={slot.label == activeSlot ? "primary" : "normal"}
-              >
-                <slot.icon />
-                {slot.label}
-              </Button>
-            </div>
-          ))}
+          {TIME_SLOTS.map((slot, index) => {
+            const SlotIcon = slot.Icon;
+            const isSelected = slot.label === activeSlot;
+            
+            return (
+              <div key={index} className={Style.timeSlot}>
+                <Button
+                  className={`${Style.timeSlot}`}
+                  type={isSelected ? "primary" : "normal"}
+                  onClick={() => setActiveSlot(slot.label)}
+                >
+                  {SlotIcon && <SlotIcon />}
+                  {slot.label}
+                </Button>
+              </div>
+            );
+          })}
         </div>
       </div>
-      <div
-        className={`container d-flex justify-content-between bg-body-tertiary p-3`}
-      >
+
+      <div className={`container d-flex justify-content-between bg-body-tertiary p-3`}>
         <div className="col-md-6">
           <h4>Travelers</h4>
-          <span>$85.00 per person</span>
+          <span>850.00 ج.م per person</span>
         </div>
 
         <div className="col-md-6">
@@ -70,31 +74,32 @@ const Book = () => {
           />
         </div>
       </div>
+
       <div className="container mt-3">
         <div className="bg-body-tertiary p-4 rounded-4 shadow-sm">
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
               <p className="text-muted mb-1">October 5, 2023 • Morning</p>
-
               <span className="text-uppercase small text-secondary">
                 Total Price
               </span>
-
-              <h2 className="fw-bold mb-0">$170.00</h2>
+              <h2 className="fw-bold mb-0">1700.00 ج.م</h2>
             </div>
 
-            <div className="d-flex align-items-center gap-2 text-success px-3 py-2 ">
+            <div className="d-flex align-items-center gap-2 text-success px-3 py-2">
               <MdOutlineVerified size={18} />
               <span className="fw-semibold">Best Price Guaranteed</span>
             </div>
           </div>
         </div>
       </div>
-      <div className={"m-2"}>
-        <Button type="primary">
-          <Link to="/user/trips/book/status"></Link>
-          Prosess to Payment
-        </Button>
+
+      <div className="container my-4 d-flex justify-content-end">
+        <Link to="/user/trips/book/status" style={{ textDecoration: "none" }}>
+          <Button type="primary">
+            Proceed to Payment
+          </Button>
+        </Link>
       </div>
     </>
   );
