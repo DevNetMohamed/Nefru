@@ -6,9 +6,10 @@ import {status} from '../../../../assets/variables'
 
 export default function Table({
   data = null,
+  isPagination=true,
   item: Item,
   onPageChange = () => {},
-  onRowSelect = () => {}, // notifies the parent which row was selected
+  onRowSelect = () => {},
 }) {
   const rows = data?.data ?? [];
   const meta = data?.meta ?? {};
@@ -34,6 +35,9 @@ export default function Table({
   }
   return (
     <div className={styles.container}>
+      <div className="s">
+        <p>Title</p>
+      </div>
       <div className={styles.tableScroll}>
         <table className={styles.table}>
           <thead className={styles.tableHead}>
@@ -74,7 +78,7 @@ export default function Table({
         </table>
       </div>
 
-      <div className={styles.footer}>
+      {isPagination?(<div className={styles.footer}>
         <p>showing page {pagination.currentPage} of {pagination.totalPages}</p>
 
         <div className={styles.action}>
@@ -113,10 +117,36 @@ export default function Table({
             Next{" >"}
           </Button>
         </div>
-      </div>
+      </div>):<></>}
     </div>
   );
 }
+export function TopTourItem({ data, selected, onSelect}) {
+  return (
+    <tr className={styles.item}>
+      <td></td>
+      <td>
+        <p>{data.title}</p>
+      </td>
+      <td>{data.guide}</td>
+      <td>{data.city}</td>
+      <td>{data.submittedOn}</td>
+      <td>
+        <div
+          className={styles.status}
+          style={{
+            // backgroundColor: status[data.status].back,
+            // color: status[data.status].text,
+            // border: `1px solid ${status[data.status].text}`,
+          }}
+        >
+          {data.status}
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 
 export function TourItem({ data, selected, onSelect}) {
   return (

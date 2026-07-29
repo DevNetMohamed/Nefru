@@ -3,7 +3,8 @@ import styles from "./TrustedGuides.module.css";
 import guide1 from "../../../../../../assets/images/guiders/guide1.webp";
 import guide2 from "../../../../../../assets/images/guiders/guide3.webp";
 import guide3 from "../../../../../../assets/images/guiders/guide4.webp";
-const guides = [
+
+const defaultGuides = [
   {
     id: 1,
     name: "Ahmed Kamal",
@@ -38,7 +39,30 @@ const guides = [
   },
 ];
 
-function TrustedGuides() {
+const getImgSrc = (img, fallback) => {
+  if (!img) return fallback;
+  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+    return img;
+  }
+  return `http://localhost:5000/uploads/${img}`;
+};
+
+function TrustedGuides({ guides }) {
+  const displayGuides = guides && guides.length > 0
+    ? guides.map((g, idx) => ({
+        id: g._id || idx,
+        name: g.user?.fullName || g.name || "Local Guide",
+        rating: g.rating ? String(g.rating) : "4.9",
+        languages: Array.isArray(g.languages) && g.languages.length > 0
+          ? g.languages.join(" • ")
+          : (typeof g.languages === "string" ? g.languages : "Arabic • English"),
+        experience: g.yearsExperience
+          ? `${g.yearsExperience} Years Experience`
+          : (g.experience || "5 Years Experience"),
+        image: getImgSrc(g.user?.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
+      }))
+    : defaultGuides;
+
   return (
     <section
       id="top-guides"
@@ -60,7 +84,7 @@ function TrustedGuides() {
       </div>
 
       <div className={styles.grid}>
-        {guides.map((guide) => (
+        {displayGuides.map((guide) => (
           <div
             key={guide.id}
             className={styles.card}
@@ -92,4 +116,4 @@ function TrustedGuides() {
   );
 }
 
-export default TrustedGuides;
+export default TrustedGuides;
