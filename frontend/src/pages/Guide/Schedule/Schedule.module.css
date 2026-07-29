@@ -108,8 +108,18 @@
 
 .calendarTop {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   margin-bottom: 28px;
+}
+
+.monthTitle {
+  margin: 0;
+  color: #00263b;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  text-align: center;
 }
 
 .smallRound {
@@ -136,6 +146,10 @@
   margin-bottom: 16px;
 }
 
+.emptyDay {
+  height: 50px;
+}
+
 .dayButton {
   height: 50px;
   border: 0;
@@ -150,6 +164,7 @@
 }
 
 .selectedDay {
+  border-radius: 8px;
   background: #cfe8fa;
   color: #00263b;
 }
@@ -188,6 +203,30 @@
   cursor: pointer;
 }
 
+.selectedDatesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.selectedDatePill {
+  border: 1px solid #c1c7ce;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #00263b;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 12px;
+}
+
+.activeDatePill {
+  background: #00263b;
+  border-color: #00263b;
+  color: #ffffff;
+}
+
 .timeHeader {
   display: flex;
   justify-content: space-between;
@@ -203,6 +242,12 @@
   color: #00263b;
 }
 
+.activeDateText {
+  margin: 6px 0 0;
+  color: #72787e;
+  font-size: 14px;
+}
+
 .addButton {
   font-size: 14px;
   letter-spacing: 0.7px;
@@ -211,6 +256,16 @@
 .slotsList {
   display: grid;
   gap: 16px;
+}
+
+.noSlotsText {
+  margin: 0;
+  border: 1px dashed #c1c7ce;
+  border-radius: 8px;
+  background: #fbf9f8;
+  color: #72787e;
+  padding: 16px;
+  text-align: center;
 }
 
 .slotCard {
