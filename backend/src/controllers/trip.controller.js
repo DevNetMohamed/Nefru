@@ -267,10 +267,20 @@ export const updateMyTrip = asyncHandler(async (req, res) => {
     "groupSize",
     "schedule",
     "gallery",
+    "highlights",
   ];
 
   allowedFields.forEach((field) => {
     if (req.body[field] !== undefined) {
+      if (field === "highlights") {
+        trip.highlights = Array.isArray(req.body.highlights)
+          ? req.body.highlights.map((item) =>
+              typeof item === "string" ? { title: item } : item,
+            )
+          : [];
+        return;
+      }
+
       trip[field] = req.body[field];
     }
   });

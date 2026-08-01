@@ -258,6 +258,28 @@
   gap: 16px;
 }
 
+.dateSlotsGroup {
+  display: grid;
+  gap: 12px;
+  border: 1px solid #e4e2e1;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 14px;
+}
+
+.dateSlotsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dateSlotsHeader h3 {
+  margin: 0;
+  color: #00263b;
+  font-size: 16px;
+}
+
 .noSlotsText {
   margin: 0;
   border: 1px dashed #c1c7ce;
@@ -298,43 +320,6 @@
   background: #ffffff;
   color: #1b1c1c;
   font-size: 16px;
-}
-
-.guestsRow {
-  border-top: 1px solid #e4e2e1;
-  margin-top: 16px;
-  padding-top: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.guestsRow span {
-  font-size: 14px;
-  font-weight: 700;
-  color: #00263b;
-}
-
-.counter {
-  background: #f0eded;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-}
-
-.counter button {
-  width: 34px;
-  height: 32px;
-  border: 0;
-  background: transparent;
-  color: #00263b;
-  cursor: pointer;
-}
-
-.counter strong {
-  min-width: 40px;
-  text-align: center;
-  color: #1b1c1c;
 }
 
 .note {
