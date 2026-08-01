@@ -60,6 +60,19 @@ const tripSchema = new mongoose.Schema(
       default: "",
     },
     location: { type: String, required: true },
+  
+    coordinates: {
+    lat: {
+        type: Number,
+        required: true,
+    },
+    lng: {
+        type: Number,
+        required: true,
+    },
+},
+
+
     price: { type: Number, required: true },
     duration: { type: String, required: true }, // e.g., "3 hours", "Full Day"
     image: { type: String, default: "" },

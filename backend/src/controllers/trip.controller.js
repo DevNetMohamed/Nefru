@@ -12,6 +12,7 @@ function getTripSummary(trip) {
     description: trip.description,
     longDescription: trip.longDescription || trip.description,
     location: trip.location,
+    coordinates: trip.coordinates,
     price: trip.price,
     duration: trip.duration,
     image: trip.image,
@@ -107,6 +108,7 @@ export const getTripById = asyncHandler(async (req, res) => {
     description: trip.description,
     longDescription: trip.longDescription || trip.description,
     location: trip.location,
+    coordinates: trip.coordinates,
     price: trip.price,
     duration: trip.duration,
     image: trip.image,
@@ -159,6 +161,7 @@ export const createTrip = asyncHandler(async (req, res) => {
     description,
     longDescription,
     location,
+    coordinates,
     price,
     duration,
     image,
@@ -168,9 +171,22 @@ export const createTrip = asyncHandler(async (req, res) => {
     gallery,
   } = req.body;
 
-  if (!title || !description || !location || !price || !duration || !category) {
+  const invalid =
+    !title ||
+    !description ||
+    !location ||
+    !price ||
+    !duration ||
+    !category ||
+    !coordinates ||
+    coordinates.lat === undefined ||
+    coordinates.lng === undefined;
+
+  if (invalid) {
     res.status(400);
-    throw new Error("Please provide title, description, location, price, duration and category");
+    throw new Error(
+      "Please provide title, description, location, price, duration, category and coordinates"
+    );
   }
 
   const trip = await Trip.create({
@@ -178,6 +194,7 @@ export const createTrip = asyncHandler(async (req, res) => {
     description,
     longDescription: longDescription || description,
     location,
+    coordinates,
     price,
     duration,
     image: image || "",
@@ -195,7 +212,6 @@ export const createTrip = asyncHandler(async (req, res) => {
     data: getTripSummary(trip),
   });
 });
-
 /**
  * @desc Get tours for the logged-in guide
  * @route GET /api/trips/guide/me

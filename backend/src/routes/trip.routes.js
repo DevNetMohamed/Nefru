@@ -1,7 +1,7 @@
 import { Router } from "express";
 const tripRouter = Router();
 
-tripRouter.route("/").get(getAllTrips).post(createTrip);
+// tripRouter.route("/").get(getAllTrips).post(createTrip);
 import {
   getAllTrips,
   createTrip,
