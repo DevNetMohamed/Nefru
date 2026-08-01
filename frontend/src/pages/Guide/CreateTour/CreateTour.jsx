@@ -93,7 +93,8 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
       navigate("/guide/schedule", { state: { tripId } });
     } catch (error) {
       console.error(error);
-      alert(error.message);
+      // show stack trace to help identify where 'role' access failed
+      alert(`${error.message}\n\n${error.stack || ""}`);
     } finally {
       setLoading(false);
     }

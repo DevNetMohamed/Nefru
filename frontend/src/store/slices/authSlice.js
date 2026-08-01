@@ -12,11 +12,14 @@ const storedToken = localStorage.getItem("token");
 const storedUser = localStorage.getItem("user");
 const storedProfile = localStorage.getItem("profile");
 
+const parsedUser = safeParse(storedUser);
+const parsedProfile = safeParse(storedProfile);
+
 const initialState = {
   token: storedToken || null,
-  user: safeParse(storedUser),
-  profile: safeParse(storedProfile),
-  isAuthenticated: Boolean(storedToken),
+  user: parsedUser,
+  profile: parsedProfile,
+  isAuthenticated: Boolean(storedToken && parsedUser),
 };
 
 const authSlice = createSlice({
@@ -26,12 +29,15 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       const { token, user, profile } = action.payload;
 
-      state.token = token;
-      state.user = user;
-      state.isAuthenticated = true;
+      // Only store token and user when both are present
+      if (token && user) {
+        state.token = token;
+        state.user = user;
+        state.isAuthenticated = true;
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+      }
 
       if (profile !== undefined) {
         state.profile = profile;

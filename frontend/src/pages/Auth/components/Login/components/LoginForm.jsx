@@ -42,14 +42,22 @@ function LoginForm() {
           body: JSON.stringify(values),
         });
 
+        // Validate backend response shape before storing
+        const token = response?.token;
+        const user = response?.data?.user;
+
+        if (!token || !user) {
+          throw new Error("Login failed: invalid server response");
+        }
+
         dispatch(
           loginSuccess({
-            token: response.token,
-            user: response.data.user,
+            token,
+            user,
           }),
         );
 
-        const role = response.data.user.role;
+        const role = user.role;
 
         if (role === "admin") {
           navigate("/admin/overview", { replace: true });

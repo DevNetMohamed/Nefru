@@ -104,6 +104,12 @@ const bookingSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    // رقم المعاملة الخاص بـ Stripe (Stripe Payment Intent ID)
+    stripePaymentIntentId: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     specialRequests: {
       type: [String],
       default: [],
