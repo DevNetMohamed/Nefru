@@ -1,7 +1,7 @@
 :root{
   --admin-primary:#0D1C2F;
   --admin-secondary:#B59441;
-  --admin-border:#D0C5B2
+  --admin-border:#E5E4E0
 }
 .dashboard {
   display: flex;
@@ -13,12 +13,10 @@
 }
 .body{
   width:100vw;
-  padding:40px;
-  padding-top:10px;
   display:flex;
   flex-direction:column;
-  gap:40px;
   overflow:auto;
+  background-color:#F7F9FB
 }
 .navbar{
   display:flex;
@@ -28,6 +26,8 @@
 .page{
   flex:1;
   min-height:0;
+  padding:20px;
+  /* border:1px solid red; */
   display:flex;
   flex-direction:column;
 }

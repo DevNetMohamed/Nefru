@@ -1,25 +1,27 @@
 import styles from './DashboardStatus.module.css'
 
 import Status from '../../components/Status/Status'
-import Table, {TourItem} from '../../components/Table/Table'
+import Table, {TopTourItem} from '../../components/Table/Table'
 import {LineChart} from '../../components/Status/Status'
 import Icons from '../../../../assets/icons'
 import {useEffect, useState, useCallback} from 'react'
+import { DoughnutChart } from '../../components/charts/charts'
 
-import {getAccount, getTrips} from '../../api'
+import {getAccount, getTrips, getDashboard} from '../../api'
 
 export default function DashboardStatus(){
-    // const tours = [
-    //     { id: 1, tour: "Cairo Tour", bookings: 245, revenue: 12500, convRate: "8.4", rating: 4.8, status: "active" },
-    //     { id: 2, tour: "Luxor Escape", bookings: 189, revenue: 9800, convRate: "7.2", rating: 4.7, status: "active" },
-    //     { id: 3, tour: "Nile Cruise", bookings: 320, revenue: 18200, convRate: "10.1", rating: 4.9, status: "suspended" },
-    //     { id: 4, tour: "Desert Safari", bookings: 98, revenue: 4300, convRate: "5.8", rating: 4.5, status: "pending" },
-    //     { id: 5, tour: "Alex Day Trip", bookings: 156, revenue: 7600, convRate: "6.9", rating: 4.6, status: "active" },
-    //     { id: 6, tour: "Siwa Adventure", bookings: 87, revenue: 5100, convRate: "4.9", rating: 4.4, status: "suspended" }
-    // ];
-
-
     const [tours, setTrips] = useState([]);
+    const [dashboard, setDashboard] = useState({
+        totalUsers: 0,
+        totalTours: 0,
+        totalBookings: 0,
+        paidBookings: 0,
+        toursStatus: {
+            approved: 0,
+            rejected: 0,
+            pending: 0
+        }
+    })
     const [selectedRow, setSelectedRow] = useState(null);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false)
@@ -27,13 +29,11 @@ export default function DashboardStatus(){
 
     const loadTrips = useCallback(async (pageNum = 1) => {
         try {
-            const data = await getTrips("tours", pageNum);
-            if (!data.error) setTrips(data);
-
+            const data = await getDashboard();
+            if (!data.error) setDashboard(data);
         } catch (err) {
             if (err.name === "AbortError") return;
-
-            setError(err.message || "Failed to load tours");
+            setError(err.message || "Failed to load dashboard");
         } finally {
             setLoading(false);
         }
@@ -53,32 +53,50 @@ export default function DashboardStatus(){
     return(
         <>
         <div className={styles.container}>
-            <div className={styles.title}>
-                <h2 style={{fontSize:"32px"}}>Dahsboard Overview</h2>
-                <p style={{fontSize:"14px"}}>Real-time insights and key metrics for the Nefru tourism platform</p>
-            </div>
             <div className={styles.status}>
-                <Status/>
-                <div className={styles.section_1}>
-                    <div className={styles.chart}>
+                <Status data={[
+                    {title:"Total Users",}
+                ]}/>
+            </div>
+            <div className={styles.body}>
+                <div className={styles.section}>
+                    <div className={`${styles.layout} ${styles.chart}`}>
+                        <p style={{fontWeight:"500",fontSize:"18px"}}>Bookings Overview</p>
                         <LineChart/>
                     </div>
-                    <List title="Pending Approvals">
-                        <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                    </List>
+                    <div className={`${styles.layout} ${styles.chart}`}
+                        style={{maxWidth:"400px"}}>
+                        <p style={{fontWeight:"500",fontSize:"18px"}}>Tours by Status</p>
+                        <DoughnutChart/>
+                    </div>
                 </div>
-                <div className={styles.section_2}>
-                    <div className={styles.chart}>
+                <div className={styles.section}>
+                    <div className={styles.layout} style={{padding:"20px"}}>
                         <Table
                             data={tours}
-                            item={TourItem}
+                            item={TopTourItem}
                             onRowSelect={setSelectedRow}
                             onPageChange={handlePageChange}
+                            isPagination={false}
                         />
                     </div>
-                    <List title="Recent System Logs"/>
+                    <div className={`${styles.layout} ${styles.list}`}>
+                        <List title="Pending Approvals">
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
+
+                        </List>
+                    </div>
                 </div>
             </div>
+
         </div>
         </>
     )
@@ -87,7 +105,7 @@ export default function DashboardStatus(){
 function List({title="",children}){
     return(
         <>
-        <div className={styles.layout}>
+        <div className={styles.listLayout}>
             <div className={styles.layoutTitle}>
                 <p>{title}</p>
                 <p>View all</p>
@@ -107,23 +125,21 @@ function PendingItem({info, name, tag, duration}){
     return(
         <>
         <div className={styles.itemContainer}>
-            <div className={styles.itemInfo}>
-                <div className={styles.itemAvatar}>
-                    <Icons.Profile/>
-                </div>
-                <div className={styles.itemLable}>
-                    <p>{info}</p>
-                    <p>{name}</p>
-                </div>
-                <div 
-                    className={styles.itemTag}
-                    style={{backgroundColor:"var(--color-secondary)"}}>
-                        <p>{tag}</p>
-                </div>
+            <div className={styles.itemAvatar}>
+                <Icons.Profile/>
+            </div>
+            <div className={styles.itemLable}>
+                <p>{info}</p>
+                <p>{name}</p>
+            </div>
+            <div 
+                className={styles.itemTag}
+                style={{backgroundColor:"var(--color-secondary)"}}>
+                    <p>{tag}</p>
             </div>
             <div className={styles.itemAction}>
                 <p>{duration}</p>
-                <Icons.ArrowRight/>
+                <Icons.chevronRight/>
             </div>
         </div>
         </>
