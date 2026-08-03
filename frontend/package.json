@@ -27,6 +27,7 @@
     "formik": "^2.4.9",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.21.0",
+    "nefru-root": "file:..",
     "react": "^19.2.5",
     "react-bootstrap": "^2.10.10",
     "react-chartjs-2": "^5.3.1",

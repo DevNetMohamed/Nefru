@@ -1,4 +1,5 @@
 import styles from "./AvailableToday.module.css";
+import { useNavigate } from "react-router-dom";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
@@ -39,15 +40,23 @@ const defaultTours = [
   },
 ];
 
+// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
     return img;
   }
   return `http://localhost:5000/uploads/${img}`;
 };
 
 function AvailableToday({ tours }) {
+  const navigate = useNavigate();
   const displayTours = tours && tours.length > 0
     ? tours.map((t, idx) => ({
         id: t._id || idx,
@@ -69,7 +78,8 @@ function AvailableToday({ tours }) {
           </p>
         </div>
 
-        <button>View All</button>
+        {/* Bug #7 fixed: View All button now navigates */}
+        <button onClick={() => navigate("/user/discover")}>View All</button>
       </div>
 
       <div className={styles.cards}>
@@ -98,7 +108,8 @@ function AvailableToday({ tours }) {
                 <strong>{tour.price}</strong>
               </div>
 
-              <button>
+              {/* Bug #7 fixed: Book Now navigates to discover */}
+              <button onClick={() => navigate("/user/discover")}>
                 Book Now
               </button>
             </div>

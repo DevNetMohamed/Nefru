@@ -58,7 +58,8 @@ const DesktopHome = () => {
         <source src={backgroundVideo} type="video/mp4" />
       </video>
 
-      <div className="relative z-10" style={{ zoom: 0.9 }}>
+      <div className="relative z-10">
+
         <DesktopNavbar />
 
         {loading ? (

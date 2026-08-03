@@ -550,12 +550,22 @@ async function createUsersAndProfiles() {
 }
 
 async function createTrips(guideUsers) {
+  const defaultCoordinates = {
+    Giza: { lat: 29.9792, lng: 31.1342 },
+    Cairo: { lat: 30.0444, lng: 31.2357 },
+    Alexandria: { lat: 31.2001, lng: 29.9187 },
+    Luxor: { lat: 25.6872, lng: 32.6396 },
+    Siwa: { lat: 29.2032, lng: 25.5186 },
+    Aswan: { lat: 22.3372, lng: 31.6258 },
+  };
+
   return Trip.create(
     tripSeedData.map((trip) => ({
       title: trip.title,
       description: trip.description,
       longDescription: trip.longDescription,
       location: trip.location,
+      coordinates: trip.coordinates || defaultCoordinates[trip.location] || { lat: 30.0444, lng: 31.2357 },
       price: trip.price,
       duration: trip.duration,
       image: trip.image,

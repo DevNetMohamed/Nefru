@@ -5,6 +5,8 @@ import {
   Marker,
   Popup,
 } from "react-leaflet";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
@@ -33,42 +35,60 @@ const defaultPlaces = [
   },
 ];
 
+// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
     return img;
   }
   return `http://localhost:5000/uploads/${img}`;
 };
 
-const getRealCairoCoordinates = (title = "") => {
+// Bug #13 fixed: deterministic fallback coordinates — no more Math.random() in render
+const FALLBACK_COORDS = [
+  [30.0444, 31.2357],
+  [29.9792, 31.1342],
+  [30.0478, 31.2336],
+  [30.0058, 31.2300],
+];
+
+const getRealCairoCoordinates = (title = "", idx = 0) => {
   const t = title.toLowerCase();
   if (t.includes("pyramid") || t.includes("sphinx") || t.includes("giza")) return [29.9792, 31.1342];
   if (t.includes("grand") && t.includes("museum")) return [29.9948, 31.1206];
-  if (t.includes("museum")) return [30.0478, 31.2336]; // Tahrir Museum
+  if (t.includes("museum")) return [30.0478, 31.2336];
   if (t.includes("old cairo") || t.includes("hanging")) return [30.0058, 31.2300];
   if (t.includes("khan") || t.includes("bazaar")) return [30.0477, 31.2623];
   if (t.includes("citadel") || t.includes("saladin")) return [30.0299, 31.2611];
   if (t.includes("tower")) return [30.0459, 31.2243];
-  
-  // Fallback to random coordinate in central Cairo area
-  const lat = 30.01 + (Math.random() * 0.04);
-  const lng = 31.20 + (Math.random() * 0.06);
-  return [lat, lng];
+  // Bug #13 fixed: use deterministic fallback based on idx instead of Math.random()
+  return FALLBACK_COORDS[idx % FALLBACK_COORDS.length];
 };
 
 function ToursNearYou({ tours }) {
-  const displayPlaces = tours && tours.length > 0
-    ? tours.map((t, idx) => ({
+  const navigate = useNavigate();
+
+  // Bug #13 fixed: useMemo stabilizes computed places so Math.random() equivalent doesn't re-run on every render
+  const displayPlaces = useMemo(() => {
+    if (tours && tours.length > 0) {
+      return tours.map((t, idx) => ({
         id: t._id || idx,
         title: t.title,
         distance: t.location ? `📍 ${t.location}` : "12 km away",
         rating: t.rating ? `${t.rating} (${t.reviewsCount || 0})` : "4.8 (127)",
         image: getImgSrc(t.image, [oldCairo, museum, pyramids][idx % 3]),
         description: t.description || "Ancient treasures and guided exploration.",
-        position: t.coordinates || getRealCairoCoordinates(t.title),
-      }))
-    : defaultPlaces;
+        position: t.coordinates || getRealCairoCoordinates(t.title, idx),
+      }));
+    }
+    return defaultPlaces;
+  }, [tours]);
 
   return (
     <section className={styles.section}>
@@ -109,7 +129,8 @@ function ToursNearYou({ tours }) {
             ))}
           </MapContainer>
 
-          <button>
+          {/* Bug #7 fixed: Open Interactive Map button */}
+          <button onClick={() => navigate("/user/discover")}>
             Open Interactive Map
           </button>
         </div>
@@ -141,7 +162,8 @@ function ToursNearYou({ tours }) {
                 </div>
               </div>
 
-              <button>
+              {/* Bug #7 fixed: View Tour button */}
+              <button onClick={() => navigate("/user/discover")}>
                 View Tour
               </button>
             </div>
