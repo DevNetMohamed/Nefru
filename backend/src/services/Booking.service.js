@@ -6,55 +6,69 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const CreateBooking = async (data, tourist) => {
   if (!tourist) {
-    throw new AppError("Unauthorized", 401)
+    throw new AppError("Unauthorized", 401);
   }
+
   const { trip_id, timeSlot, groupSize } = data;
 
   if (!trip_id || !timeSlot || !groupSize) {
-    throw new AppError("Please provide all required fields", 400)
+    throw new AppError("Please provide all required fields", 400);
   }
+
   const trip = await Trip.findById(trip_id);
+
   if (!trip) {
-    throw new AppError("Trip not found", 404)
+    throw new AppError("Trip not found", 404);
   }
 
   const slot = trip.schedule.slots[timeSlot];
 
   if (!slot) {
-    throw new AppError("Time slot not found.", 404)
+    throw new AppError("Time slot not found.", 404);
   }
 
-  if (slot.availableSpots < groupSize) {
-    return next(new AppError("Not enough available seats.", 400));
+  // Make sure groupSize is a valid number
+  if (!Number.isInteger(groupSize) || groupSize < 1) {
+    throw new AppError("Group size must be at least 1.", 400);
+  }
+
+  // Maximum people allowed
+  const maxGroupSize = slot.availableSpots;
+
+  if (groupSize > maxGroupSize) {
+    throw new AppError(`Maximum available group size is ${maxGroupSize}.`, 400);
   }
 
   const existingBooking = await Booking.findOne({
     tourist_id: tourist._id,
-    trip,
+    trip_id,
     timeSlot,
     status: { $in: ["pending_payment", "Confirmed"] },
-    groupSize
   });
 
   if (existingBooking) {
-    throw new AppError("You already booked this trip.", 400)
+    throw new AppError("You already booked this trip.", 400);
   }
 
-  const totalPrice = trip.price * groupSize
-  const Booking = await Booking.create({
+  // Recalculate price based on current group size
+  const totalPrice = trip.price * groupSize;
+
+  const booking = await Booking.create({
     tourist_id: tourist._id,
     guide_id: trip.guide_id,
     trip_id,
     timeSlot,
     groupSize,
     totalPrice,
-    status: "Pending"
+    status: "Pending",
   });
+
+  // Reduce available spots
   slot.availableSpots -= groupSize;
 
   await trip.save();
-  return Booking;
 
+  return booking;
 };
 
 export const getBookingByID = async (Booking_id) => {
@@ -63,11 +77,10 @@ export const getBookingByID = async (Booking_id) => {
     .populate("guide_id")
     .populate("trip_id");
   if (!Book_id) {
-    throw new AppError("Can Not Found Booking Id", 404)
+    throw new AppError("Can Not Found Booking Id", 404);
   }
   return Book_id;
 };
-
 
 export const getAllBooking = async () => {
   const bookings = await Booking.find()
@@ -78,15 +91,14 @@ export const getAllBooking = async () => {
   return bookings;
 };
 
-
 export const updateBooking = async (Booking_id, data) => {
   if (!Booking_id) {
-    throw new AppError("Not Found Book_id", 404)
+    throw new AppError("Not Found Book_id", 404);
   }
   const { trip_id, timeSlot, groupSize } = data;
 
   if (!trip_id || !timeSlot || !groupSize) {
-    throw new AppError("Please provide all required fields", 400)
+    throw new AppError("Please provide all required fields", 400);
   }
 
   const booking = await Booking.findById(booking_id);
@@ -96,11 +108,10 @@ export const updateBooking = async (Booking_id, data) => {
 
   const updateBooking = await Booking.findByIdAndUpdate(Booking_id, data, {
     new: true,
-    runValidators: true
-  })
+    runValidators: true,
+  });
   return updateBooking;
-}
-
+};
 
 export const cancelBooking = async (booking_id) => {
   if (!booking_id) {

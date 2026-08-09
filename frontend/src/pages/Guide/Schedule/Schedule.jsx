@@ -62,7 +62,6 @@ function getDefaultSlot() {
     id: `${Date.now()}-${Math.random()}`,
     startTime: "09:00",
     endTime: "13:00",
-    maxGuests: 12,
   };
 }
 
@@ -94,7 +93,6 @@ function normalizeSlot(slot) {
     id: slot.id ?? `${Date.now()}-${Math.random()}`,
     startTime: normalizeTimeString(slot.startTime || "09:00"),
     endTime: normalizeTimeString(slot.endTime || "13:00"),
-    maxGuests: Number(slot.maxGuests || slot.availableSpots || 1),
   };
 }
 
@@ -173,7 +171,6 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
   const [fetchError, setFetchError] = useState("");
   const days = buildMonthDays(monthCursor);
   const selectedDates = selectedDateKeys;
-  const activeSlots = activeDateKey ? slotsByDate[activeDateKey] || [] : [];
 
   useEffect(() => {
     async function loadSchedule() {
@@ -233,8 +230,8 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
     });
   }
 
-  function addSlot() {
-    if (!activeDateKey) {
+  function addSlot(dateKey) {
+    if (!dateKey) {
       alert("Please select a date first.");
       return;
     }
@@ -243,29 +240,28 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
       id: `${Date.now()}-${Math.random()}`,
       startTime: "09:00",
       endTime: "13:00",
-      maxGuests: 12,
     };
 
     setSlotsByDate((prev) => ({
       ...prev,
-      [activeDateKey]: [...(prev[activeDateKey] || []), newSlot],
+      [dateKey]: [...(prev[dateKey] || []), newSlot],
     }));
     if (onAddSlot) onAddSlot(newSlot);
   }
 
-  function removeSlot(id) {
+  function removeSlot(dateKey, id) {
     setSlotsByDate((prev) => ({
       ...prev,
-      [activeDateKey]: (prev[activeDateKey] || []).filter((slot) => slot.id !== id),
+      [dateKey]: (prev[dateKey] || []).filter((slot) => slot.id !== id),
     }));
   }
 
-  function updateSlot(id, field, value) {
+  function updateSlot(dateKey, id, field, value) {
     const nextValue = field === "startTime" || field === "endTime" ? normalizeTimeString(value) : value;
 
     setSlotsByDate((prev) => ({
       ...prev,
-      [activeDateKey]: (prev[activeDateKey] || []).map((slot) =>
+      [dateKey]: (prev[dateKey] || []).map((slot) =>
         slot.id === id ? { ...slot, [field]: nextValue } : slot,
       ),
     }));
@@ -429,59 +425,64 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
               <div>
                 <h2>Time Slots</h2>
                 <p className={styles.activeDateText}>
-                  {activeDateKey
-                    ? `For ${getReadableDate(activeDateKey)}`
-                    : "Select a date to add time slots"}
+                  Each selected day has its own time slot.
                 </p>
               </div>
-              <button type="button" className={styles.addButton} onClick={addSlot}>
-                + ADD SLOT
-              </button>
             </div>
 
             <div className={styles.slotsList}>
-              {activeSlots.length === 0 && (
-                <p className={styles.noSlotsText}>No time slots for this date yet.</p>
+              {selectedDates.length === 0 && (
+                <p className={styles.noSlotsText}>Select dates from the calendar first.</p>
               )}
 
-              {activeSlots.map((slot) => (
-                <div key={slot.id} className={styles.slotCard}>
-                  <div className={styles.timeInputs}>
-                    <label>
-                      Start Time
-                      <input
-                        type="time"
-                        value={slot.startTime}
-                        onChange={(event) => updateSlot(slot.id, "startTime", event.target.value)}
-                      />
-                    </label>
-
-                    <label>
-                      End Time
-                      <input
-                        type="time"
-                        value={slot.endTime}
-                        onChange={(event) => updateSlot(slot.id, "endTime", event.target.value)}
-                      />
-                    </label>
+              {selectedDates.map((dateKey) => (
+                <div key={dateKey} className={styles.dateSlotsGroup}>
+                  <div className={styles.dateSlotsHeader}>
+                    <h3>{getReadableDate(dateKey)}</h3>
+                    <button
+                      type="button"
+                      className={styles.addButton}
+                      onClick={() => addSlot(dateKey)}
+                    >
+                      + ADD SLOT
+                    </button>
                   </div>
 
-                  <div className={styles.guestsRow}>
-                    <span>Max Guests</span>
-                    <div className={styles.counter}>
-                      <button type="button" onClick={() => updateSlot(slot.id, "maxGuests", Math.max(1, slot.maxGuests - 1))}>-</button>
-                      <strong>{slot.maxGuests}</strong>
-                      <button type="button" onClick={() => updateSlot(slot.id, "maxGuests", slot.maxGuests + 1)}>+</button>
+                  {(slotsByDate[dateKey] || []).map((slot) => (
+                    <div key={slot.id} className={styles.slotCard}>
+                      <div className={styles.timeInputs}>
+                        <label>
+                          Start Time
+                          <input
+                            type="time"
+                            value={slot.startTime}
+                            onChange={(event) =>
+                              updateSlot(dateKey, slot.id, "startTime", event.target.value)
+                            }
+                          />
+                        </label>
+
+                        <label>
+                          End Time
+                          <input
+                            type="time"
+                            value={slot.endTime}
+                            onChange={(event) =>
+                              updateSlot(dateKey, slot.id, "endTime", event.target.value)
+                            }
+                          />
+                        </label>
+                      </div>
+
+                      <button
+                        type="button"
+                        className={styles.deleteSlotButton}
+                        onClick={() => removeSlot(dateKey, slot.id)}
+                      >
+                        Delete Slot
+                      </button>
                     </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    className={styles.deleteSlotButton}
-                    onClick={() => removeSlot(slot.id)}
-                  >
-                    Delete Slot
-                  </button>
+                  ))}
                 </div>
               ))}
             </div>

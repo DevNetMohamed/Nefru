@@ -11,7 +11,7 @@ import { IoMdShare } from "react-icons/io";
 
 const Book = () => {
   const [activeSlot, setActiveSlot] = useState("Morning");
-  
+
   const TIME_SLOTS = [
     { label: "Morning", Icon: Icons.sun },
     { label: "Afternoon", Icon: Icons.afternoon },
@@ -35,14 +35,14 @@ const Book = () => {
 
       {/* Schedule */}
       <Date />
-      
+
       <div className="container">
         <div className="py-2">Select Time Slot</div>
         <div className={Style.slotsRow}>
           {TIME_SLOTS.map((slot, index) => {
             const SlotIcon = slot.Icon;
             const isSelected = slot.label === activeSlot;
-            
+
             return (
               <div key={index} className={Style.timeSlot}>
                 <Button
@@ -59,7 +59,9 @@ const Book = () => {
         </div>
       </div>
 
-      <div className={`container d-flex justify-content-between bg-body-tertiary p-3`}>
+      <div
+        className={`container d-flex justify-content-between bg-body-tertiary p-3`}
+      >
         <div className="col-md-6">
           <h4>Travelers</h4>
           <span>850.00 ج.م per person</span>
@@ -96,9 +98,7 @@ const Book = () => {
 
       <div className="container my-4 d-flex justify-content-end">
         <Link to="/user/trips/book/status" style={{ textDecoration: "none" }}>
-          <Button type="primary">
-            Proceed to Payment
-          </Button>
+          <Button type="primary">Proceed to Payment</Button>
         </Link>
       </div>
     </>
