@@ -1,6 +1,6 @@
 import styles from "./CreateTour.module.css";
-import { FaArrowLeft, FaChevronDown, FaPlus } from "react-icons/fa6";
-import { useState } from "react";
+import { FaArrowLeft, FaPlus } from "react-icons/fa6";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiRequest } from "../../../services/api";
 
@@ -28,6 +28,44 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
     tourData.categories || [categories[0]],
   );
   const [loading, setLoading] = useState(false);
+  const [loadingTrip, setLoadingTrip] = useState(Boolean(editingTripId));
+
+  useEffect(() => {
+    async function loadTrip() {
+      if (!editingTripId) return;
+
+      setLoadingTrip(true);
+
+      try {
+        const response = await apiRequest(`/trips/${editingTripId}`);
+        const trip = response?.data;
+
+        const categoryReverseMap = {
+          History: "History & Culture",
+          Food: "Food & Culinary",
+          Adventure: "Adventure",
+          Culture: "History & Culture",
+        };
+
+        const durationMatch = `${trip.duration || ""}`.match(/^(\d+)/);
+
+        setTitle(trip.title || "");
+        setCity(trip.location || "");
+        setPrice(trip.price || "");
+        setGroupSize(trip.groupSize || 12);
+        setDurationValue(durationMatch?.[1] || "");
+        setDescription(trip.description || "");
+        setSelectedCategories([categoryReverseMap[trip.category] || categories[0]]);
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      } finally {
+        setLoadingTrip(false);
+      }
+    }
+
+    loadTrip();
+  }, [editingTripId]);
 
   function handleBack() {
     navigate("/guide");
@@ -68,8 +106,6 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
       duration: `${durationValue} Hours`,
       category: categoryMap[selectedCategories[0] || "History & Culture"] || "History",
       groupSize: Number(groupSize) || 12,
-      schedule: { dates: [], slots: [] },
-      gallery: [],
     };
 
     try {
@@ -93,7 +129,8 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
       navigate("/guide/schedule", { state: { tripId } });
     } catch (error) {
       console.error(error);
-      alert(error.message);
+      // show stack trace to help identify where 'role' access failed
+      alert(`${error.message}\n\n${error.stack || ""}`);
     } finally {
       setLoading(false);
     }
@@ -106,7 +143,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
           <FaArrowLeft />
         </button>
 
-        <h1 className={styles.title}>Create Tour</h1>
+        <h1 className={styles.title}>{editingTripId ? "Edit Tour" : "Create Tour"}</h1>
 
         <div className={styles.headerSpace} />
       </header>
@@ -123,6 +160,8 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
         </div>
 
         <section className={styles.card}>
+          {loadingTrip && <p className={styles.helperText}>Loading saved tour data...</p>}
+
           <div className={styles.formGroup}>
             <label className={styles.label}>TOUR TITLE</label>
             <input

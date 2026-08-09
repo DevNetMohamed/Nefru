@@ -39,12 +39,12 @@ const bookingSchema = new mongoose.Schema(
     },
     Time_Slot: {
       type: Date,
-      required: true,
+      // required: true,
       index: true,
     },
     timeSlot: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
       maxlength: 50,
     },
@@ -100,6 +100,12 @@ const bookingSchema = new mongoose.Schema(
       default: "none",
     },
     paymentReference: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    // رقم المعاملة الخاص بـ Stripe (Stripe Payment Intent ID)
+    stripePaymentIntentId: {
       type: String,
       trim: true,
       default: "",

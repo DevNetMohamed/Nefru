@@ -4,7 +4,7 @@ import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
 import oldCairo from "../../../../../../assets/images/explore/old-cairo.jpg";
 
-const tours = [
+const defaultTours = [
   {
     id: 1,
     image: pyramids,
@@ -37,10 +37,28 @@ const tours = [
     time: "04:00 PM - 08:00 PM",
     price: "$35",
   },
-  
 ];
 
-function AvailableToday() {
+const getImgSrc = (img, fallback) => {
+  if (!img) return fallback;
+  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+    return img;
+  }
+  return `http://localhost:5000/uploads/${img}`;
+};
+
+function AvailableToday({ tours }) {
+  const displayTours = tours && tours.length > 0
+    ? tours.map((t, idx) => ({
+        id: t._id || idx,
+        image: getImgSrc(t.image, [pyramids, museum, oldCairo][idx % 3]),
+        title: t.title,
+        location: t.location,
+        time: t.duration || "Available Today",
+        price: typeof t.price === "number" ? `$${t.price}` : t.price,
+      }))
+    : defaultTours;
+
   return (
     <section className={styles.section}>
       <div className={styles.header}>
@@ -55,7 +73,7 @@ function AvailableToday() {
       </div>
 
       <div className={styles.cards}>
-        {tours.map((tour) => (
+        {displayTours.map((tour) => (
           <div
             key={tour.id}
             className={styles.card}
@@ -91,4 +109,4 @@ function AvailableToday() {
   );
 }
 
-export default AvailableToday;
+export default AvailableToday;

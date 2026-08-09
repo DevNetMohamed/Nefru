@@ -6,13 +6,11 @@ import {
   Popup,
 } from "react-leaflet";
 
-
-
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
 import oldCairo from "../../../../../../assets/images/explore/old-cairo.jpg";
 
-const places = [
+const defaultPlaces = [
   {
     id: 1,
     title: "Old Cairo",
@@ -21,6 +19,7 @@ const places = [
     image: oldCairo,
     description:
       "Historic streets, mosques and architecture.",
+    position: [30.0444, 31.2357],
   },
   {
     id: 2,
@@ -30,30 +29,47 @@ const places = [
     image: museum,
     description:
       "Ancient treasures and world-famous artifacts.",
+    position: [30.0454, 31.2336],
   },
 ];
 
+const getImgSrc = (img, fallback) => {
+  if (!img) return fallback;
+  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+    return img;
+  }
+  return `http://localhost:5000/uploads/${img}`;
+};
 
+const getRealCairoCoordinates = (title = "") => {
+  const t = title.toLowerCase();
+  if (t.includes("pyramid") || t.includes("sphinx") || t.includes("giza")) return [29.9792, 31.1342];
+  if (t.includes("grand") && t.includes("museum")) return [29.9948, 31.1206];
+  if (t.includes("museum")) return [30.0478, 31.2336]; // Tahrir Museum
+  if (t.includes("old cairo") || t.includes("hanging")) return [30.0058, 31.2300];
+  if (t.includes("khan") || t.includes("bazaar")) return [30.0477, 31.2623];
+  if (t.includes("citadel") || t.includes("saladin")) return [30.0299, 31.2611];
+  if (t.includes("tower")) return [30.0459, 31.2243];
+  
+  // Fallback to random coordinate in central Cairo area
+  const lat = 30.01 + (Math.random() * 0.04);
+  const lng = 31.20 + (Math.random() * 0.06);
+  return [lat, lng];
+};
 
-const nearbyTours = [
-  {
-    name: "Giza Pyramids",
-    lat: 29.9792,
-    lng: 31.1342,
-  },
-  {
-    name: "Egyptian Museum",
-    lat: 30.0478,
-    lng: 31.2336,
-  },
-  {
-    name: "Khan El Khalili",
-    lat: 30.0477,
-    lng: 31.2620,
-  },
-];
+function ToursNearYou({ tours }) {
+  const displayPlaces = tours && tours.length > 0
+    ? tours.map((t, idx) => ({
+        id: t._id || idx,
+        title: t.title,
+        distance: t.location ? `📍 ${t.location}` : "12 km away",
+        rating: t.rating ? `${t.rating} (${t.reviewsCount || 0})` : "4.8 (127)",
+        image: getImgSrc(t.image, [oldCairo, museum, pyramids][idx % 3]),
+        description: t.description || "Ancient treasures and guided exploration.",
+        position: t.coordinates || getRealCairoCoordinates(t.title),
+      }))
+    : defaultPlaces;
 
-function ToursNearYou() {
   return (
     <section className={styles.section}>
       <div className={styles.header}>
@@ -72,23 +88,26 @@ function ToursNearYou() {
             center={[30.0444, 31.2357]}
             zoom={11}
             style={{
-                height: "350px",
-                width: "100%",
+              height: "350px",
+              width: "100%",
             }}
-            >
+          >
             <TileLayer
-                attribution='&copy; OpenStreetMap'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; OpenStreetMap'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <Marker position={[30.0444, 31.2357]}>
-                <Popup>Cairo</Popup>
-            </Marker>
-
-            <Marker position={[29.9792, 31.1342]}>
-                <Popup>Giza Pyramids</Popup>
-            </Marker>
-            </MapContainer>
+            {displayPlaces.map((place) => (
+              <Marker key={`marker-${place.id}`} position={place.position}>
+                <Popup>
+                  <div>
+                    <h4 style={{ margin: 0 }}>{place.title}</h4>
+                    <p style={{ margin: "5px 0 0 0", fontSize: "12px" }}>{place.distance}</p>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
 
           <button>
             Open Interactive Map
@@ -96,7 +115,7 @@ function ToursNearYou() {
         </div>
 
         <div className={styles.places}>
-          {places.map((place) => (
+          {displayPlaces.map((place) => (
             <div
               key={place.id}
               className={styles.placeCard}
@@ -110,7 +129,7 @@ function ToursNearYou() {
                 <h3>{place.title}</h3>
 
                 <span>
-                  📍 {place.distance}
+                  {place.distance}
                 </span>
 
                 <p>
@@ -133,4 +152,4 @@ function ToursNearYou() {
   );
 }
 
-export default ToursNearYou;
+export default ToursNearYou;

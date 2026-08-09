@@ -38,11 +38,11 @@ import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
 import Discover from "../pages/User/Discover/Discover";
 
 import Admin from "../pages/Admin/Admin";
-import DashboardStatus from "../pages/Admin/components/DashboardStatus/DashboardStatus";
-import Accounts from "../pages/Admin/components/Accounts/Accounts";
-import CMS from "../pages/Admin/components/CMS/CMS";
-import Analytics from "../pages/Admin/components/Analytics/Analytics";
-import Booking from "../pages/Admin/components/Booking/Booking";
+import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
+import Accounts from "../pages/Admin/pages/Accounts/Accounts";
+import CMS from "../pages/Admin/pages/CMS/CMS";
+import Analytics from "../pages/Admin/pages/Analytics/Analytics";
+import Booking from "../pages/Admin/pages/Booking/Booking";
 
 // Guide Pages
 import ToursManagement from "../pages/Guide/ToursManagement/ToursManagement";
@@ -51,6 +51,11 @@ import Schedule from "../pages/Guide/Schedule/Schedule";
 import TourMedia from "../pages/Guide/TourMedia/TourMedia";
 import TourApprove from "../pages/Guide/TourApprove/TourApprove";
 import GuideProfile from "../pages/Guide/GuideProfile/GuideProfile";
+import GuidePortalLayout from "../pages/Guide/components/GuidePortalLayout/GuidePortalLayout";
+import GuideDashboard from "../pages/Guide/GuideDashboard/GuideDashboard";
+import GuideCalendar from "../pages/Guide/GuideCalendar/GuideCalendar";
+import GuideAccountProfile from "../pages/Guide/GuideAccountProfile/GuideAccountProfile";
+import GuideNotifications from "../pages/Guide/GuideNotifications/GuideNotifications";
 
 
 export const router = createBrowserRouter([
@@ -147,7 +152,21 @@ export const router = createBrowserRouter([
  {
   path: "guide",
   children: [
-    { index: true, element: <ToursManagement /> },
+    // Shared guide shell. ToursManagement stays untouched inside the Outlet,
+    // so its own header/navigation can still be compared with the new shell.
+    {
+      element: <GuidePortalLayout />,
+      children: [
+        { index: true, element: <ToursManagement /> },
+        { path: "dashboard", element: <GuideDashboard /> },
+        { path: "calendar", element: <GuideCalendar /> },
+        { path: "profile", element: <GuideAccountProfile /> },
+        { path: "notifications", element: <GuideNotifications /> },
+      ],
+    },
+
+    // Existing create-tour flow — left completely unchanged and outside
+    // GuidePortalLayout to avoid adding another global header/navigation.
     { path: "createtour", element: <CreateTour /> },
     { path: "schedule", element: <Schedule /> },
     { path: "tourmedia", element: <TourMedia /> },

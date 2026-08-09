@@ -1,5 +1,4 @@
 .container{
-    border:1px solid var(--admin-border);
     background-color:white;
     border-radius:10px;
     flex-direction:column;
@@ -8,13 +7,13 @@
     gap:8px;
     display:flex;
     justify-content:space-between;
-    min-height:0;
-    overflow:hidden;
+    overflow: hidden;
 }
 .tableScroll{
     flex:1;
     min-height:0;
     overflow:auto;
+    /* max-height: 550px; */
 }
 .table{
     width:100%;
@@ -52,7 +51,13 @@
     margin-left:20px;
     /* border:1px solid red; */
 }
-.containerAvatar{
+.containerAccount{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    box-sizing:border-box;
+}
+.avatar{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -64,12 +69,12 @@
     height:35px;
     width:35px;
 }
-.avatar{
+.avatarImg{
     width:100%;
     height:100%;
     border-radius:50%;
 }
-.avatar :first-child{
+.avatarImg :first-child{
     background-color:var(--color-secondary-mute);
     border:1px solid var(--color-secondary);
     padding:7px;
@@ -121,4 +126,13 @@
     min-height:auto;
     font-weight:500;
     font-size:14px;
+}
+.radio{
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-self: center;
+    accent-color: var(--color-primary);
 }
