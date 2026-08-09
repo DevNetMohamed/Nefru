@@ -4,7 +4,10 @@ import { Button } from "../../../../shared/components/Button/Button";
 import Icons from '../../../../assets/icons'
 import {status} from '../../../../assets/variables'
 
+import {formatDate} from '../../../../utils/formatters'
+
 export default function Table({
+  title="",
   data = null,
   isPagination=true,
   item: Item,
@@ -36,7 +39,7 @@ export default function Table({
   return (
     <div className={styles.container}>
       <div className="s">
-        <p>Title</p>
+        <p>{title}</p>
       </div>
       <div className={styles.tableScroll}>
         <table className={styles.table}>
@@ -126,23 +129,18 @@ export function TopTourItem({ data, selected, onSelect}) {
     <tr className={styles.item}>
       <td></td>
       <td>
+        <img src={data.image}/>
+      </td>
+      <td>
         <p>{data.title}</p>
       </td>
-      <td>{data.guide}</td>
-      <td>{data.city}</td>
-      <td>{data.submittedOn}</td>
+      <td>{data.location}</td>
       <td>
-        <div
-          className={styles.status}
-          style={{
-            // backgroundColor: status[data.status].back,
-            // color: status[data.status].text,
-            // border: `1px solid ${status[data.status].text}`,
-          }}
-        >
-          {data.status}
+        <div className={styles.rate}>
+          <Icons.star /> {data.rating}
         </div>
       </td>
+      <td>{formatDate(data.createdAt)}</td>
     </tr>
   );
 }
