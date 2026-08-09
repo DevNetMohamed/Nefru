@@ -62,11 +62,6 @@ export default function Accounts(){
     return(
         <>
             <div className={styles.container}>
-                <div className={styles.title}>
-                    <h2 style={{fontSize:"32px"}}>Accounts Management</h2>
-                    <p style={{fontSize:"14px"}}>Manage accounts status across the Nefru platform.</p>
-                </div>
-                    
                 <div className={styles.status}>
                     <div className={styles.cardContainer}>
                         <Card className={styles.statusCard} icon={Icons.ticket} iconColor="#765A08" label="Total Tourists" color="#FFDF97" counter="12" tag="+2 new"/>
@@ -76,30 +71,30 @@ export default function Accounts(){
                     </div>
                 </div>
                 <div className={styles.body}>
-                    <div className={styles.tabs}>
-                        {
-                            accountTypes?.map((item,index)=>(
-                                <div 
-                                className={styles.containerTab} 
-                                data-state={selectedAccount === item?"true":""}
-                                onClick={() => {
-                                    setSelectedAccount(item);
-                                    setPage(1);
-                                    setSelectedRow(null);
-                                }}
-                                key={index}>
-                                <Button 
-                                    className={styles.tab}
-                                    >
-                                        {item}
-                                </Button>
-                                {selectedAccount === item?<p className={styles.count}>{recordsCount}</p>:<></>}
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <div className={styles.info}>
-                        <div className={styles.table}>
+                    <div className={styles.section}>
+                        <div className={styles.layout}>
+                            <div className={styles.tabs}>
+                                {
+                                    accountTypes?.map((item,index)=>(
+                                        <div 
+                                        className={styles.containerTab} 
+                                        data-state={selectedAccount === item?"true":""}
+                                        onClick={() => {
+                                            setSelectedAccount(item);
+                                            setPage(1);
+                                            setSelectedRow(null);
+                                        }}
+                                        key={index}>
+                                        <Button 
+                                            className={styles.tab}
+                                            >
+                                                {item}
+                                        </Button>
+                                        {selectedAccount === item?<p className={styles.count}>{recordsCount}</p>:<></>}
+                                        </div>
+                                    ))
+                                }
+                            </div>
                             <Table
                                 data={accounts}
                                 item={AccountItem}
@@ -107,8 +102,7 @@ export default function Accounts(){
                                 onPageChange={handlePageChange}
                                 />
                         </div>
-                        <div className={styles.form}>
-
+                        <div className={styles.layout}>
                             <Form>
                                 <FormInput title="User Name" placeholder="Enter User Name"/>
                                 <FormInput title="Email" placeholder="Enter Email"/>

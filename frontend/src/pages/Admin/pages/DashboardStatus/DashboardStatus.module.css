@@ -53,6 +53,8 @@
     flex-direction:column;
     justify-content:space-between;
     height:fit-content;
+    width:fit-content;
+    flex:content;
 }
 .header{
     display:flex;

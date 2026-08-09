@@ -13,6 +13,7 @@
     flex:1;
     min-height:0;
     overflow:auto;
+    scrollbar-width:thin;
     /* max-height: 550px; */
 }
 .table{
@@ -104,6 +105,8 @@
     align-items:center;
     display:flex;
     gap:5px;
+    padding:10px;
+    box-sizing:border-box;
 }
 .footer{
     display:flex;
