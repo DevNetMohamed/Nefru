@@ -28,7 +28,7 @@ function TourApprove({ approveData, onHome, onContactSupport }) {
   const data = approveData || {
     title: "All Done",
     message: tripId
-      ? "Your tour has been submitted for review. It usually takes 24 to 48 hours."
+      ? "Your trip has been submitted for review. It usually takes 24 to 48 hours."
       : "Waiting for admin review, it should take 24 to 48 hours",
     supportText: "Contact Support ?",
     buttonText: "Home",

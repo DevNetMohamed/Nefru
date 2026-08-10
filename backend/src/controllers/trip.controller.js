@@ -191,7 +191,7 @@ export const createTrip = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: "Tour created successfully",
+    message: "Trip created successfully",
     data: getTripSummary(trip),
   });
 });
@@ -289,7 +289,7 @@ export const updateMyTrip = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Tour updated successfully",
+    message: "Trip updated successfully",
     data: getTripSummary(trip),
   });
 });
@@ -329,7 +329,7 @@ export const changeTripStatus = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Tour status updated",
+    message: "Trip status updated",
     data: getTripSummary(trip),
   });
 });
@@ -369,7 +369,7 @@ export const updateTripMedia = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Tour media updated",
+    message: "Trip media updated",
     data: getTripSummary(trip),
   });
 });

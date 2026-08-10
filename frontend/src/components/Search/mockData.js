@@ -2,7 +2,7 @@ export const mockSearchData = {
   popularTrips: [
     {
       id: 1,
-      title: "Pyramids Tour",
+      title: "Pyramids Trip",
     },
     {
       id: 2,

@@ -251,9 +251,9 @@ async function exportDataset() {
         interactionWeights,
         recommendedTargets: {
           recommender: "Predict or rank tour_id for each user_id using interactions.csv.",
-          cancellation: "Predict booking_status=cancelled from booking and user/tour features.",
+          cancellation: "Predict booking_status=cancelled from booking and user/trip features.",
           sentiment: "Predict rating or sentiment bucket from review_text.",
-          demand: "Aggregate confirmed/completed bookings by tour, date, location, and category.",
+          demand: "Aggregate confirmed/completed bookings by trip, date, location, and category.",
         },
       }),
     ]);

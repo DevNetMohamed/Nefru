@@ -167,7 +167,7 @@ export const router = createBrowserRouter([
       ],
     },
 
-    // Existing create-tour flow — left completely unchanged and outside
+    // Existing create-trip flow — left completely unchanged and outside
     // GuidePortalLayout to avoid adding another global header/navigation.
     { path: "createtour", element: <CreateTour /> },
     { path: "schedule", element: <Schedule /> },

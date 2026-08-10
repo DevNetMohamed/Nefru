@@ -16,7 +16,7 @@ const defaultTours = [
   {
     id: 2,
     image: museum,
-    title: "Museum Highlights Tour",
+    title: "Museum Highlights Trip",
     location: "Cairo",
     time: "02:00 PM - 05:00 PM",
     price: "$40",
@@ -24,7 +24,7 @@ const defaultTours = [
   {
     id: 3,
     image: oldCairo,
-    title: "Old Cairo Walking Tour",
+    title: "Old Cairo Walking Trip",
     location: "Old Cairo",
     time: "04:00 PM - 08:00 PM",
     price: "$35",
@@ -32,7 +32,7 @@ const defaultTours = [
   {
     id: 4,
     image: pyramids,
-    title: "Old Cairo Walking Tour",
+    title: "Old Cairo Walking Trip",
     location: "Old Cairo",
     time: "04:00 PM - 08:00 PM",
     price: "$35",
@@ -73,14 +73,14 @@ function AvailableToday({ tours }) {
       </div>
 
       <div className={styles.cards}>
-        {displayTours.map((tour) => (
+        {displayTours.map((trip) => (
           <div
-            key={tour.id}
+            key={trip.id}
             className={styles.card}
           >
             <img
-              src={tour.image}
-              alt={tour.title}
+              src={trip.image}
+              alt={trip.title}
             />
 
             <div className={styles.content}>
@@ -88,14 +88,14 @@ function AvailableToday({ tours }) {
                 Available Today
               </span>
 
-              <h3>{tour.title}</h3>
+              <h3>{trip.title}</h3>
 
-              <p>{tour.location}</p>
+              <p>{trip.location}</p>
 
               <div className={styles.footer}>
-                <span>{tour.time}</span>
+                <span>{trip.time}</span>
 
-                <strong>{tour.price}</strong>
+                <strong>{trip.price}</strong>
               </div>
 
               <button>
@@ -109,4 +109,4 @@ function AvailableToday({ tours }) {
   );
 }
 
-export default AvailableToday;
+export default AvailableToday;

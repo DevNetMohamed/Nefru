@@ -19,7 +19,7 @@ import fallbackAvatar from "../../../assets/images/guiders/guide1.webp";
 import { logout } from "../../../store/slices/authSlice";
 import styles from "./GuideAccountProfile.module.css";
 
-function getInitials(fullName = "Tour Guide") {
+function getInitials(fullName = "Trip Guide") {
   return fullName
     .split(" ")
     .filter(Boolean)
@@ -100,7 +100,7 @@ export default function GuideAccountProfile() {
 
           <div className={styles.badgesRow}>
             <span className={styles.roleBadge}>
-              <UserRound size={14} /> Tour Guide
+              <UserRound size={14} /> Trip Guide
             </span>
 
             {guideData.verificationStatus === "approved" && (

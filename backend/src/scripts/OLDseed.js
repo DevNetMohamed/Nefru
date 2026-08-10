@@ -31,9 +31,9 @@ const seedDatabase = async () => {
         {
           title: {
             $in: [
-              "Historic Cairo Walking Tour",
+              "Historic Cairo Walking Trip",
               "Pyramids Half-Day Experience",
-              "Alexandria Coastal Tour",
+              "Alexandria Coastal Trip",
             ],
           },
         },
@@ -155,7 +155,7 @@ const seedDatabase = async () => {
 
     // 4. Create dummy trips for guide
     const cairoTrip = await Trip.create({
-      title: "Historic Cairo Walking Tour",
+      title: "Historic Cairo Walking Trip",
       description:
         "Explore Al-Muizz Street, Khan El-Khalili, and historic Islamic Cairo with a local guide.",
       longDescription:
@@ -188,7 +188,7 @@ const seedDatabase = async () => {
       description:
         "Visit the Giza Pyramids and Sphinx with a verified local guide.",
       longDescription:
-        "A half-day tour around Giza with a trusted local guide, clear pricing, and a structured route.",
+        "A half-day trip around Giza with a trusted local guide, clear pricing, and a structured route.",
       location: "Giza",
       price: 900,
       duration: "Half Day",
@@ -213,7 +213,7 @@ const seedDatabase = async () => {
     console.log("2");
 
     await Trip.create({
-      title: "Alexandria Coastal Tour",
+      title: "Alexandria Coastal Trip",
       description:
         "Discover the beauty of Alexandria's coastline and historic sites with a local guide.",
       longDescription:
@@ -227,7 +227,7 @@ const seedDatabase = async () => {
     });
 
     const alexandTrip = await Trip.create({
-      title: "Alexandria Coastal Tour",
+      title: "Alexandria Coastal Trip",
       description:
         "Discover the beauty of Alexandria's coastline and historic sites with a local guide.",
       location: "Alexandria",

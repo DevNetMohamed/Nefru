@@ -83,7 +83,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
 
   async function handleNext() {
     if (!title.trim() || !city.trim() || !description.trim() || !durationValue || !price) {
-      alert("Please fill in the main tour information first.");
+      alert("Please fill in the main trip information first.");
       return;
     }
 
@@ -143,7 +143,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
           <FaArrowLeft />
         </button>
 
-        <h1 className={styles.title}>{editingTripId ? "Edit Tour" : "Create Tour"}</h1>
+        <h1 className={styles.title}>{editingTripId ? "Edit Trip" : "Create Trip"}</h1>
 
         <div className={styles.headerSpace} />
       </header>
@@ -160,7 +160,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
         </div>
 
         <section className={styles.card}>
-          {loadingTrip && <p className={styles.helperText}>Loading saved tour data...</p>}
+          {loadingTrip && <p className={styles.helperText}>Loading saved trip data...</p>}
 
           <div className={styles.formGroup}>
             <label className={styles.label}>TOUR TITLE</label>
@@ -193,7 +193,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
               <div>
                 <label className={styles.label}>CATEGORIES (SELECT UP TO 3)</label>
                 <p className={styles.helperText}>
-                  Help travelers filter and find your tour based on their interests.
+                  Help travelers filter and find your trip based on their interests.
                 </p>
               </div>
             </div>
@@ -266,7 +266,7 @@ function CreateTour({ tourData = {}, onBack, onNext }) {
 
             <textarea
               className={styles.textarea}
-              placeholder="Describe what makes this tour special. What will travelers experience? Highlight key sights and the overall atmosphere."
+              placeholder="Describe what makes this trip special. What will travelers experience? Highlight key sights and the overall atmosphere."
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             />

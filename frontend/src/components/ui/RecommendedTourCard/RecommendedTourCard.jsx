@@ -48,7 +48,7 @@ function RecommendedTourCard({
             e.stopPropagation();
             setIsSaved(!isSaved);
           }}
-          aria-label="Save tour"
+          aria-label="Save trip"
         >
           <Heart
             size={16}
@@ -98,7 +98,7 @@ function RecommendedTourCard({
           </span>
 
           <button onClick={() => navigate("/user/discover")}>
-            View Tour
+            View Trip
           </button>
         </div>
       </div>

@@ -14,7 +14,7 @@ function ToursSection({ searchQuery }) {
 
         {
             id: 1,
-            title: "Giza Pyramids Half-Day Tour",
+            title: "Giza Pyramids Half-Day Trip",
             duration: "4 Hours",
             price: 45,
             image: pyramidsImage,
@@ -22,7 +22,7 @@ function ToursSection({ searchQuery }) {
 
         {
             id: 2,
-            title: "Luxor East Bank Tour",
+            title: "Luxor East Bank Trip",
             duration: "6 Hours",
             price: 65,
             image: luxorImage,
@@ -38,9 +38,9 @@ function ToursSection({ searchQuery }) {
 
     ];
 
-    const filteredTours = tours.filter((tour) =>
+    const filteredTours = tours.filter((trip) =>
 
-        tour.title
+        trip.title
             .toLowerCase()
             .includes(searchQuery.toLowerCase())
 
@@ -62,11 +62,11 @@ function ToursSection({ searchQuery }) {
 
             <div className={styles.tours}>
 
-                {filteredTours.map((tour) => (
+                {filteredTours.map((trip) => (
 
                     <TourCard
-                        key={tour.id}
-                        tour={tour}
+                        key={trip.id}
+                        trip={trip}
                     />
 
                 ))}

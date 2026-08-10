@@ -7,7 +7,7 @@ const NOTIFICATION_TYPES = [
   "support",
   "system",
   "review",
-  "tour",
+  "trip",
   "reminder",
 ];
 

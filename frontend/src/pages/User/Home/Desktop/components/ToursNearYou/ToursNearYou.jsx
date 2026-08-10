@@ -142,7 +142,7 @@ function ToursNearYou({ tours }) {
               </div>
 
               <button>
-                View Tour
+                View Trip
               </button>
             </div>
           ))}
@@ -152,4 +152,4 @@ function ToursNearYou({ tours }) {
   );
 }
 
-export default ToursNearYou;
+export default ToursNearYou;

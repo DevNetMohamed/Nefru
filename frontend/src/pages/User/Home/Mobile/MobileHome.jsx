@@ -66,7 +66,7 @@ const defaultFeaturedExplores = [
 const defaultBestChoiceTours = [
   {
     id: 1,
-    title: "Private Half Day Luxor East Bank Tour",
+    title: "Private Half Day Luxor East Bank Trip",
     location: "Luxor",
     duration: "4h 30m",
     rating: "4.9",
@@ -76,7 +76,7 @@ const defaultBestChoiceTours = [
   },
   {
     id: 2,
-    title: "Full Day Tour to West & East Banks of Luxor",
+    title: "Full Day Trip to West & East Banks of Luxor",
     location: "Luxor",
     duration: "8 hours",
     rating: "4.8",
@@ -355,24 +355,24 @@ const MobileHome = () => {
           </button>
         </div>
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar">
-          {bestChoiceTours.map((tour) => {
-            const isSaved = savedIds.has(tour.id);
+          {bestChoiceTours.map((trip) => {
+            const isSaved = savedIds.has(trip.id);
             return (
               <div
-                key={tour.id}
+                key={trip.id}
                 onClick={() => navigate("/user/discover")}
                 className="w-64 bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden shrink-0 flex flex-col cursor-pointer hover:shadow-md transition-all"
               >
                 <div className="relative w-full h-36">
                   <img
-                    src={tour.image}
-                    alt={tour.title}
+                    src={trip.image}
+                    alt={trip.title}
                     className="w-full h-full object-cover"
                   />
                   <button
-                    onClick={(e) => toggleSave(tour.id, e)}
+                    onClick={(e) => toggleSave(trip.id, e)}
                     className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-xs text-gray-700 hover:scale-110 transition-transform"
-                    aria-label="Save tour"
+                    aria-label="Save trip"
                   >
                     <Heart
                       className="w-4 h-4"
@@ -382,33 +382,33 @@ const MobileHome = () => {
                   </button>
                   <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-sm text-white px-2.5 py-0.5 rounded-md text-[10px] font-semibold flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-red-400" />
-                    <span>{tour.location}</span>
+                    <span>{trip.location}</span>
                   </div>
                 </div>
 
                 <div className="p-3.5 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-bold text-gray-900 text-xs leading-snug line-clamp-2">
-                      {tour.title}
+                      {trip.title}
                     </h3>
                     <div className="flex items-center gap-1.5 text-gray-500 text-[11px] mt-2">
                       <Clock className="w-3.5 h-3.5 shrink-0 text-gray-400" />
-                      <span>{tour.duration}</span>
+                      <span>{trip.duration}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-gray-100">
                     <div className="flex items-center gap-1 text-xs text-gray-800 font-bold">
                       <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                      <span>{tour.rating}</span>
+                      <span>{trip.rating}</span>
                       <span className="text-gray-400 font-normal text-[11px]">
-                        ({tour.reviewsCount})
+                        ({trip.reviewsCount})
                       </span>
                     </div>
                     <div className="text-right">
                       <span className="text-xs text-gray-400 font-normal block leading-none">From</span>
                       <span className="text-base font-extrabold text-[#003D5B]">
-                        ${tour.price}
+                        ${trip.price}
                       </span>
                     </div>
                   </div>
@@ -440,30 +440,30 @@ const MobileHome = () => {
         </div>
 
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar">
-          {defaultAvailableToday.map((tour) => (
+          {defaultAvailableToday.map((trip) => (
             <div
-              key={tour.id}
+              key={trip.id}
               onClick={() => navigate("/user/discover")}
               className="w-64 bg-amber-50/50 rounded-2xl border border-amber-200/60 p-3 shrink-0 flex gap-3 items-center cursor-pointer hover:bg-amber-100/50 transition-colors"
             >
               <img
-                src={tour.image}
-                alt={tour.title}
+                src={trip.image}
+                alt={trip.title}
                 className="w-20 h-20 rounded-xl object-cover shrink-0 shadow-xs"
               />
               <div className="flex-1 min-w-0">
                 <span className="inline-block bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md mb-1">
-                  {tour.timeSlot}
+                  {trip.timeSlot}
                 </span>
                 <h3 className="font-bold text-gray-900 text-xs leading-tight truncate">
-                  {tour.title}
+                  {trip.title}
                 </h3>
                 <p className="text-gray-500 text-[11px] truncate mt-0.5">
-                  📍 {tour.location}
+                  📍 {trip.location}
                 </p>
                 <div className="flex items-center justify-between mt-1.5">
                   <span className="font-extrabold text-xs text-[#003D5B]">
-                    ${tour.price}
+                    ${trip.price}
                   </span>
                   <span className="text-[10px] font-bold text-[#003D5B] underline">
                     Reserve Now →
