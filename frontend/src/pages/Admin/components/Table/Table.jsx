@@ -4,11 +4,15 @@ import { Button } from "../../../../shared/components/Button/Button";
 import Icons from '../../../../assets/icons'
 import {status} from '../../../../assets/variables'
 
+import {formatDate} from '../../../../utils/formatters'
+
 export default function Table({
+  title="",
   data = null,
+  isPagination=true,
   item: Item,
   onPageChange = () => {},
-  onRowSelect = () => {}, // notifies the parent which row was selected
+  onRowSelect = () => {},
 }) {
   const rows = data?.data ?? [];
   const meta = data?.meta ?? {};
@@ -34,6 +38,9 @@ export default function Table({
   }
   return (
     <div className={styles.container}>
+      <div className="s">
+        <p>{title}</p>
+      </div>
       <div className={styles.tableScroll}>
         <table className={styles.table}>
           <thead className={styles.tableHead}>
@@ -74,7 +81,7 @@ export default function Table({
         </table>
       </div>
 
-      <div className={styles.footer}>
+      {isPagination?(<div className={styles.footer}>
         <p>showing page {pagination.currentPage} of {pagination.totalPages}</p>
 
         <div className={styles.action}>
@@ -113,10 +120,31 @@ export default function Table({
             Next{" >"}
           </Button>
         </div>
-      </div>
+      </div>):<></>}
     </div>
   );
 }
+export function TopTourItem({ data, selected, onSelect}) {
+  return (
+    <tr className={styles.item}>
+      <td></td>
+      <td>
+        <img src={data.image}/>
+      </td>
+      <td>
+        <p>{data.title}</p>
+      </td>
+      <td>{data.location}</td>
+      <td>
+        <div className={styles.rate}>
+          <Icons.star /> {data.rating}
+        </div>
+      </td>
+      <td>{formatDate(data.createdAt)}</td>
+    </tr>
+  );
+}
+
 
 export function TourItem({ data, selected, onSelect}) {
   return (

@@ -1,7 +1,4 @@
 import { Router } from "express";
-const tripRouter = Router();
-
-tripRouter.route("/").get(getAllTrips).post(createTrip);
 import {
   getAllTrips,
   createTrip,
@@ -14,7 +11,7 @@ import {
 import { protect } from "../middlewares/authMiddleware.js";
 import { upload } from "../config/upload.js";
 
-
+const tripRouter = Router();
 
 tripRouter.get("/guide/me", protect, getMyGuideTrips);
 tripRouter.route("/").get(getAllTrips).post(protect, createTrip);

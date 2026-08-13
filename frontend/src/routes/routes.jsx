@@ -57,6 +57,8 @@ import GuideCalendar from "../pages/Guide/GuideCalendar/GuideCalendar";
 import GuideAccountProfile from "../pages/Guide/GuideAccountProfile/GuideAccountProfile";
 import GuideNotifications from "../pages/Guide/GuideNotifications/GuideNotifications";
 
+import { Navigate } from "react-router-dom";
+
 
 export const router = createBrowserRouter([
   {
@@ -180,6 +182,7 @@ export const router = createBrowserRouter([
     element: <Admin />,
 
     children: [
+      { index: true , element:<Navigate to="/admin/overview" replace/>},
       { path: "overview", element: <DashboardStatus /> },
       { path: "accounts", element: <Accounts /> },
       { path: "cms", element: <CMS /> },

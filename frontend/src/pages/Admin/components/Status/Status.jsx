@@ -5,34 +5,46 @@ import { LuTicket } from "react-icons/lu";
 import { BsCashStack } from "react-icons/bs";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 
-export default function Status() {
+import { formatNumber } from '../../../../utils/formatters'
+
+export default function Status({data=[]}) {
   return (
     <>
       <div className={styles.container}>
-          <Card icon={Icons.ticket} iconColor="#765A08" label="TOTAL Bookings" color="#FFDF97" counter="12" tag="+2 new"/>
-          <Card icon={Icons.circleCheck} iconColor="#515F74" label="CONFIRMED BOOKINGS" color="#D5E3FD" counter="1,240" tag="+15%"/>
-          <Card icon={Icons.circleWrong} iconColor="#BA1A1A" label="CANCELLED BOOKINGS" color="#FFDAD6" counter="$4,200" tag="Target Reached"/>
-          <Card icon={Icons.cash} iconColor="#565E74" label="REVENUE FROM BOOKINGS" color="#DAE2FD" counter="3" tag="Urgent"/>
+          {
+            data.map((item,index)=>(
+              <Card key={index} title={item.title} counter={formatNumber(item.counter)} rate={item.rate} rateStatus={item.rateStatus} duration={item.duration}/>
+            ))
+          }
       </div>
     </>
   );
 }
 
-export function Card({icon, iconColor,color, label, counter, tag, className}){
-  const Icon = icon;
-  return(<>
+export function Card({ title, counter, rate, rateStatus = "UP", duration, className }) {
+  const statusStyles = {
+    "UP": { icon:Icons.arrowUp,color: "green" },
+    "DOWN": { icon:Icons.arrowDown,color: "red" },
+    "NORMAL": { icon:Icons.arrowUp,color: "gray" }
+  };
+  const currentStyle = statusStyles[rateStatus] || {icon:Icons.ArrowRight, color: "black" };
+  const Icon = currentStyle.icon
+  return (
     <div className={`${className} ${styles.card}`}>
-          <div className={styles.header}>
-            <p className={styles.label}>{label}</p>
-            <div className={styles.icon} style={{backgroundColor:color}}>
-              <Icon style={{color:iconColor}} />
-            </div>
-          </div>
-          <p className={styles.counter}>{counter}</p>
+      <p className={styles.title}>{title}</p>
+      <div className={styles.counter}>
+        <p>{counter}</p>
+        <div className={styles.rate}>
+          <Icon style={{ color:currentStyle.color, fontSize:"20px"}} color="green"/>
+          <p style={{ color: currentStyle.color, fontWeight: 500 }}>
+            {rate}
+          </p>
+        </div>
+      </div>
+      <p style={{ fontSize: "12px", color: "#888" }}>{duration}</p>
     </div>
-  </>)
+  );
 }
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -56,13 +68,22 @@ ChartJS.register(
 
 export function LineChart({x, y, points, max, step, lineColor, pointColor}) {
   const data = {
-    labels: x || ["May 12", "May 13", "May 14", "May 15", "May 16", "May 17", "May 18"],
+    labels: x || ["May 1","May 5", "May 10", "May 15", "May 20", "May 25", "May 30"],
     datasets: [
       {
-        label: "",
-        data: points || [120, 280, 200, 450],
-        borderColor:lineColor|| "#a3681f",
-        backgroundColor:pointColor|| "#a32a1f",
+        label: "Bookings",
+        data: points || [1.5,2.2,3.1,.9,1.2,3.9,2.3],
+        borderColor:lineColor|| "#5656df",
+        backgroundColor:pointColor|| "#5656df",
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 4,
+      },
+      {
+        label: "Revenue",
+        data: points || [1,2.6,3,1,2,3.1,2.2],
+        borderColor:lineColor|| "#db7d11",
+        backgroundColor:pointColor|| "#db7d11",
         tension: 0.4,
         borderWidth: 3,
         pointRadius: 4,
@@ -103,13 +124,11 @@ export function LineChart({x, y, points, max, step, lineColor, pointColor}) {
           color: "#374151",
         },
       },
-
       y: {
         beginAtZero: true,
-        max: max || 2500,
-
+        max: max || 4,
         ticks: {
-          stepSize: step || 500,
+          stepSize: step || 1,
           color: "#9CA3AF",
         },
 

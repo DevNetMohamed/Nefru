@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./TourMedia.module.css";
 import {
   FaArrowLeft,
@@ -15,17 +15,35 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiRequest } from "../../../services/api";
 
+const API_ORIGIN = "http://localhost:5000";
+
+function getImageSrc(image) {
+  if (!image) return "";
+  if (image.startsWith("http") || image.startsWith("data:") || image.startsWith("blob:")) {
+    return image;
+  }
+
+  if (image.startsWith("/uploads")) {
+    return `${API_ORIGIN}${image}`;
+  }
+
+  return `${API_ORIGIN}/uploads/${image}`;
+}
+
 function TourMedia({ mediaData = {}, tourId, onBack }) {
   const navigate = useNavigate();
   const location = useLocation();
   const tripId = tourId || location.state?.tripId;
 
   const [coverPhoto, setCoverPhoto] = useState(null);
+  const [existingCoverPhoto, setExistingCoverPhoto] = useState("");
   const [galleryPhotos, setGalleryPhotos] = useState([]);
+  const [existingGalleryPhotos, setExistingGalleryPhotos] = useState([]);
   const [highlights, setHighlights] = useState(mediaData.highlights || ["", ""]);
   const [included, setIncluded] = useState(mediaData.included || ["Bottled Water", "Transportation"]);
   const [customIncluded, setCustomIncluded] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingTrip, setLoadingTrip] = useState(Boolean(tripId));
 
   const allIncluded = [
     { name: "Bottled Water", icon: <FaDroplet /> },
@@ -34,14 +52,53 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
     { name: "Meals", icon: <FaUtensils /> },
     { name: "Wi-Fi", icon: <FaWifi /> },
   ];
+  const galleryUploadedCount = Array.from({ length: 6 }).filter(
+    (_, index) => galleryPhotos[index] || existingGalleryPhotos[index],
+  ).length;
+
+  useEffect(() => {
+    async function loadTripMedia() {
+      if (!tripId) return;
+
+      setLoadingTrip(true);
+
+      try {
+        const response = await apiRequest(`/trips/${tripId}`);
+        const trip = response?.data;
+
+        setExistingCoverPhoto(trip.image || "");
+        setExistingGalleryPhotos(Array.isArray(trip.gallery) ? trip.gallery.slice(0, 6) : []);
+        setHighlights(
+          Array.isArray(trip.highlights) && trip.highlights.length > 0
+            ? trip.highlights.map((item) =>
+                typeof item === "string" ? item : item.title || item.text || "",
+              )
+            : ["", ""],
+        );
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      } finally {
+        setLoadingTrip(false);
+      }
+    }
+
+    loadTripMedia();
+  }, [tripId]);
 
   function chooseCover(e) {
     setCoverPhoto(e.target.files[0]);
   }
 
-  function chooseGallery(e) {
-    const files = Array.from(e.target.files);
-    setGalleryPhotos(files.slice(0, 6));
+  function chooseGallery(index, e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setGalleryPhotos((prev) => {
+      const next = [...prev];
+      next[index] = file;
+      return next.slice(0, 6);
+    });
   }
 
   function changeHighlight(index, value) {
@@ -82,32 +139,46 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
       }
 
       const formData = new FormData();
+      const newGalleryEntries = galleryPhotos
+        .map((file, index) => (file ? { file, index } : null))
+        .filter(Boolean);
 
       if (coverPhoto) {
         formData.append("coverImage", coverPhoto);
       }
 
-      galleryPhotos.forEach((file) => {
+      newGalleryEntries.forEach(({ file }) => {
         formData.append("galleryImages", file);
       });
 
-      const uploadResponse = await fetch(`http://localhost:5000/api/trips/${tripId}/upload-media`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
-        body: formData,
-      });
+      let uploadData = { data: { coverImage: "", galleryImages: [] } };
 
-      const uploadData = await uploadResponse.json();
+      if (coverPhoto || newGalleryEntries.length > 0) {
+        const uploadResponse = await fetch(`${API_ORIGIN}/api/trips/${tripId}/upload-media`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+          },
+          body: formData,
+        });
 
-      if (!uploadResponse.ok) {
-        throw new Error(uploadData.message || "Upload failed");
+        uploadData = await uploadResponse.json();
+
+        if (!uploadResponse.ok) {
+          throw new Error(uploadData.message || "Upload failed");
+        }
       }
 
+      const nextGallery = [...existingGalleryPhotos];
+      const uploadedGalleryImages = uploadData?.data?.galleryImages || [];
+
+      newGalleryEntries.forEach(({ index }, uploadIndex) => {
+        nextGallery[index] = uploadedGalleryImages[uploadIndex];
+      });
+
       const payload = {
-        image: uploadData?.data?.coverImage || "",
-        gallery: uploadData?.data?.galleryImages || [],
+        image: uploadData?.data?.coverImage || existingCoverPhoto,
+        gallery: nextGallery.filter(Boolean),
         highlights: highlights.filter(Boolean),
         longDescription: highlights.filter(Boolean).join(" | "),
       };
@@ -162,10 +233,12 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
             <input type="file" accept="image/*" onChange={chooseCover} />
             {coverPhoto ? (
               <img src={URL.createObjectURL(coverPhoto)} alt="Cover preview" />
+            ) : existingCoverPhoto ? (
+              <img src={getImageSrc(existingCoverPhoto)} alt="Cover preview" />
             ) : (
               <>
                 <FaImage className={styles.uploadIcon} />
-                <strong>Click to upload cover photo</strong>
+                <strong>{loadingTrip ? "Loading cover photo..." : "Click to upload cover photo"}</strong>
                 <span>High resolution (min 1920x1080) recommended.</span>
               </>
             )}
@@ -175,31 +248,33 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
         <section className={styles.section}>
           <div className={styles.sectionTitleRow}>
             <h2>Gallery Photos</h2>
-            <span>{galleryPhotos.length} / 6 uploaded</span>
+            <span>{galleryUploadedCount} / 6 uploaded</span>
           </div>
 
-          <label className={styles.galleryGrid}>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={chooseGallery}
-            />
-
+          <div className={styles.galleryGrid}>
             {Array.from({ length: 6 }).map((_, index) => {
               const file = galleryPhotos[index];
+              const existingImage = existingGalleryPhotos[index];
 
               return (
-                <div key={index} className={styles.galleryItem}>
+                <label key={index} className={styles.galleryItem}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => chooseGallery(index, e)}
+                  />
+
                   {file ? (
                     <img src={URL.createObjectURL(file)} alt="Gallery preview" />
+                  ) : existingImage ? (
+                    <img src={getImageSrc(existingImage)} alt="Gallery preview" />
                   ) : (
                     <FaPlus />
                   )}
-                </div>
+                </label>
               );
             })}
-          </label>
+          </div>
         </section>
 
         <div className={styles.divider}></div>

@@ -14,6 +14,21 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../../../services/api";
 
+const API_ORIGIN = "http://localhost:5000";
+
+function getImageSrc(image) {
+  if (!image) return "";
+  if (image.startsWith("http") || image.startsWith("data:") || image.startsWith("blob:")) {
+    return image;
+  }
+
+  if (image.startsWith("/uploads")) {
+    return `${API_ORIGIN}${image}`;
+  }
+
+  return `${API_ORIGIN}/uploads/${image}`;
+}
+
 function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("All");
@@ -140,7 +155,7 @@ if (Array.isArray(toursData) && toursData.length > 0) {
             {visibleTours.map((tour) => (
               <article key={tour.id} className={styles.card}>
                 <div className={styles.cardImageWrap}>
-                  <img src={tour.image} alt={tour.title} className={styles.cardImage} />
+                  <img src={getImageSrc(tour.image)} alt={tour.title} className={styles.cardImage} />
                   <span className={`${styles.badge} ${getStatusClass(tour.status)}`}>
                     {tour.statusText || tour.status}
                   </span>
