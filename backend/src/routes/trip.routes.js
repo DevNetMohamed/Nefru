@@ -13,6 +13,8 @@ import { upload } from "../config/upload.js";
 
 const tripRouter = Router();
 
+// tripRouter.route("/").get(getAllTrips).post(createTrip);
+
 tripRouter.get("/guide/me", protect, getMyGuideTrips);
 tripRouter.route("/").get(getAllTrips).post(protect, createTrip);
 tripRouter.route("/:id").get(getTripById).patch(protect, updateMyTrip);

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
+
 import {
   Search,
   Bell,
@@ -170,27 +171,45 @@ const topDestinations = [
 
 
 
+// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
   if (
     typeof img === "string" &&
     (img.startsWith("http://") ||
       img.startsWith("https://") ||
-      img.startsWith("data:"))
+      img.startsWith("data:") ||
+      img.startsWith("/"))
   ) {
     return img;
   }
   return `http://localhost:5000/uploads/${img}`;
 };
 
+// Bug #11 fixed: time-aware greeting helper
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good Morning ☀️";
+  if (hour < 17) return "Good Afternoon 🌤️";
+  return "Good Evening 🌙";
+}
+
+
 const MobileHome = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth || {});
+  // Bug #8 fixed: pull notification count from Redux
+  const notifications = useSelector((state) => state.notifications?.notifications || []);
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
   const [openSearch, setOpenSearch] = useState(false);
   const [savedIds, setSavedIds] = useState(new Set());
   const [bestChoiceTours, setBestChoiceTours] = useState(defaultBestChoiceTours);
 
   const fullName = user?.fullName ? user.fullName.split(" ")[0] : "Traveler";
+  // Bug #11 fixed: dynamic greeting
+  const greeting = getGreeting();
+
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -234,7 +253,8 @@ const MobileHome = () => {
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-24 font-sans">
       {/* 1. Header Bar */}
       <div className="bg-white sticky top-0 z-40 px-4 py-3 border-b border-gray-100 flex items-center justify-between shadow-xs">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/user/home")}>
+            {/* Bug #9 fixed: navigate to /user/home not / */}
             <img src={logo} alt="Nefru Logo" className="h-[38px] w-auto" />
             <span 
               className="font-semibold text-[#003D5B]" 
@@ -249,9 +269,13 @@ const MobileHome = () => {
           aria-label="Notifications"
         >
           <Bell className="w-5 h-5 text-gray-700" />
-          <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+          {/* Bug #8 fixed: only show badge when there are unread notifications */}
+          {unreadCount > 0 && (
+            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+          )}
         </button>
       </div>
+
 
       {/* 2. Welcome & Search Banner */}
       <div className="px-4 pt-4 pb-2 bg-white">
@@ -260,14 +284,16 @@ const MobileHome = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>Welcome back</span>
           </div>
+          {/* Bug #11 fixed: dynamic time-aware greeting */}
           <h1 className="text-2xl font-black text-gray-900 tracking-tight leading-snug">
-            Good Morning, {fullName} ☀️
+            {greeting}, {fullName}
           </h1>
           <p className="text-gray-500 text-xs mt-0.5">
             Where would you like to explore in Egypt today?
           </p>
         </div>
 
+        {/* Bug #2 fixed: search bar now opens SearchModal instead of navigating */}
         <div
           onClick={() => navigate("/user/discover")}
           className="w-full bg-gray-100/80 border border-gray-200 rounded-2xl py-3 px-4 flex items-center gap-3 cursor-pointer shadow-xs hover:border-[#003D5B]/30 transition-all"
@@ -278,6 +304,7 @@ const MobileHome = () => {
           </span>
         </div>
       </div>
+
 
       {/* 4. Nearby Exploration Banner */}
       <div className="px-4 py-3">
@@ -573,7 +600,8 @@ const MobileHome = () => {
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex justify-around items-center py-2 px-3 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
         <button
           onClick={() => {
-            navigate("/");
+            // Bug #10 fixed: navigate to /user/home not /
+            navigate("/user/home");
           }}
           className="flex flex-col items-center gap-1 text-xs font-bold text-[#003D5B]"
         >

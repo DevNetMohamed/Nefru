@@ -53,12 +53,13 @@ const DesktopHome = () => {
         loop
         muted
         playsInline
-        className="fixed top-0 left-0 w-full h-full object-cover -z-10 opacity-25 blur-[3px]"
-      >
+        className="fixed top-0 left-0 w-full h-full object-cover -z-10 opacity-25 blur-[3px]">
+      
         <source src={backgroundVideo} type="video/mp4" />
       </video>
 
-      <div className="relative z-10" style={{ zoom: 0.9 }}>
+      <div className="relative z-10">
+
         <DesktopNavbar />
 
         {loading ? (

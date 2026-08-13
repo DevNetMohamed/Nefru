@@ -1,4 +1,5 @@
 import styles from "./TrustedGuides.module.css";
+import { useNavigate } from "react-router-dom";
 
 import guide1 from "../../../../../../assets/images/guiders/guide1.webp";
 import guide2 from "../../../../../../assets/images/guiders/guide3.webp";
@@ -39,15 +40,23 @@ const defaultGuides = [
   },
 ];
 
+// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
     return img;
   }
   return `http://localhost:5000/uploads/${img}`;
 };
 
 function TrustedGuides({ guides }) {
+  const navigate = useNavigate();
   const displayGuides = guides && guides.length > 0
     ? guides.map((g, idx) => ({
         id: g._id || idx,
@@ -78,7 +87,8 @@ function TrustedGuides({ guides }) {
           </p>
         </div>
 
-        <button>
+        {/* Bug #7 fixed: View All Guides button */}
+        <button onClick={() => navigate("/user/discover")}>
           View All Guides
         </button>
       </div>
@@ -106,7 +116,8 @@ function TrustedGuides({ guides }) {
               {guide.experience}
             </span>
 
-            <button>
+            {/* Bug #7 fixed: View Profile button */}
+            <button onClick={() => navigate("/user/discover")}>
               View Profile
             </button>
           </div>

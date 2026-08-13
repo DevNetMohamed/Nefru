@@ -3,13 +3,15 @@ import { Heart, MapPin, Clock, Star } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img) => {
   if (!img) return "";
   if (
     typeof img === "string" &&
     (img.startsWith("http://") ||
       img.startsWith("https://") ||
-      img.startsWith("data:"))
+      img.startsWith("data:") ||
+      img.startsWith("/"))
   ) {
     return img;
   }
