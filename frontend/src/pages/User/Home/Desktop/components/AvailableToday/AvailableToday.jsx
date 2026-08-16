@@ -1,4 +1,5 @@
 import styles from "./AvailableToday.module.css";
+import { useNavigate } from "react-router-dom";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
@@ -16,7 +17,7 @@ const defaultTours = [
   {
     id: 2,
     image: museum,
-    title: "Museum Highlights Trip",
+    title: "Museum Highlights Tour",
     location: "Cairo",
     time: "02:00 PM - 05:00 PM",
     price: "$40",
@@ -24,7 +25,7 @@ const defaultTours = [
   {
     id: 3,
     image: oldCairo,
-    title: "Old Cairo Walking Trip",
+    title: "Old Cairo Walking Tour",
     location: "Old Cairo",
     time: "04:00 PM - 08:00 PM",
     price: "$35",
@@ -32,22 +33,30 @@ const defaultTours = [
   {
     id: 4,
     image: pyramids,
-    title: "Old Cairo Walking Trip",
+    title: "Old Cairo Walking Tour",
     location: "Old Cairo",
     time: "04:00 PM - 08:00 PM",
     price: "$35",
   },
 ];
 
+// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
     return img;
   }
   return `http://localhost:5000/uploads/${img}`;
 };
 
 function AvailableToday({ tours }) {
+  const navigate = useNavigate();
   const displayTours = tours && tours.length > 0
     ? tours.map((t, idx) => ({
         id: t._id || idx,
@@ -69,18 +78,19 @@ function AvailableToday({ tours }) {
           </p>
         </div>
 
-        <button>View All</button>
+        {/* Bug #7 fixed: View All button now navigates */}
+        <button onClick={() => navigate("/user/discover")}>View All</button>
       </div>
 
       <div className={styles.cards}>
-        {displayTours.map((trip) => (
+        {displayTours.map((tour) => (
           <div
-            key={trip.id}
+            key={tour.id}
             className={styles.card}
           >
             <img
-              src={trip.image}
-              alt={trip.title}
+              src={tour.image}
+              alt={tour.title}
             />
 
             <div className={styles.content}>
@@ -88,17 +98,18 @@ function AvailableToday({ tours }) {
                 Available Today
               </span>
 
-              <h3>{trip.title}</h3>
+              <h3>{tour.title}</h3>
 
-              <p>{trip.location}</p>
+              <p>{tour.location}</p>
 
               <div className={styles.footer}>
-                <span>{trip.time}</span>
+                <span>{tour.time}</span>
 
-                <strong>{trip.price}</strong>
+                <strong>{tour.price}</strong>
               </div>
 
-              <button>
+              {/* Bug #7 fixed: Book Now navigates to discover */}
+              <button onClick={() => navigate("/user/discover")}>
                 Book Now
               </button>
             </div>

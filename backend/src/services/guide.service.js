@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 import { Trip } from "../models/trip.model.js";
 
 const GUIDE_USER_FIELDS = "fullName avatar verificationStatus isActive";
@@ -59,7 +59,7 @@ async function getGuideResponse(guideQuery) {
 export async function getPublicGuideProfile(guideId) {
   if (!mongoose.isValidObjectId(guideId)) return null;
 
-  const guide = await getGuideResponse(Guide.findById(guideId));
+  const guide = await getGuideResponse(GuideProfile.findById(guideId));
 
   if (!guide || !guide.isActive || !guide.verified) return null;
 
@@ -71,12 +71,12 @@ export async function getPublicGuideProfile(guideId) {
 }
 
 export async function getOwnGuideProfile(userId) {
-  return getGuideResponse(Guide.findOne({ user: userId }));
+  return getGuideResponse(GuideProfile.findOne({ user: userId }));
 }
 
 export async function updateOwnGuideProfile(userId, updates) {
   return getGuideResponse(
-    Guide.findOneAndUpdate(
+    GuideProfile.findOneAndUpdate(
       { user: userId },
       { $set: updates },
       { new: true, runValidators: true },

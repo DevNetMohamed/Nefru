@@ -23,6 +23,7 @@
     "mongoose": "^8.24.0",
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
+    "nefru-root": "file:..",
     "stripe": "^22.3.2"
   },
   "devDependencies": {

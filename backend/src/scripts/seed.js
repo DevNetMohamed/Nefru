@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 import { Trip } from "../models/trip.model.js";
 import { Booking } from "../models/booking.model.js";
 import { TouristProfile } from "../models/tourist.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 import { Notification } from "../models/notification.model.js";
 import { Review } from "../models/review.model.js";
 import { Interaction } from "../models/interaction.model.js";
@@ -58,7 +58,7 @@ const guideSeedData = [
     verificationStatus: "approved",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=12",
-    title: "Licensed Egyptologist Guide",
+    title: "Licensed Egyptologist GuideProfile",
     headline: "History-rich tours with clear plans and local stories",
     location: "Cairo, Egypt",
     about:
@@ -73,7 +73,7 @@ const guideSeedData = [
     verificationStatus: "approved",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=47",
-    title: "Cultural Trip Guide",
+    title: "Cultural Trip GuideProfile",
     headline: "Cairo neighborhoods, local food, and everyday Egyptian culture",
     location: "Cairo, Egypt",
     about:
@@ -103,7 +103,7 @@ const guideSeedData = [
     verificationStatus: "pending",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=44",
-    title: "Desert Adventure Guide",
+    title: "Desert Adventure GuideProfile",
     headline: "Responsible desert trips and authentic oasis experiences",
     location: "Siwa, Egypt",
     about:
@@ -118,7 +118,7 @@ const guideSeedData = [
     verificationStatus: "approved",
     isActive: false,
     avatar: "https://i.pravatar.cc/300?img=11",
-    title: "Alexandria Local Guide",
+    title: "Alexandria Local GuideProfile",
     headline: "Mediterranean history and coastal city walks",
     location: "Alexandria, Egypt",
     about:
@@ -175,7 +175,7 @@ const tripSeedData = [
     slots: [{ startTime: "09:30 AM", endTime: "01:30 PM", maxGuests: 12 }],
     highlights: [
       { title: "Early Entry", text: "Start before the busiest visitor period." },
-      { title: "Licensed Guide", text: "Historical explanations in simple English." },
+      { title: "Licensed GuideProfile", text: "Historical explanations in simple English." },
     ],
   },
   {
@@ -442,7 +442,7 @@ async function removeOldSeedData() {
   }).select("_id");
 
   const oldUserIds = oldUsers.map((user) => user._id);
-  const oldGuideProfiles = await Guide.find({ user: { $in: oldUserIds } }).select("_id");
+  const oldGuideProfiles = await GuideProfile.find({ user: { $in: oldUserIds } }).select("_id");
   const oldGuideProfileIds = oldGuideProfiles.map((guide) => guide._id);
   const seedTitles = tripSeedData.map((trip) => trip.title).concat([
     "Pyramids Half-Day Experience",
@@ -480,7 +480,7 @@ async function removeOldSeedData() {
 
   await Trip.deleteMany({ _id: { $in: oldTripIds } });
   await TouristProfile.deleteMany({ user: { $in: oldUserIds } });
-  await Guide.deleteMany({ user: { $in: oldUserIds } });
+  await GuideProfile.deleteMany({ user: { $in: oldUserIds } });
   await User.deleteMany({ _id: { $in: oldUserIds } });
 }
 
@@ -506,7 +506,7 @@ async function createUsersAndProfiles() {
     })),
   );
 
-  const guideProfiles = await Guide.create(
+  const guideProfiles = await GuideProfile.create(
     guideSeedData.map((guide, index) => ({
       user: guideUsers[index]._id,
       title: guide.title,
@@ -550,12 +550,22 @@ async function createUsersAndProfiles() {
 }
 
 async function createTrips(guideUsers) {
+  const defaultCoordinates = {
+    Giza: { lat: 29.9792, lng: 31.1342 },
+    Cairo: { lat: 30.0444, lng: 31.2357 },
+    Alexandria: { lat: 31.2001, lng: 29.9187 },
+    Luxor: { lat: 25.6872, lng: 32.6396 },
+    Siwa: { lat: 29.2032, lng: 25.5186 },
+    Aswan: { lat: 22.3372, lng: 31.6258 },
+  };
+
   return Trip.create(
     tripSeedData.map((trip) => ({
       title: trip.title,
       description: trip.description,
       longDescription: trip.longDescription,
       location: trip.location,
+      coordinates: trip.coordinates || defaultCoordinates[trip.location] || { lat: 30.0444, lng: 31.2357 },
       price: trip.price,
       duration: trip.duration,
       image: trip.image,
@@ -697,7 +707,7 @@ async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffse
       (review) => review.guide.toString() === guideUsers[guideIndex]._id.toString(),
     );
 
-    await Guide.findOneAndUpdate(
+    await GuideProfile.findOneAndUpdate(
       { user: guideUsers[guideIndex]._id },
       {
         rating: average(guideReviews.map((review) => review.rating)),
@@ -1072,7 +1082,7 @@ async function printSummary({ guideUsers, touristUsers, trips, bookings, notific
   console.log(`ML interactions: ${interactions.length}`);
   console.log("-----------------------------------");
   console.log(`Admin login: ${env.emailAdmin} / ${env.passwordAdmin}`);
-  console.log(`Guide login: ${env.emailGuide} / ${env.passwordGuide}`);
+  console.log(`GuideProfile login: ${env.emailGuide} / ${env.passwordGuide}`);
   console.log(`Tourist login: ${env.emailTourist} / ${env.passwordTourist}`);
   console.log(`Other seed users use the same role password and end with ${SEED_EMAIL_SUFFIX}`);
   console.log("-----------------------------------\n");

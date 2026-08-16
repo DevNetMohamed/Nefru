@@ -1,4 +1,3 @@
-// wil be used for authentication and authorization only
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
@@ -7,11 +6,15 @@ const REGISTER_ROLES = ["tourist", "guide"];
 
 const userSchema = new mongoose.Schema(
   {
-    authId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Auth",
-      required: true,
+    email: {
+      type: String,
+      required: [true, "Email is required"],
       unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
     },
     role: {
       type: String,
@@ -20,40 +23,40 @@ const userSchema = new mongoose.Schema(
       default: "tourist",
       index: true,
     },
-    accountStatus: {
+    status: {
       type: String,
-      enum: ["active", "suspended", "deactivated"],
+      // suspended > temporary block , deactivated > permenant block
+      enum: ["active", "suspended", "deactivated"], 
       default: "active",
       index: true,
     },
     profileId: {
       type: mongoose.Schema.Types.ObjectId,
       refPath: "roleProfile",
-      required: false
+      // required: false
     },
     roleProfile: {
       type: String, 
       enum: ["TouristProfile", "GuideProfile"],
-      default:"TouristProfile",
-      required: true
+      default:"TouristProfile", 
+      // required: true
     }
   },
   {timestamps: true,}
 );
 
 
-const User = mongoose.model("User", userSchema);
 
-export default User;
+// export default User;
 
-// userSchema.pre("save", async function (next) {
-//   if (!this.isModified("password")) return next();
-//   this.password = await bcrypt.hash(this.password, 10);
-// });
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return;
+  this.password = await bcrypt.hash(this.password, 10);
+});
 
-// userSchema.methods.comparePassword = async function (matchedPassword) {
-//   return await bcrypt.compare(matchedPassword, this.password);
-// };
-// const User = mongoose.model("User", userSchema);
+userSchema.methods.comparePassword = async function (matchedPassword) {
+  return await bcrypt.compare(matchedPassword, this.password);
+};
 
+export const User = mongoose.model("User", userSchema);
 export { USER_ROLES, REGISTER_ROLES };

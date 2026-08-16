@@ -5,7 +5,7 @@
 // - Add social media links if needed
 // - Add other guide-related fields in the future
 
-// Future: Guide document verification
+// Future: GuideProfile document verification
 // - Allow guides to upload verification documents
 // - Store document URL and storage ID
 // - Store document file type (image/pdf)
@@ -24,19 +24,46 @@ const GUIDE_SPECIALTIES = [
   "Desert Safari",
 ];
 
+const galleryItemSchema = new mongoose.Schema(
+  {
+    src: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    alt: {
+      type: String,
+      trim: true,
+      maxlength: 150,
+      default: "",
+    },
+    publicId: {
+      type: String,
+      trim: true,
+      default: "",
+      select: false,
+    },
+  },
+  { timestamps: true },
+);
+
 const guideProfileSchema = new mongoose.Schema(
   {
-    firstName:{
-      type: String,
-      trim: true,
-      maxlength: 15,
-      required:true,
-    },
-    lastName:{
-      type: String,
-      trim: true,
-      maxlength: 15,
-      required:true,
+    // firstName:{
+    //   type: String,
+    //   trim: true,
+    //   maxlength: 15,
+    //   required:true,
+    // },
+    // lastName:{
+    //   type: String,
+    //   trim: true,
+    //   maxlength: 15,
+    //   required:true,
+    // },
+    fullName:{
+      type:String,
+      required:true
     },
     headline: {
       type: String,
@@ -95,28 +122,6 @@ const guideProfileSchema = new mongoose.Schema(
   {timestamps: true,},
 );
 
-const galleryItemSchema = new mongoose.Schema(
-  {
-    src: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    alt: {
-      type: String,
-      trim: true,
-      maxlength: 150,
-      default: "",
-    },
-    publicId: {
-      type: String,
-      trim: true,
-      default: "",
-      select: false,
-    },
-  },
-  { timestamps: true },
-);
 
 const GuideProfile = mongoose.model("GuideProfile", guideProfileSchema);
 

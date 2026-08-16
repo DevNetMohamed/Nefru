@@ -43,7 +43,7 @@ function LoginForm() {
         });
 
         // Validate backend response shape before storing
-        const token = response?.token;
+        const token = response?.meta.token;
         const user = response?.data?.user;
 
         if (!token || !user) {

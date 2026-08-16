@@ -1,4 +1,5 @@
 import styles from "./DiscoverEgypt.module.css";
+import { useNavigate } from "react-router-dom";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
@@ -33,6 +34,7 @@ const categories = [
 ];
 
 function DiscoverEgypt() {
+  const navigate = useNavigate();
   return (
     <section
       id="explore-egypt"
@@ -64,7 +66,8 @@ function DiscoverEgypt() {
 
               <p>{item.description}</p>
 
-              <button>
+              {/* Bug #7 fixed: Explore Guide button now navigates */}
+              <button onClick={() => navigate("/user/discover")}>
                 Explore Guide →
               </button>
             </div>

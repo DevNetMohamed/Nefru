@@ -1,5 +1,5 @@
 import { Trip } from "../models/trip.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import mongoose from "mongoose";
 
@@ -12,6 +12,7 @@ function getTripSummary(trip) {
     description: trip.description,
     longDescription: trip.longDescription || trip.description,
     location: trip.location,
+    coordinates: trip.coordinates,
     price: trip.price,
     duration: trip.duration,
     image: trip.image,
@@ -97,7 +98,7 @@ export const getTripById = asyncHandler(async (req, res) => {
     throw new Error("Trip not found");
   }
 
-  const guideProfile = await Guide.findOne({ user: trip.guide._id })
+  const guideProfile = await GuideProfile.findOne({ user: trip.guide._id })
     .select("rating reviewsCount about yearsExperience languages specialties")
     .lean();
 
@@ -107,6 +108,7 @@ export const getTripById = asyncHandler(async (req, res) => {
     description: trip.description,
     longDescription: trip.longDescription || trip.description,
     location: trip.location,
+    coordinates: trip.coordinates,
     price: trip.price,
     duration: trip.duration,
     image: trip.image,
@@ -146,7 +148,7 @@ export const getTripById = asyncHandler(async (req, res) => {
 /**
  * @desc Create a new trip
  * @route POST /api/trips
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const createTrip = asyncHandler(async (req, res) => {
   if (req.user.role !== "guide" && req.user.role !== "admin") {
@@ -159,6 +161,7 @@ export const createTrip = asyncHandler(async (req, res) => {
     description,
     longDescription,
     location,
+    coordinates,
     price,
     duration,
     image,
@@ -168,9 +171,22 @@ export const createTrip = asyncHandler(async (req, res) => {
     gallery,
   } = req.body;
 
-  if (!title || !description || !location || !price || !duration || !category) {
+  const invalid =
+    !title ||
+    !description ||
+    !location ||
+    !price ||
+    !duration ||
+    !category ||
+    !coordinates ||
+    coordinates.lat === undefined ||
+    coordinates.lng === undefined;
+
+  if (invalid) {
     res.status(400);
-    throw new Error("Please provide title, description, location, price, duration and category");
+    throw new Error(
+      "Please provide title, description, location, price, duration, category and coordinates"
+    );
   }
 
   const trip = await Trip.create({
@@ -178,6 +194,7 @@ export const createTrip = asyncHandler(async (req, res) => {
     description,
     longDescription: longDescription || description,
     location,
+    coordinates,
     price,
     duration,
     image: image || "",
@@ -195,11 +212,10 @@ export const createTrip = asyncHandler(async (req, res) => {
     data: getTripSummary(trip),
   });
 });
-
 /**
  * @desc Get tours for the logged-in guide
  * @route GET /api/trips/guide/me
- * @access Private (Guide)
+ * @access Private (GuideProfile)
  */
 export const getMyGuideTrips = asyncHandler(async (req, res) => {
   if (req.user.role !== "guide" && req.user.role !== "admin") {
@@ -235,7 +251,7 @@ export const getMyGuideTrips = asyncHandler(async (req, res) => {
 /**
  * @desc Update a guide tour
  * @route PATCH /api/trips/:id
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const updateMyTrip = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -297,7 +313,7 @@ export const updateMyTrip = asyncHandler(async (req, res) => {
 /**
  * @desc Change trip review status
  * @route PATCH /api/trips/:id/status
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const changeTripStatus = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -337,7 +353,7 @@ export const changeTripStatus = asyncHandler(async (req, res) => {
 /**
  * @desc Update tour media fields
  * @route PATCH /api/trips/:id/media
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const updateTripMedia = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
