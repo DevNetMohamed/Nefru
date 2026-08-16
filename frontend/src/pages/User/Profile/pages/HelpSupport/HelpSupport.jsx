@@ -38,7 +38,7 @@ const supportCards = [
 ];
 
 const questions = [
-  "How do I book a tour on Nefru?",
+  "How do I book a trip on Nefru?",
   "What payment methods are accepted?",
   "Can I change or cancel my booking?",
   "How do I update my account details?",

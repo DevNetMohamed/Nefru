@@ -8,7 +8,7 @@ import { FiCalendar, FiUsers, FiInfo, FiArrowRight } from "react-icons/fi";
  */
 export default function BookingSummaryStep({ bookingData, onNext }) {
   // بيانات افتراضية إذا لم تتوفر من الصفحة السابقة
-  const title = bookingData?.title || "Giza Pyramids Private Tour";
+  const title = bookingData?.title || "Giza Pyramids Private Trip";
   const date = bookingData?.date || "Oct 24, 2023";
   const time = bookingData?.time || "09:00 AM";
   const adults = bookingData?.adults || 2;
@@ -34,7 +34,7 @@ export default function BookingSummaryStep({ bookingData, onNext }) {
           alt={title}
           className={styles.tourBanner}
         />
-        <span className={styles.tourBannerTag}>Private Tour</span>
+        <span className={styles.tourBannerTag}>Private Trip</span>
         <h4 className={styles.tourBannerTitle}>{title}</h4>
       </div>
 

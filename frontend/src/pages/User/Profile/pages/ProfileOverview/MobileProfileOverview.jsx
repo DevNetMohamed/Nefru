@@ -76,7 +76,7 @@ export default function MobileProfileOverview() {
           <FiStar />
           <span>
             <strong>Reviews Written</strong>
-            <small>Your tour feedback</small>
+            <small>Your trip feedback</small>
           </span>
           <b>›</b>
         </Link>

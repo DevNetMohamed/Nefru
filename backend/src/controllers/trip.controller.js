@@ -1,5 +1,5 @@
 import { Trip } from "../models/trip.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import mongoose from "mongoose";
 
@@ -98,7 +98,7 @@ export const getTripById = asyncHandler(async (req, res) => {
     throw new Error("Trip not found");
   }
 
-  const guideProfile = await Guide.findOne({ user: trip.guide._id })
+  const guideProfile = await GuideProfile.findOne({ user: trip.guide._id })
     .select("rating reviewsCount about yearsExperience languages specialties")
     .lean();
 
@@ -148,7 +148,7 @@ export const getTripById = asyncHandler(async (req, res) => {
 /**
  * @desc Create a new trip
  * @route POST /api/trips
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const createTrip = asyncHandler(async (req, res) => {
   if (req.user.role !== "guide" && req.user.role !== "admin") {
@@ -208,14 +208,14 @@ export const createTrip = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: "Tour created successfully",
+    message: "Trip created successfully",
     data: getTripSummary(trip),
   });
 });
 /**
  * @desc Get tours for the logged-in guide
  * @route GET /api/trips/guide/me
- * @access Private (Guide)
+ * @access Private (GuideProfile)
  */
 export const getMyGuideTrips = asyncHandler(async (req, res) => {
   if (req.user.role !== "guide" && req.user.role !== "admin") {
@@ -251,7 +251,7 @@ export const getMyGuideTrips = asyncHandler(async (req, res) => {
 /**
  * @desc Update a guide tour
  * @route PATCH /api/trips/:id
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const updateMyTrip = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -305,7 +305,7 @@ export const updateMyTrip = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Tour updated successfully",
+    message: "Trip updated successfully",
     data: getTripSummary(trip),
   });
 });
@@ -313,7 +313,7 @@ export const updateMyTrip = asyncHandler(async (req, res) => {
 /**
  * @desc Change trip review status
  * @route PATCH /api/trips/:id/status
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const changeTripStatus = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -345,7 +345,7 @@ export const changeTripStatus = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Tour status updated",
+    message: "Trip status updated",
     data: getTripSummary(trip),
   });
 });
@@ -353,7 +353,7 @@ export const changeTripStatus = asyncHandler(async (req, res) => {
 /**
  * @desc Update tour media fields
  * @route PATCH /api/trips/:id/media
- * @access Private (Guide/Admin)
+ * @access Private (GuideProfile/Admin)
  */
 export const updateTripMedia = asyncHandler(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -385,7 +385,7 @@ export const updateTripMedia = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Tour media updated",
+    message: "Trip media updated",
     data: getTripSummary(trip),
   });
 });

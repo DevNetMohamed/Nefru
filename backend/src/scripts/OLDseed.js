@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 import { Trip } from "../models/trip.model.js";
 import { Booking } from "../models/booking.model.js";
 import { TouristProfile } from "../models/tourist.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 
 const seedDatabase = async () => {
   try {
@@ -31,9 +31,9 @@ const seedDatabase = async () => {
         {
           title: {
             $in: [
-              "Historic Cairo Walking Tour",
+              "Historic Cairo Walking Trip",
               "Pyramids Half-Day Experience",
-              "Alexandria Coastal Tour",
+              "Alexandria Coastal Trip",
             ],
           },
         },
@@ -44,7 +44,7 @@ const seedDatabase = async () => {
       user: { $in: oldSeedUserIds },
     });
 
-    await Guide.deleteMany({
+    await GuideProfile.deleteMany({
       user: { $in: oldSeedUserIds },
     });
 
@@ -79,7 +79,7 @@ const seedDatabase = async () => {
 
     for (let i = 101; i <= 200; i++) {
       User.create({
-        fullName: `Demo Guide ${i}`,
+        fullName: `Demo GuideProfile ${i}`,
         email: `guide${i}@test.com`,
         password: "$2b$10$Lvv6O4uv2YFsdNQMx43GhufhpqiK761pfbexdubNhHqLqc0o5o2US",
         role: "guide",
@@ -91,7 +91,7 @@ const seedDatabase = async () => {
 
  
     const guideUser = await User.create({
-      fullName: "Demo Guide",
+      fullName: "Demo GuideProfile",
       email: env.emailGuide,
       password: env.passwordGuide,
       role: "guide",
@@ -112,9 +112,9 @@ const seedDatabase = async () => {
       preferredLanguage: "en",
     });
 
-    // await Guide.create({
+    // await GuideProfile.create({
     //   user: guideUser._id,
-    //   title: "Certified Local Guide",
+    //   title: "Certified Local GuideProfile",
     //   headline: "Explore Egypt with a trusted local guide",
     //   location: "Cairo, Egypt",
     //   about:
@@ -132,9 +132,9 @@ const seedDatabase = async () => {
 
 
 
-    const guide = await Guide.create({
+    const guide = await GuideProfile.create({
   user: guideUser._id,
-  title: "Certified Local Guide",
+  title: "Certified Local GuideProfile",
   headline: "Explore Egypt with a trusted local guide",
   location: "Cairo, Egypt",
   about:
@@ -155,7 +155,7 @@ const seedDatabase = async () => {
 
     // 4. Create dummy trips for guide
     const cairoTrip = await Trip.create({
-      title: "Historic Cairo Walking Tour",
+      title: "Historic Cairo Walking Trip",
       description:
         "Explore Al-Muizz Street, Khan El-Khalili, and historic Islamic Cairo with a local guide.",
       longDescription:
@@ -176,7 +176,7 @@ const seedDatabase = async () => {
           text: "Walk through historic streets and landmarks.",
         },
         {
-          title: "Local Guide",
+          title: "Local GuideProfile",
           text: "Clear explanation and no hidden fees.",
         },
       ],
@@ -188,7 +188,7 @@ const seedDatabase = async () => {
       description:
         "Visit the Giza Pyramids and Sphinx with a verified local guide.",
       longDescription:
-        "A half-day tour around Giza with a trusted local guide, clear pricing, and a structured route.",
+        "A half-day trip around Giza with a trusted local guide, clear pricing, and a structured route.",
       location: "Giza",
       price: 900,
       duration: "Half Day",
@@ -213,7 +213,7 @@ const seedDatabase = async () => {
     console.log("2");
 
     await Trip.create({
-      title: "Alexandria Coastal Tour",
+      title: "Alexandria Coastal Trip",
       description:
         "Discover the beauty of Alexandria's coastline and historic sites with a local guide.",
       longDescription:
@@ -227,7 +227,7 @@ const seedDatabase = async () => {
     });
 
     const alexandTrip = await Trip.create({
-      title: "Alexandria Coastal Tour",
+      title: "Alexandria Coastal Trip",
       description:
         "Discover the beauty of Alexandria's coastline and historic sites with a local guide.",
       location: "Alexandria",
@@ -279,7 +279,7 @@ const seedDatabase = async () => {
     console.log(`Email: ${env.emailTourist}`);
     console.log(`Password: ${env.passwordTourist}`);
     console.log("-----------------------------------");
-    console.log("Guide:");
+    console.log("GuideProfile:");
     console.log(`Email: ${env.emailGuide}`);
     console.log(`Password: ${env.passwordGuide}`);
     console.log("-----------------------------------");

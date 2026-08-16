@@ -1,3 +1,18 @@
+/* 
+
+// If the user is a guide:
+// - Add guide-specific information (license, bio, etc.)
+// - Add social media links if needed
+// - Add other guide-related fields in the future
+
+// Future: GuideProfile document verification
+// - Allow guides to upload verification documents
+// - Store document URL and storage ID
+// - Store document file type (image/pdf)
+// - Store document type (passport/national ID/guide license)
+// - Add document verification status if needed later
+
+*/
 import mongoose from "mongoose";
 
 const GUIDE_SPECIALTIES = [
@@ -32,19 +47,23 @@ const galleryItemSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const guideSchema = new mongoose.Schema(
+const guideProfileSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      unique: true,
-    },
-    title: {
-      type: String,
-      trim: true,
-      maxlength: 100,
-      default: "",
+    // firstName:{
+    //   type: String,
+    //   trim: true,
+    //   maxlength: 15,
+    //   required:true,
+    // },
+    // lastName:{
+    //   type: String,
+    //   trim: true,
+    //   maxlength: 15,
+    //   required:true,
+    // },
+    fullName:{
+      type:String,
+      required:true
     },
     headline: {
       type: String,
@@ -79,16 +98,10 @@ const guideSchema = new mongoose.Schema(
       enum: GUIDE_SPECIALTIES,
       default: [],
     },
-    heroImage: {
+    image: {
       type: String,
       trim: true,
       default: "",
-    },
-    heroImagePublicId: {
-      type: String,
-      trim: true,
-      default: "",
-      select: false,
     },
     gallery: {
       type: [galleryItemSchema],
@@ -106,11 +119,11 @@ const guideSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  {
-    timestamps: true,
-  },
+  {timestamps: true,},
 );
 
-const Guide = mongoose.model("Guide", guideSchema);
 
-export { Guide, GUIDE_SPECIALTIES };
+const GuideProfile = mongoose.model("GuideProfile", guideProfileSchema);
+
+export { GuideProfile, GUIDE_SPECIALTIES };
+

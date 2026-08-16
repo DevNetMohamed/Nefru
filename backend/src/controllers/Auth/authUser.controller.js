@@ -2,74 +2,36 @@ import { User, USER_ROLES, REGISTER_ROLES } from "../../models/user.model.js";
 import { generateToken } from "../../utils/generateToken.js";
 import crypto from "crypto";
 import { env } from "../../config/env.js";
-import { TouristProfile } from "../../models/tourist.model.js";
-import { Guide } from "../../models/guide.model.js";
 
+// import Auth from '../../models/auth.model.js'
+
+import { TouristProfile } from "../../models/tourist.model.js";
+import { GuideProfile } from "../../models/guide.model.js";
+
+// auth is only for authenticating a user no matter guide or tourist
 export const registerUser = async (req, res, next) => {
   try {
-    const { fullName, email, password, role } = req.body;
+    const { email, password } = req.body;
 
-    if (!REGISTER_ROLES.includes(role)) {
-      res.status(400);
-      throw new Error("Invalid role");
-    }
-
-    const existingUser = await User.findOne({ email });
-
+    const existingUser = await User.findOne({ email: email });
     if (existingUser) {
-      res.status(400);
-      throw new Error("Unable to create account");
+      return res.status(409).json({
+        message: "Account already used",
+        data: existingUser
+      });
     }
 
-    let user;
+    const user = await User.create({ email, password })
+    return res.status(200).json({
+      message: "Account created Successfuly",
+      data: user
+    })
 
-    try {
-      user = await User.create({
-        fullName,
-        email,
-        password,
-        role,
-        verificationStatus: role === "guide" ? "pending" : "approved",
-        // Later with multer:
-        // verificationDocument will be required here.
-        // If uploaded successfully, verificationStatus remains "pending".
-      });
-
-      if (role === "tourist") {
-        await TouristProfile.create({ user: user._id });
-      }
-
-      if (role === "guide") {
-        await Guide.create({ user: user._id });
-      }
-
-      const token = generateToken(user._id);
-
-      res.status(201).json({
-        success: true,
-        message: "Account created successfully",
-        token,
-        data: {
-          user: {
-            id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            role: user.role,
-            avatar: user.avatar,
-            verificationStatus: user.verificationStatus,
-            isActive: user.isActive,
-            createdAt: user.createdAt,
-          },
-        },
-      });
-    } catch (error) {
-      if (user?._id) {
-        await User.findByIdAndDelete(user._id);
-      }
-      return next(error);
-    }
   } catch (error) {
-    next(error);
+    console.log(error)
+    return res.status(400).json({
+      message: "Account creation failed, try later"
+    })
   }
 };
 
@@ -87,39 +49,40 @@ export const loginUser = async (req, res, next) => {
       throw new Error("Invalid email or password");
     }
 
-    if (!user.isActive) {
-      res.status(403);
-      throw new Error("Unable to login");
+    if (!user.status) {
+      return res.status(403).json({
+        message: "Unable to login, try later"
+      });
     }
 
     const isPasswordCorrect = await user.comparePassword(password);
 
     if (!isPasswordCorrect) {
-      res.status(401);
-      throw new Error("Invalid email or password");
+      return res.status(401).json({
+        message: "Invalid email or password"
+      });
     }
 
     const token = generateToken(user._id);
 
-    res.status(200).json({
-      success: true,
-      message: "Logged in successfully",
-      token,
-      data: {
-        user: {
-          id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          role: user.role,
-          avatar: user.avatar,
-          verificationStatus: user.verificationStatus,
-          isActive: user.isActive,
-          createdAt: user.createdAt,
-        },
-      },
-    });
+    return res.status(200).json(
+      {
+        "success": true,
+        "message": "Operation completed successfully",
+        "data": { user },
+        "meta": { token }
+      });
+
   } catch (error) {
-    next(error);
+    return res.status(500).json(
+      {
+        "success": false,
+        "message": "Login failed",
+        "error": {
+          "code": "LOGIN_ERROR",
+          "details": []
+        }
+      })
   }
 };
 

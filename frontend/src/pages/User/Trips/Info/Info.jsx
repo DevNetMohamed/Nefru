@@ -16,16 +16,16 @@ import styles from "./Info.module.css";
 
 function Info({ tourData }) {
   const navigate = useNavigate();
-  const tour = tourData || {};
+  const trip = tourData || {};
 
-  const highlights = tour.highlights || [
+  const highlights = trip.highlights || [
     { icon: <FaUsers />, title: "Small Group", text: "(Max 6)" },
     { icon: <FaCarSide />, title: "Luxury", text: "Transfers" },
     { icon: <FaUtensils />, title: "Breakfast", text: "Included" },
     { icon: <FaUserTie />, title: "Expert", text: "Egyptologist" },
   ];
 
-  const reviews = tour.reviews || [
+  const reviews = trip.reviews || [
     {
       id: 1,
       name: "Eleanor V.",
@@ -44,7 +44,7 @@ function Info({ tourData }) {
     },
   ];
 
-  const guide = tour.guide || {
+  const guide = trip.guide || {
     name: "Dr. Zahi M.",
     badge: "PhD Egyptology",
     rating: "4.9",
@@ -80,8 +80,8 @@ function Info({ tourData }) {
       <main className={styles.content}>
         <section className={styles.hero}>
           <img
-            src={tour.image || ""}
-            alt={tour.title || "Tour"}
+            src={trip.image || ""}
+            alt={trip.title || "Trip"}
             className={styles.heroImage}
           />
         </section>
@@ -89,12 +89,12 @@ function Info({ tourData }) {
         <section className={styles.bookingBar}>
           <div className={styles.priceBox}>
             <div className={styles.priceLine}>
-              <span className={styles.price}>${tour.price || 185}</span>
+              <span className={styles.price}>${trip.price || 185}</span>
               <span className={styles.perPerson}>/ person</span>
             </div>
 
             <p className={styles.dateLine}>
-              {tour.date || "Oct 24"} - {tour.guests || "1 guest"}
+              {trip.date || "Oct 24"} - {trip.guests || "1 guest"}
             </p>
           </div>
 
@@ -105,36 +105,36 @@ function Info({ tourData }) {
 
         <section className={styles.tagsRow}>
           <span className={styles.mainTag}>NEFRU Original</span>
-          <span className={styles.secondTag}>Guided Tour</span>
+          <span className={styles.secondTag}>Guided Trip</span>
         </section>
 
         <section className={styles.titleSection}>
           <h2 className={styles.title}>
-            {tour.title || "Majestic Pyramids & Sphinx Exclusive Sunrise Tour"}
+            {trip.title || "Majestic Pyramids & Sphinx Exclusive Sunrise Trip"}
           </h2>
 
           <div className={styles.metaRow}>
             <div className={styles.metaItem}>
               <FaStar className={styles.starIcon} />
               <span className={styles.boldText}>
-                {tour.rating || "4.96"}
+                {trip.rating || "4.96"}
               </span>
               <span className={styles.linkText}>
-                ({tour.reviewsCount || "128 reviews"})
+                ({trip.reviewsCount || "128 reviews"})
               </span>
             </div>
 
             <div className={styles.metaItem}>
               <FaLocationDot className={styles.metaIcon} />
               <span className={styles.normalText}>
-                {tour.location || "Giza, Egypt"}
+                {trip.location || "Giza, Egypt"}
               </span>
             </div>
 
             <div className={styles.metaItem}>
               <FaClock className={styles.metaIcon} />
               <span className={styles.normalText}>
-                {tour.duration || "4 Hours"}
+                {trip.duration || "4 Hours"}
               </span>
             </div>
           </div>
@@ -143,12 +143,12 @@ function Info({ tourData }) {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>About this experience</h3>
           <p className={styles.paragraph}>
-            {tour.description ||
-              "Experience the awe-inspiring Great Pyramids of Giza before the crowds arrive. This exclusive sunrise tour offers unparalleled access to one of the world's most iconic ancient sites."}
+            {trip.description ||
+              "Experience the awe-inspiring Great Pyramids of Giza before the crowds arrive. This exclusive sunrise trip offers unparalleled access to one of the world's most iconic ancient sites."}
           </p>
 
           <p className={styles.paragraph}>
-            {tour.longDescription ||
+            {trip.longDescription ||
               "Accompanied by a leading Egyptologist, you'll uncover the secrets of the Pharaohs, explore the enigmatic Sphinx, and gain a deeper understanding of the monumental architecture."}
           </p>
 
@@ -203,7 +203,7 @@ function Info({ tourData }) {
           <div className={styles.reviewsHeader}>
             <h3 className={styles.sectionTitle}>Guest Reviews</h3>
             <button type="button" className={styles.seeAll}>
-              See all {tour.reviewsCount || 128}
+              See all {trip.reviewsCount || 128}
             </button>
           </div>
 

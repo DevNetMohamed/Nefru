@@ -1,67 +1,62 @@
-// wil be used for authentication and authorization only
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 const USER_ROLES = ["tourist", "guide", "admin"];
 const REGISTER_ROLES = ["tourist", "guide"];
+
 const userSchema = new mongoose.Schema(
   {
-    fullName: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 2,
-      maxlength: 50,
-    },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
-      lowercase: true,
-      trim: true,
-      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
     },
     password: {
       type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
+    },
+    role: {
+      type: String,
+      enum: ["tourist", "guide", "admin"],
       required: true,
-      minlength: [8, "Password must be at least 8 characters"],
-      select: false,
+      default: "tourist",
+      index: true,
     },
-    role: { type: String, enum: USER_ROLES, default: "tourist" },
-    avatar: {
+    status: {
       type: String,
-      default: "",
+      // suspended > temporary block , deactivated > permenant block
+      enum: ["active", "suspended", "deactivated"], 
+      default: "active",
+      index: true,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
+    profileId: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: "roleProfile",
+      // required: false
     },
-    verificationStatus: {
-      type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
-    },
-    passwordResetToken: {
-      type: String,
-      select: false,
-    },
-
-    passwordResetExpires: {
-      type: Date,
-      select: false,
-    },
+    roleProfile: {
+      type: String, 
+      enum: ["TouristProfile", "GuideProfile"],
+      default:"TouristProfile", 
+      // required: true
+    }
   },
-  { timestamps: true },
+  {timestamps: true,}
 );
 
+
+
+// export default User;
+
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 
 userSchema.methods.comparePassword = async function (matchedPassword) {
   return await bcrypt.compare(matchedPassword, this.password);
 };
-const User = mongoose.model("User", userSchema);
 
-export { User, USER_ROLES, REGISTER_ROLES };
+export const User = mongoose.model("User", userSchema);
+export { USER_ROLES, REGISTER_ROLES };

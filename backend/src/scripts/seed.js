@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 import { Trip } from "../models/trip.model.js";
 import { Booking } from "../models/booking.model.js";
 import { TouristProfile } from "../models/tourist.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 import { Notification } from "../models/notification.model.js";
 import { Review } from "../models/review.model.js";
 import { Interaction } from "../models/interaction.model.js";
@@ -58,7 +58,7 @@ const guideSeedData = [
     verificationStatus: "approved",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=12",
-    title: "Licensed Egyptologist Guide",
+    title: "Licensed Egyptologist GuideProfile",
     headline: "History-rich tours with clear plans and local stories",
     location: "Cairo, Egypt",
     about:
@@ -73,7 +73,7 @@ const guideSeedData = [
     verificationStatus: "approved",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=47",
-    title: "Cultural Tour Guide",
+    title: "Cultural Trip GuideProfile",
     headline: "Cairo neighborhoods, local food, and everyday Egyptian culture",
     location: "Cairo, Egypt",
     about:
@@ -103,7 +103,7 @@ const guideSeedData = [
     verificationStatus: "pending",
     isActive: true,
     avatar: "https://i.pravatar.cc/300?img=44",
-    title: "Desert Adventure Guide",
+    title: "Desert Adventure GuideProfile",
     headline: "Responsible desert trips and authentic oasis experiences",
     location: "Siwa, Egypt",
     about:
@@ -118,7 +118,7 @@ const guideSeedData = [
     verificationStatus: "approved",
     isActive: false,
     avatar: "https://i.pravatar.cc/300?img=11",
-    title: "Alexandria Local Guide",
+    title: "Alexandria Local GuideProfile",
     headline: "Mediterranean history and coastal city walks",
     location: "Alexandria, Egypt",
     about:
@@ -175,15 +175,15 @@ const tripSeedData = [
     slots: [{ startTime: "09:30 AM", endTime: "01:30 PM", maxGuests: 12 }],
     highlights: [
       { title: "Early Entry", text: "Start before the busiest visitor period." },
-      { title: "Licensed Guide", text: "Historical explanations in simple English." },
+      { title: "Licensed GuideProfile", text: "Historical explanations in simple English." },
     ],
   },
   {
     guideIndex: 0,
-    title: "Historic Cairo Walking Tour",
+    title: "Historic Cairo Walking Trip",
     description: "Explore Al-Muizz Street, Khan El-Khalili, and Islamic Cairo.",
     longDescription:
-      "A walking tour through historic Cairo focused on architecture, local stories, safe navigation, and transparent pricing.",
+      "A walking trip through historic Cairo focused on architecture, local stories, safe navigation, and transparent pricing.",
     location: "Cairo",
     price: 700,
     duration: "3 hours",
@@ -200,7 +200,7 @@ const tripSeedData = [
   },
   {
     guideIndex: 4,
-    title: "Alexandria Coastal & Heritage Tour",
+    title: "Alexandria Coastal & Heritage Trip",
     description: "Discover Alexandria's coastline, library district, and historic landmarks.",
     longDescription:
       "A full-day coastal experience with organized stops, Mediterranean views, and stories from ancient and modern Alexandria.",
@@ -275,7 +275,7 @@ const tripSeedData = [
     slots: [{ startTime: "06:00 PM", endTime: "09:00 PM", maxGuests: 8 }],
     highlights: [
       { title: "Local Tastings", text: "Try selected Egyptian dishes and drinks." },
-      { title: "Dietary Notes", text: "Share dietary requests before the tour." },
+      { title: "Dietary Notes", text: "Share dietary requests before the trip." },
     ],
   },
   {
@@ -314,7 +314,7 @@ const tripSeedData = [
   },
   {
     guideIndex: 2,
-    title: "Abu Simbel Day Tour",
+    title: "Abu Simbel Day Trip",
     description: "A draft full-day itinerary from Aswan to Abu Simbel.",
     longDescription:
       "A partially completed draft used to test continue-editing and incomplete schedule scenarios.",
@@ -334,7 +334,7 @@ const tripSeedData = [
     title: "Islamic Cairo Night Photography Walk",
     description: "A draft night photography and architecture walk.",
     longDescription:
-      "A draft tour owned by an inactive guide, useful for admin visibility and access-control testing.",
+      "A draft trip owned by an inactive guide, useful for admin visibility and access-control testing.",
     location: "Cairo",
     price: 950,
     duration: "3 hours",
@@ -378,7 +378,7 @@ const bookingSeedData = [
   [8, 0, 20, 9, 30, 1, "cancelled", "refunded", [], "Changed travel dates", "tourist"],
   [9, 2, 14, 8, 0, 1, "cancelled", "refunded", [], "Flight schedule changed", "tourist"],
   [10, 5, -6, 18, 0, 1, "no_show", "paid", []],
-  [11, 0, -12, 9, 30, 2, "refunded", "refunded", [], "Tour cancelled by platform due to site closure", "system"],
+  [11, 0, -12, 9, 30, 2, "refunded", "refunded", [], "Trip cancelled by platform due to site closure", "system"],
 ];
 
 const reviewSeedData = [
@@ -392,7 +392,7 @@ const reviewSeedData = [
     bookingIndex: 14,
     rating: 4,
     title: "Great historical walk",
-    comment: "Mohamed explained the architecture clearly and helped us avoid the confusing parts of the market. The tour started around ten minutes late, but the experience was very good.",
+    comment: "Mohamed explained the architecture clearly and helped us avoid the confusing parts of the market. The trip started around ten minutes late, but the experience was very good.",
   },
   {
     bookingIndex: 15,
@@ -403,7 +403,7 @@ const reviewSeedData = [
   {
     bookingIndex: 16,
     rating: 4,
-    title: "Tasty and friendly tour",
+    title: "Tasty and friendly trip",
     comment: "The food choices were interesting and the vegetarian alternatives were handled well. A few streets were crowded, but the guide managed the group professionally.",
   },
   {
@@ -442,11 +442,11 @@ async function removeOldSeedData() {
   }).select("_id");
 
   const oldUserIds = oldUsers.map((user) => user._id);
-  const oldGuideProfiles = await Guide.find({ user: { $in: oldUserIds } }).select("_id");
+  const oldGuideProfiles = await GuideProfile.find({ user: { $in: oldUserIds } }).select("_id");
   const oldGuideProfileIds = oldGuideProfiles.map((guide) => guide._id);
   const seedTitles = tripSeedData.map((trip) => trip.title).concat([
     "Pyramids Half-Day Experience",
-    "Alexandria Coastal Tour",
+    "Alexandria Coastal Trip",
   ]);
 
   const oldTrips = await Trip.find({
@@ -480,7 +480,7 @@ async function removeOldSeedData() {
 
   await Trip.deleteMany({ _id: { $in: oldTripIds } });
   await TouristProfile.deleteMany({ user: { $in: oldUserIds } });
-  await Guide.deleteMany({ user: { $in: oldUserIds } });
+  await GuideProfile.deleteMany({ user: { $in: oldUserIds } });
   await User.deleteMany({ _id: { $in: oldUserIds } });
 }
 
@@ -506,7 +506,7 @@ async function createUsersAndProfiles() {
     })),
   );
 
-  const guideProfiles = await Guide.create(
+  const guideProfiles = await GuideProfile.create(
     guideSeedData.map((guide, index) => ({
       user: guideUsers[index]._id,
       title: guide.title,
@@ -707,7 +707,7 @@ async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffse
       (review) => review.guide.toString() === guideUsers[guideIndex]._id.toString(),
     );
 
-    await Guide.findOneAndUpdate(
+    await GuideProfile.findOneAndUpdate(
       { user: guideUsers[guideIndex]._id },
       {
         rating: average(guideReviews.map((review) => review.rating)),
@@ -835,7 +835,7 @@ async function createNotifications({ admin, guideUsers, touristUsers, trips, boo
     {
       user: guideUsers[0]._id,
       type: "reminder",
-      title: "Tour tomorrow",
+      title: "Trip tomorrow",
       message: `${tomorrowTrip.title} starts tomorrow at 09:30 AM.`,
       isRead: false,
       link: `/guide/tours/${tomorrowTrip._id}`,
@@ -845,8 +845,8 @@ async function createNotifications({ admin, guideUsers, touristUsers, trips, boo
     },
     {
       user: guideUsers[3]._id,
-      type: "tour",
-      title: "Tour under review",
+      type: "trip",
+      title: "Trip under review",
       message: "Siwa Desert Safari & Sunset is waiting for admin review.",
       isRead: false,
       link: `/guide/tours/${trips[6]._id}`,
@@ -856,8 +856,8 @@ async function createNotifications({ admin, guideUsers, touristUsers, trips, boo
     },
     {
       user: admin._id,
-      type: "tour",
-      title: "Tour review required",
+      type: "trip",
+      title: "Trip review required",
       message: "Two guide tours are currently waiting for review.",
       isRead: false,
       link: "/admin/tours?status=reviewing",
@@ -875,13 +875,13 @@ async function createInteractions(touristUsers, trips, bookings, reviews) {
   const devices = ["mobile", "mobile", "desktop", "tablet"];
   const sources = ["home", "search", "tour_details", "saved", "notification"];
   const searchTerms = [
-    "pyramids tour",
+    "pyramids trip",
     "Cairo history",
-    "food tour",
+    "food trip",
     "Luxor temples",
     "Nile sunset",
     "Alexandria day trip",
-    "small group tour",
+    "small group trip",
   ];
 
   for (let touristIndex = 0; touristIndex < touristUsers.length; touristIndex += 1) {
@@ -1082,7 +1082,7 @@ async function printSummary({ guideUsers, touristUsers, trips, bookings, notific
   console.log(`ML interactions: ${interactions.length}`);
   console.log("-----------------------------------");
   console.log(`Admin login: ${env.emailAdmin} / ${env.passwordAdmin}`);
-  console.log(`Guide login: ${env.emailGuide} / ${env.passwordGuide}`);
+  console.log(`GuideProfile login: ${env.emailGuide} / ${env.passwordGuide}`);
   console.log(`Tourist login: ${env.emailTourist} / ${env.passwordTourist}`);
   console.log(`Other seed users use the same role password and end with ${SEED_EMAIL_SUFFIX}`);
   console.log("-----------------------------------\n");

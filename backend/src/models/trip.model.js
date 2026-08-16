@@ -60,17 +60,17 @@ const tripSchema = new mongoose.Schema(
       default: "",
     },
     location: { type: String, required: true },
-  
+
     coordinates: {
-    lat: {
+      lat: {
         type: Number,
         required: true,
-    },
-    lng: {
+      },
+      lng: {
         type: Number,
         required: true,
+      },
     },
-},
 
 
     price: { type: Number, required: true },
@@ -98,13 +98,14 @@ const tripSchema = new mongoose.Schema(
     },
     schedule: {
       type: Object,
-      default: { 
-        dates: [], 
+      default: {
+        dates: [],
         slots: {
-        startTime: Date,
-        endTime: Date,
-        availableSpots: Number
-      } },
+          startTime: Date,
+          endTime: Date,
+          availableSpots: Number
+        }
+      },
     },
     gallery: {
       type: [String],
