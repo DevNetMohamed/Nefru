@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 
+// Vite configuration
 export default defineConfig({
   plugins: [react(), tailwindcss()],
 

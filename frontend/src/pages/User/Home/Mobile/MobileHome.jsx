@@ -309,7 +309,7 @@ const MobileHome = () => {
       {/* 4. Nearby Exploration Banner */}
       <div className="px-4 py-3">
         <div
-          onClick={() => navigate("/user/discover")}
+          onClick={() => navigate("/user/nearby")}
           className="bg-gradient-to-r from-[#EBF7FA] to-[#d6f0f7] rounded-2xl p-4 flex items-center justify-between cursor-pointer shadow-xs hover:shadow-md transition-all border border-[#bce4ee]"
         >
           <div className="flex items-center gap-3.5">
