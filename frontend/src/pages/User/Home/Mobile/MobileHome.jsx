@@ -198,35 +198,66 @@ function getGreeting() {
 const MobileHome = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth || {});
-  // Bug #8 fixed: pull notification count from Redux
   const notifications = useSelector((state) => state.notifications?.notifications || []);
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const [openSearch, setOpenSearch] = useState(false);
   const [savedIds, setSavedIds] = useState(new Set());
   const [bestChoiceTours, setBestChoiceTours] = useState(defaultBestChoiceTours);
+  const [availableTodayTours, setAvailableTodayTours] = useState(defaultAvailableToday);
+  const [guidesList, setGuidesList] = useState(localGuides);
 
   const fullName = user?.fullName ? user.fullName.split(" ")[0] : "Traveler";
-  // Bug #11 fixed: dynamic greeting
   const greeting = getGreeting();
-
 
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/home");
-        if (response.data?.data?.featuredTrips?.length > 0) {
-          const apiTrips = response.data.data.featuredTrips.map((t, idx) => ({
-            id: t._id || idx,
-            title: t.title,
-            location: t.location || "Egypt",
-            duration: t.duration ? `${t.duration}` : "4 hrs",
-            rating: t.rating ? String(t.rating) : "4.8",
-            reviewsCount: t.reviewsCount ? String(t.reviewsCount) : "500+",
-            price: t.price || 45,
-            image: getImgSrc(t.image, [luxorImg, pyramidsImg, cairoImg, sphinxImg][idx % 4]),
-          }));
-          setBestChoiceTours(apiTrips);
+        if (response.data?.data) {
+          const { featuredTrips, availableToday, trustedGuides } = response.data.data;
+
+          if (featuredTrips && featuredTrips.length > 0) {
+            const apiTrips = featuredTrips.map((t, idx) => ({
+              id: t._id || idx,
+              title: t.title,
+              location: t.location || "Egypt",
+              duration: t.duration ? `${t.duration}` : "4 hrs",
+              rating: t.rating ? String(t.rating) : "4.8",
+              reviewsCount: t.reviewsCount ? String(t.reviewsCount) : "500+",
+              price: t.price || 45,
+              image: getImgSrc(t.image, [luxorImg, pyramidsImg, cairoImg, sphinxImg][idx % 4]),
+            }));
+            setBestChoiceTours(apiTrips);
+          }
+
+          if (availableToday && availableToday.length > 0) {
+            const apiAvailable = availableToday.map((t, idx) => ({
+              id: t._id || idx,
+              title: t.title,
+              timeSlot: t.duration || "Today Available",
+              location: t.location || "Cairo",
+              price: typeof t.price === "number" ? t.price : 40,
+              image: getImgSrc(t.image, [pyramidsImg, museumImg, cairoImg][idx % 3]),
+            }));
+            setAvailableTodayTours(apiAvailable);
+          }
+
+          if (trustedGuides && trustedGuides.length > 0) {
+            const apiGuides = trustedGuides.map((g, idx) => ({
+              id: g._id || idx,
+              name: g.fullName || g.user?.fullName || g.name || "Local Guide",
+              rating: g.rating ? String(g.rating) : "4.9",
+              languages: Array.isArray(g.languages) && g.languages.length > 0
+                ? g.languages.join(" • ")
+                : (typeof g.languages === "string" ? g.languages : "Arabic • English"),
+              experience: g.yearsExperience
+                ? `${g.yearsExperience} Yrs Exp.`
+                : (g.experience || "5 Yrs Exp."),
+              image: getImgSrc(g.image || g.user?.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
+            }));
+            setGuidesList(apiGuides);
+          }
         }
       } catch (err) {
         console.log("Using default high quality tours data:", err);
@@ -253,29 +284,26 @@ const MobileHome = () => {
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-24 font-sans">
       {/* 1. Header Bar */}
       <div className="bg-white sticky top-0 z-40 px-4 py-3 border-b border-gray-100 flex items-center justify-between shadow-xs">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/user/home")}>
-            {/* Bug #9 fixed: navigate to /user/home not / */}
-            <img src={logo} alt="Nefru Logo" className="h-[38px] w-auto" />
-            <span 
-              className="font-semibold text-[#003D5B]" 
-              style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '2.1rem' }}
-            >
-              Nefru
-            </span>
-          </div>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/user/home")}>
+          <img src={logo} alt="Nefru Logo" className="h-[38px] w-auto" />
+          <span 
+            className="font-semibold text-[#003D5B]" 
+            style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '2.1rem' }}
+          >
+            Nefru
+          </span>
+        </div>
         <button
           onClick={() => navigate("/user/notifications")}
           className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition-colors relative"
           aria-label="Notifications"
         >
           <Bell className="w-5 h-5 text-gray-700" />
-          {/* Bug #8 fixed: only show badge when there are unread notifications */}
           {unreadCount > 0 && (
             <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white" />
           )}
         </button>
       </div>
-
 
       {/* 2. Welcome & Search Banner */}
       <div className="px-4 pt-4 pb-2 bg-white">
@@ -284,7 +312,6 @@ const MobileHome = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>Welcome back</span>
           </div>
-          {/* Bug #11 fixed: dynamic time-aware greeting */}
           <h1 className="text-2xl font-black text-gray-900 tracking-tight leading-snug">
             {greeting}, {fullName}
           </h1>
@@ -293,9 +320,9 @@ const MobileHome = () => {
           </p>
         </div>
 
-        {/* Bug #2 fixed: search bar now opens SearchModal instead of navigating */}
+        {/* Search bar opens SearchModal */}
         <div
-          onClick={() => navigate("/user/discover")}
+          onClick={() => setOpenSearch(true)}
           className="w-full bg-gray-100/80 border border-gray-200 rounded-2xl py-3 px-4 flex items-center gap-3 cursor-pointer shadow-xs hover:border-[#003D5B]/30 transition-all"
         >
           <Search className="w-5 h-5 text-gray-400 shrink-0" />
@@ -304,7 +331,6 @@ const MobileHome = () => {
           </span>
         </div>
       </div>
-
 
       {/* 4. Nearby Exploration Banner */}
       <div className="px-4 py-3">
@@ -467,7 +493,7 @@ const MobileHome = () => {
         </div>
 
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar">
-          {defaultAvailableToday.map((trip) => (
+          {availableTodayTours.map((trip) => (
             <div
               key={trip.id}
               onClick={() => navigate("/user/discover")}
@@ -515,7 +541,7 @@ const MobileHome = () => {
             </h2>
           </div>
           <button
-            onClick={() => navigate("/user/discover")}
+            onClick={() => navigate("/user/guideprofile")}
             className="text-xs font-bold text-[#003D5B] hover:underline"
           >
             Meet Guides
@@ -523,10 +549,10 @@ const MobileHome = () => {
         </div>
 
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar">
-          {localGuides.map((guide) => (
+          {guidesList.map((guide) => (
             <div
               key={guide.id}
-              onClick={() => navigate("/user/discover")}
+              onClick={() => navigate("/user/guideprofile")}
               className="w-48 bg-white rounded-2xl border border-gray-100 p-3.5 flex flex-col items-center text-center shrink-0 shadow-xs cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="relative mb-2.5">
@@ -550,7 +576,13 @@ const MobileHome = () => {
               <span className="text-[10px] text-gray-400 mt-0.5">
                 {guide.experience}
               </span>
-              <button className="mt-3 w-full py-1.5 rounded-xl bg-gray-100 hover:bg-[#003D5B] hover:text-white text-[#003D5B] font-bold text-xs transition-colors">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/user/guideprofile");
+                }}
+                className="mt-3 w-full py-1.5 rounded-xl bg-gray-100 hover:bg-[#003D5B] hover:text-white text-[#003D5B] font-bold text-xs transition-colors"
+              >
                 View Profile
               </button>
             </div>
@@ -569,7 +601,7 @@ const MobileHome = () => {
           {topDestinations.map((dest) => (
             <div
               key={dest.name}
-              onClick={() => navigate("/user/discover")}
+              onClick={() => navigate(`/user/discover?location=${encodeURIComponent(dest.name)}`)}
               className="flex flex-col items-center shrink-0 cursor-pointer group"
             >
               <div className="relative w-24 h-24 rounded-2xl overflow-hidden shadow-xs mb-1.5 border border-gray-100">
@@ -591,18 +623,13 @@ const MobileHome = () => {
         </div>
       </div>
 
-
-
       {/* 11. Search Modal */}
       <SearchModal open={openSearch} onOpenChange={setOpenSearch} />
 
       {/* 12. Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex justify-around items-center py-2 px-3 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
         <button
-          onClick={() => {
-            // Bug #10 fixed: navigate to /user/home not /
-            navigate("/user/home");
-          }}
+          onClick={() => navigate("/user/home")}
           className="flex flex-col items-center gap-1 text-xs font-bold text-[#003D5B]"
         >
           <Home className="w-5 h-5 stroke-[2.4]" />
@@ -610,19 +637,15 @@ const MobileHome = () => {
         </button>
 
         <button
-          onClick={() => {
-            navigate("/user/trips");
-          }}
+          onClick={() => navigate("/user/trips")}
           className="flex flex-col items-center gap-1 text-xs font-semibold text-gray-400 hover:text-gray-700"
         >
           <Briefcase className="w-5 h-5" />
-          <span>TRIPS</span>
+          <span>Trips</span>
         </button>
 
         <button
-          onClick={() => {
-            navigate("/user/saved");
-          }}
+          onClick={() => navigate("/user/saved")}
           className="flex flex-col items-center gap-1 text-xs font-semibold text-gray-400 hover:text-gray-700"
         >
           <Heart className="w-5 h-5" />
@@ -630,9 +653,7 @@ const MobileHome = () => {
         </button>
 
         <button
-          onClick={() => {
-            navigate("/user/profile");
-          }}
+          onClick={() => navigate("/user/profile")}
           className="flex flex-col items-center gap-1 text-xs font-semibold text-gray-400 hover:text-gray-700"
         >
           <User className="w-5 h-5" />

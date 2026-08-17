@@ -55,6 +55,7 @@ function DiscoverEgypt() {
           <div
             key={item.title}
             className={styles.card}
+            onClick={() => navigate(`/user/discover?search=${encodeURIComponent(item.title)}`)}
           >
             <img
               src={item.image}
@@ -66,8 +67,10 @@ function DiscoverEgypt() {
 
               <p>{item.description}</p>
 
-              {/* Bug #7 fixed: Explore Guide button now navigates */}
-              <button onClick={() => navigate("/user/discover")}>
+              <button onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/user/discover?search=${encodeURIComponent(item.title)}`);
+              }}>
                 Explore Guide →
               </button>
             </div>

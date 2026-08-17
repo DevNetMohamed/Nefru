@@ -60,7 +60,7 @@ function TrustedGuides({ guides }) {
   const displayGuides = guides && guides.length > 0
     ? guides.map((g, idx) => ({
         id: g._id || idx,
-        name: g.user?.fullName || g.name || "Local Guide",
+        name: g.fullName || g.user?.fullName || g.name || "Local Guide",
         rating: g.rating ? String(g.rating) : "4.9",
         languages: Array.isArray(g.languages) && g.languages.length > 0
           ? g.languages.join(" • ")
@@ -68,7 +68,7 @@ function TrustedGuides({ guides }) {
         experience: g.yearsExperience
           ? `${g.yearsExperience} Years Experience`
           : (g.experience || "5 Years Experience"),
-        image: getImgSrc(g.user?.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
+        image: getImgSrc(g.image || g.user?.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
       }))
     : defaultGuides;
 
@@ -87,7 +87,6 @@ function TrustedGuides({ guides }) {
           </p>
         </div>
 
-        {/* Bug #7 fixed: View All Guides button */}
         <button onClick={() => navigate("/user/discover")}>
           View All Guides
         </button>
@@ -98,6 +97,8 @@ function TrustedGuides({ guides }) {
           <div
             key={guide.id}
             className={styles.card}
+            onClick={() => navigate("/user/guideprofile")}
+            style={{ cursor: "pointer" }}
           >
             <img
               src={guide.image}
@@ -116,8 +117,10 @@ function TrustedGuides({ guides }) {
               {guide.experience}
             </span>
 
-            {/* Bug #7 fixed: View Profile button */}
-            <button onClick={() => navigate("/user/discover")}>
+            <button onClick={(e) => {
+              e.stopPropagation();
+              navigate("/user/guideprofile");
+            }}>
               View Profile
             </button>
           </div>
