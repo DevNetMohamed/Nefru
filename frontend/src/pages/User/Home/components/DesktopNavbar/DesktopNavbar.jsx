@@ -21,6 +21,20 @@ import profileImage from "../../../../../assets/images/user/user1.png";
 import { logout } from "../../../../../store/slices/authSlice";
 import NotificationPopover from "../../../Notifications/components/NotificationPopover";
 
+const getImgSrc = (img, fallback) => {
+  if (!img) return fallback;
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
+    return img;
+  }
+  return `http://localhost:5000/uploads/${img}`;
+};
+
 const profileMenuItems = [
   {
     path: "/user/profile",
@@ -63,9 +77,9 @@ function DesktopNavbar() {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth || {});
   const notifications = useSelector(
-    (state) => state.notifications.notifications
+    (state) => state.notifications?.notifications || []
   );
 
   const unreadNotificationsCount = notifications.filter(
@@ -74,7 +88,19 @@ function DesktopNavbar() {
 
   const fullName = user?.fullName || "Not Logged In";
   const email = user?.email || "Not Logged In";
-  const avatar = user?.profileImage || user?.avatar || profileImage;
+  const avatar = getImgSrc(user?.profileImage || user?.avatar, profileImage);
+
+  const scrollToSection = (e, sectionId) => {
+    e.preventDefault();
+    if (location.pathname === "/user/home" || location.pathname === "/user") {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+    }
+    navigate(`/user/home#${sectionId}`);
+  };
 
   useEffect(() => {
     if (!showNotifications && !showProfile) return undefined;
@@ -122,16 +148,19 @@ function DesktopNavbar() {
 
       <ul className={styles.links}>
         <li>
-          <a href="/user/home#Home">Home</a>
+          <a href="#Home" onClick={(e) => scrollToSection(e, "Home")}>Home</a>
         </li>
         <li>
-          <a href="/user/home#popular-tours">Tours</a>
+          <a href="#popular-tours" onClick={(e) => scrollToSection(e, "popular-tours")}>Tours</a>
         </li>
         <li>
-          <a href="/user/home#explore-egypt">Explore Egypt</a>
+          <a href="/user/nearby" onClick={(e) => { e.preventDefault(); navigate("/user/nearby"); }}>Nearby Map</a>
         </li>
         <li>
-          <a href="/user/home#top-guides">Guides</a>
+          <a href="#explore-egypt" onClick={(e) => scrollToSection(e, "explore-egypt")}>Explore Egypt</a>
+        </li>
+        <li>
+          <a href="#top-guides" onClick={(e) => scrollToSection(e, "top-guides")}>Guides</a>
         </li>
       </ul>
 
