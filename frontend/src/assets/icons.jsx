@@ -32,6 +32,8 @@ import { IoAnalytics } from "react-icons/io5";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { MdContentCopy } from "react-icons/md";
 import { GoBell } from "react-icons/go";
+import { BsSuitcase } from "react-icons/bs";
+import { FaCompass } from "react-icons/fa";
 /**
  * Centralized Icon Registry
  * Use these variables throughout the app for consistency.
@@ -40,6 +42,7 @@ const Icons = {
   Home: GoHome,
   Layout:LuLayoutDashboard,
   Profile: HiOutlineUser,
+  compass:FaCompass,
   Trips: MdOutlineCardTravel,
   Notification:GoBell,
   Saved: HiOutlineHeart,
@@ -80,7 +83,8 @@ const Icons = {
   chevronLeft:IoIosArrowBack,
   chevronRight:IoIosArrowForward ,
   chevronDown:IoIosArrowDown,
-  Location:CiLocationOn
+  Location:CiLocationOn,
+  case:BsSuitcase,
   // Add more icons as needed for the tourist/guide platform
 };
 export default Icons;
