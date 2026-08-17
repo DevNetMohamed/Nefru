@@ -120,4 +120,4 @@ function AvailableToday({ tours }) {
   );
 }
 
-export default AvailableToday;
+export default AvailableToday;

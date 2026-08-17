@@ -1,5 +1,5 @@
 import { Booking } from "../models/booking.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 import { Trip } from "../models/trip.model.js";
 import { AppError } from "../utils/AppError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";

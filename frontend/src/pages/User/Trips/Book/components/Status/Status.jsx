@@ -12,7 +12,7 @@ const Status = () => {
   // الحصول على بيانات الرحلة المرسلة إن وجدت من صفحة الحجز
   const passedBookingData = location.state || {
     bookingId: "NF-8829-Luxor",
-    title: "Giza Pyramids Private Tour",
+    title: "Giza Pyramids Private Trip",
     date: "Oct 24, 2023",
     time: "09:00 AM",
     adults: 2,

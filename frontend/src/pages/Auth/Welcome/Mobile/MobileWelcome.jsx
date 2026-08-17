@@ -16,7 +16,7 @@ const roles = [
   },
   {
     id: 2,
-    title: "Tour Guide",
+    title: "Trip Guide",
     role: "guide",
     desc: "Create tours, manage bookings, and grow your business.",
     cta: "Continue as Guide",

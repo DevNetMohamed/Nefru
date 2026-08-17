@@ -57,18 +57,18 @@ const FeaturedExperiences = () => {
         </div>
 
         <div className={styles.rightColumn}>
-          {featuredTours.slice(1).map((tour) => (
+          {featuredTours.slice(1).map((trip) => (
             <div
-              key={tour.id}
+              key={trip.id}
               className={styles.smallCard}
             >
               <img
-                src={tour.image}
+                src={trip.image}
                 alt=""
               />
 
               <div className={styles.overlay}>
-                <h3>{tour.title}</h3>
+                <h3>{trip.title}</h3>
               </div>
             </div>
           ))}

@@ -1,5 +1,5 @@
 import { Trip } from "../models/trip.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 
 export const getHomeData = async () => {
   const featuredTrips = await Trip.find()
@@ -11,7 +11,7 @@ export const getHomeData = async () => {
     .sort({ createdAt: -1 })
     .limit(4);
 
-  const trustedGuides = await Guide.find()
+  const trustedGuides = await GuideProfile.find()
     .populate("user", "fullName avatar")
     .limit(4);
 
@@ -25,4 +25,4 @@ export const getHomeData = async () => {
     trustedGuides,
     toursNearYou,
   };
-};
+};

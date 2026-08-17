@@ -43,9 +43,9 @@ router.patch("/guide/:id/suspend",guideActivation)
 
 // Tours created by guide
 router.get("/tours/:page", getAllTours)
-router.get("/tour/:id", getTourById)
-// router.patch("/tour/:id/approve",tourAction)
-// router.patch("/tour/:id/reject",tourAction)
-// router.delete("/tour/:id")
+router.get("/trip/:id", getTourById)
+// router.patch("/trip/:id/approve",tourAction)
+// router.patch("/trip/:id/reject",tourAction)
+// router.delete("/trip/:id")
 
 export default router;

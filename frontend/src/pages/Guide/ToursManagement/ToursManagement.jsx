@@ -60,9 +60,9 @@ if (Array.isArray(toursData) && toursData.length > 0) {
 
   const tabs = useMemo(() => {
     const allCount = tours.length;
-    const activeCount = tours.filter((tour) => tour.status === "active").length;
-    const reviewCount = tours.filter((tour) => tour.status === "reviewing").length;
-    const draftCount = tours.filter((tour) => tour.status === "draft").length;
+    const activeCount = tours.filter((trip) => trip.status === "active").length;
+    const reviewCount = tours.filter((trip) => trip.status === "reviewing").length;
+    const draftCount = tours.filter((trip) => trip.status === "draft").length;
 
     return [
       { label: `All (${allCount})`, value: "All" },
@@ -72,9 +72,9 @@ if (Array.isArray(toursData) && toursData.length > 0) {
     ];
   }, [tours]);
 
-  const visibleTours = tours.filter((tour) => {
+  const visibleTours = tours.filter((trip) => {
     if (activeTab === "All") return true;
-    return tour.status === activeTab;
+    return trip.status === activeTab;
   });
 
   const getStatusClass = (status) => {
@@ -93,13 +93,13 @@ if (Array.isArray(toursData) && toursData.length > 0) {
     navigate("/guide/createtour");
   }
 
-  function handleManageTour(tour) {
+  function handleManageTour(trip) {
     if (onManageTour) {
-      onManageTour(tour);
+      onManageTour(trip);
       return;
     }
 
-    navigate("/guide/createtour", { state: { tripId: tour.id } });
+    navigate("/guide/createtour", { state: { tripId: trip.id } });
   }
 
   return (
@@ -126,12 +126,12 @@ if (Array.isArray(toursData) && toursData.length > 0) {
         <section className={styles.hero}>
           <h2 className={styles.heroTitle}>My Tours</h2>
           <p className={styles.heroText}>
-            Create, manage, and track your tour experiences.
+            Create, manage, and track your trip experiences.
           </p>
 
           <button type="button" className={styles.createButton} onClick={handleCreateTour}>
             <FaPlus />
-            Create New Tour
+            Create New Trip
           </button>
         </section>
 
@@ -152,40 +152,40 @@ if (Array.isArray(toursData) && toursData.length > 0) {
           <p className={styles.heroText}>Loading your tours...</p>
         ) : (
           <section className={styles.cardsList}>
-            {visibleTours.map((tour) => (
-              <article key={tour.id} className={styles.card}>
+            {visibleTours.map((trip) => (
+              <article key={trip.id} className={styles.card}>
                 <div className={styles.cardImageWrap}>
-                  <img src={getImageSrc(tour.image)} alt={tour.title} className={styles.cardImage} />
-                  <span className={`${styles.badge} ${getStatusClass(tour.status)}`}>
-                    {tour.statusText || tour.status}
+                  <img src={getImageSrc(trip.image)} alt={trip.title} className={styles.cardImage} />
+                  <span className={`${styles.badge} ${getStatusClass(trip.status)}`}>
+                    {trip.statusText || trip.status}
                   </span>
                 </div>
 
                 <div className={styles.cardBody}>
-                  <h3 className={styles.cardTitle}>{tour.title}</h3>
+                  <h3 className={styles.cardTitle}>{trip.title}</h3>
 
                   <div className={styles.metaRow}>
                     <span className={styles.metaItem}>
                       <FaClock />
-                      {tour.duration}
+                      {trip.duration}
                     </span>
                     <span className={styles.metaItem}>
                       <FaPeopleGroup />
-                      Max {tour.groupSize}
+                      Max {trip.groupSize}
                     </span>
                   </div>
 
                   <div className={styles.bottomRow}>
                     <p className={styles.price}>
-                      ${tour.price} <span>/ person</span>
+                      ${trip.price} <span>/ person</span>
                     </p>
 
                     <button
                       type="button"
                       className={styles.manageButton}
-                      onClick={() => handleManageTour(tour)}
+                      onClick={() => handleManageTour(trip)}
                     >
-                      {tour.actionLabel || "Manage"} →
+                      {trip.actionLabel || "Manage"} →
                     </button>
                   </div>
                 </div>

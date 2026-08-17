@@ -174,4 +174,4 @@ function ToursNearYou({ tours }) {
   );
 }
 
-export default ToursNearYou;
+export default ToursNearYou;

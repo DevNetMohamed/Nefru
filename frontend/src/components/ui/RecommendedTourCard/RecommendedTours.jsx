@@ -82,8 +82,8 @@ function RecommendedTours({ trips }) {
       </div>
 
       <div className={styles.grid}>
-        {displayTrips.map((tour, idx) => (
-          <RecommendedTourCard key={tour._id || idx} {...tour} />
+        {displayTrips.map((trip, idx) => (
+          <RecommendedTourCard key={trip._id || idx} {...trip} />
         ))}
       </div>
     </section>

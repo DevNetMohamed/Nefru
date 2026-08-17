@@ -62,7 +62,7 @@ const upcomingTours = [
   },
   {
     id: 2,
-    title: "Abu Simbel Day Tour",
+    title: "Abu Simbel Day Trip",
     location: "Aswan, Egypt",
     date: "May 23, 2025",
     time: "06:30 AM",
@@ -124,7 +124,7 @@ const reminders = [
     tone: "green",
   },
   {
-    title: "1 tour tomorrow",
+    title: "1 trip tomorrow",
     helper: "Pyramids of Giza & Sphinx at 09:30 AM",
     icon: CalendarDays,
     tone: "blue",
@@ -153,7 +153,7 @@ const activities = [
     tone: "blue",
   },
   {
-    title: "Tour reached full capacity",
+    title: "Trip reached full capacity",
     helper: "Luxor East & West Banks · May 24",
     time: "1d ago",
     icon: BellRing,
@@ -188,7 +188,7 @@ export default function GuideDashboard() {
           <section className={`${styles.card} ${styles.nextTourCard}`}>
             <div className={styles.cardHeading}>
               <h2>
-                Next Tour <Star size={18} fill="currentColor" aria-hidden="true" />
+                Next Trip <Star size={18} fill="currentColor" aria-hidden="true" />
               </h2>
               <span className={styles.todayBadge}>• Today</span>
             </div>
@@ -278,41 +278,41 @@ export default function GuideDashboard() {
             </div>
 
             <div className={styles.tourList}>
-              {upcomingTours.map((tour) => (
-                <article className={styles.tourRow} key={tour.id}>
-                  <img src={tour.image} alt="" aria-hidden="true" />
+              {upcomingTours.map((trip) => (
+                <article className={styles.tourRow} key={trip.id}>
+                  <img src={trip.image} alt="" aria-hidden="true" />
                   <div className={styles.tourMain}>
-                    <h3>{tour.title}</h3>
+                    <h3>{trip.title}</h3>
                     <span>
-                      <MapPin size={13} /> {tour.location}
+                      <MapPin size={13} /> {trip.location}
                     </span>
                     <div className={styles.mobileTourMeta}>
-                      <span>{tour.date}</span>
+                      <span>{trip.date}</span>
                       <span>•</span>
-                      <span>{tour.time}</span>
+                      <span>{trip.time}</span>
                     </div>
                   </div>
                   <div className={styles.desktopMeta}>
                     <small>Date</small>
-                    <strong>{tour.date}</strong>
+                    <strong>{trip.date}</strong>
                   </div>
                   <div className={styles.desktopMeta}>
                     <small>Start time</small>
-                    <strong>{tour.time}</strong>
+                    <strong>{trip.time}</strong>
                   </div>
                   <div className={styles.guestsMeta}>
                     <UsersRound size={16} />
-                    <strong>{tour.guests}</strong>
+                    <strong>{trip.guests}</strong>
                   </div>
-                  <strong className={styles.earnings}>{tour.earnings}</strong>
+                  <strong className={styles.earnings}>{trip.earnings}</strong>
                   <span
                     className={`${styles.statusBadge} ${
-                      tour.status === "Today" ? styles.statusToday : ""
+                      trip.status === "Today" ? styles.statusToday : ""
                     }`}
                   >
-                    {tour.status}
+                    {trip.status}
                   </span>
-                  <button type="button" className={styles.rowAction} aria-label={`View ${tour.title}`}>
+                  <button type="button" className={styles.rowAction} aria-label={`View ${trip.title}`}>
                     <ChevronRight size={19} />
                   </button>
                 </article>

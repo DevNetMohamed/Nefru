@@ -330,8 +330,8 @@ export const guideActivation = async(req,res)=>{
 
     if(isUser.verificationStatus == allowed[action])return res.status(200).json({
       success: false,
-      message: `Guide already ${allowed[action]}`,
-      error: { code: "NO_ACTION", details: [`Guide already ${allowed[action]}`] }
+      message: `GuideProfile already ${allowed[action]}`,
+      error: { code: "NO_ACTION", details: [`GuideProfile already ${allowed[action]}`] }
     });
 
     const user = await User.findByIdAndUpdate(userId,{verificationStatus:allowed[action]},{new:true})
@@ -473,8 +473,8 @@ export const tourAction = async(req,res)=>{
 
     if(isUser.verificationStatus == allowed[action])return res.status(200).json({
       success: false,
-      message: `Guide already ${allowed[action]}`,
-      error: { code: "NO_ACTION", details: [`Guide already ${allowed[action]}`] }
+      message: `GuideProfile already ${allowed[action]}`,
+      error: { code: "NO_ACTION", details: [`GuideProfile already ${allowed[action]}`] }
     });
 
     const user = await Trip.findByIdAndUpdate(userId,{status:allowed[action]},{new:true})

@@ -18,14 +18,14 @@ guideRouter.get("/:id", getGuideById);
 /**
  * @route GET /api/guides/profile/me
  * @desc Get current user's guide profile
- * @access Private (Guide only)
+ * @access Private (GuideProfile only)
  */
 guideRouter.get("/profile/me", protect, getMyGuideProfile);
 
 /**
  * @route PUT /api/guides/profile/me
  * @desc Update current user's guide profile
- * @access Private (Guide only)
+ * @access Private (GuideProfile only)
  */
 guideRouter.put("/profile/me", protect, updateMyGuideProfile);
 

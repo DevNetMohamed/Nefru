@@ -28,20 +28,20 @@ const calendarDays = [
   { day: 4 },
   { day: 5 },
   { day: 6, events: [{ label: "2 tours", tone: "booked" }] },
-  { day: 7, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 7, events: [{ label: "1 trip", tone: "booked" }] },
   { day: 8 },
-  { day: 9, events: [{ label: "1 tour", tone: "booked" }] },
-  { day: 10, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 9, events: [{ label: "1 trip", tone: "booked" }] },
+  { day: 10, events: [{ label: "1 trip", tone: "booked" }] },
   { day: 11 },
-  { day: 12, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 12, events: [{ label: "1 trip", tone: "booked" }] },
   { day: 13, events: [{ label: "2 tours", tone: "booked" }] },
-  { day: 14, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 14, events: [{ label: "1 trip", tone: "booked" }] },
   { day: 15 },
-  { day: 16, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 16, events: [{ label: "1 trip", tone: "booked" }] },
   { day: 17, events: [{ label: "2 tours", tone: "booked" }] },
   { day: 18 },
-  { day: 19, events: [{ label: "1 tour", tone: "booked" }] },
-  { day: 20, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 19, events: [{ label: "1 trip", tone: "booked" }] },
+  { day: 20, events: [{ label: "1 trip", tone: "booked" }] },
   {
     day: 21,
     selected: true,
@@ -51,15 +51,15 @@ const calendarDays = [
     ],
   },
   { day: 22 },
-  { day: 23, events: [{ label: "1 tour", tone: "pending" }] },
+  { day: 23, events: [{ label: "1 trip", tone: "pending" }] },
   { day: 24, events: [{ label: "2 tours", tone: "booked" }] },
   { day: 25 },
-  { day: 26, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 26, events: [{ label: "1 trip", tone: "booked" }] },
   { day: 27, events: [{ label: "2 tours", tone: "booked" }] },
-  { day: 28, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 28, events: [{ label: "1 trip", tone: "booked" }] },
   { day: 29 },
-  { day: 30, events: [{ label: "1 tour", tone: "booked" }] },
-  { day: 31, events: [{ label: "1 tour", tone: "booked" }] },
+  { day: 30, events: [{ label: "1 trip", tone: "booked" }] },
+  { day: 31, events: [{ label: "1 trip", tone: "booked" }] },
 ];
 
 const schedule = [
@@ -92,7 +92,7 @@ const schedule = [
 const reminders = [
   {
     title: "1 pending booking",
-    helper: "Abu Simbel Day Tour on May 23",
+    helper: "Abu Simbel Day Trip on May 23",
     tone: "pending",
   },
   {
@@ -101,7 +101,7 @@ const reminders = [
     tone: "reminder",
   },
   {
-    title: "Your tour tomorrow",
+    title: "Your trip tomorrow",
     helper: "Pyramids of Giza & Sphinx at 09:30 AM",
     tone: "booked",
   },
@@ -135,7 +135,7 @@ export default function GuideCalendar() {
       <header className={styles.pageHeader}>
         <div>
           <span className={styles.eyebrow}>Your availability</span>
-          <h1>Tour Calendar</h1>
+          <h1>Trip Calendar</h1>
           <p>Manage your schedule, bookings, and availability.</p>
         </div>
       </header>
@@ -306,7 +306,7 @@ export default function GuideCalendar() {
               </div>
               <div className={styles.upcomingList}>
                 <div><span>May 22</span><strong>Luxor East &amp; West Banks</strong><b>10 / 14</b></div>
-                <div><span>May 23</span><strong>Abu Simbel Day Tour</strong><b>6 / 10</b></div>
+                <div><span>May 23</span><strong>Abu Simbel Day Trip</strong><b>6 / 10</b></div>
                 <div><span>May 24</span><strong>Nile Sunset Felucca</strong><b>4 / 8</b></div>
               </div>
             </section>

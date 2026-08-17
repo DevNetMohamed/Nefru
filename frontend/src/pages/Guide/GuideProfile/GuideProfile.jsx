@@ -28,7 +28,7 @@ export default function GuideProfile({
   };
 
   const heroImage = guide?.heroImage || guide?.profileImage || "";
-  const fullName = guide?.name || "Tour Guide";
+  const fullName = guide?.name || "Trip Guide";
   const subtitle =
     guide?.headline ||
     [guide?.title, guide?.location].filter(Boolean).join(" • ") ||
@@ -139,7 +139,7 @@ export default function GuideProfile({
 
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Tour Gallery</h2>
+            <h2 className={styles.sectionTitle}>Trip Gallery</h2>
             <button
               type="button"
               className={styles.seeAll}
@@ -167,34 +167,34 @@ export default function GuideProfile({
           <h2 className={styles.sectionTitle}>Offered Tours</h2>
 
           <div className={styles.toursList}>
-            {tours.map((tour) => (
-              <article className={styles.tourCard} key={tour.id || tour.title}>
+            {tours.map((trip) => (
+              <article className={styles.tourCard} key={trip.id || trip.title}>
                 <img
-                  src={tour.image}
-                  alt={tour.title}
+                  src={trip.image}
+                  alt={trip.title}
                   className={styles.tourImage}
                   loading="lazy"
                 />
 
                 <div className={styles.tourBody}>
                   <div className={styles.tourInfo}>
-                    <h3 className={styles.tourTitle}>{tour.title}</h3>
+                    <h3 className={styles.tourTitle}>{trip.title}</h3>
 
                     <div className={styles.tourMeta}>
                       <span className={styles.tourDuration}>
                         <FaClock />
-                        {tour.duration}
+                        {trip.duration}
                       </span>
                     </div>
                   </div>
 
                   <div className={styles.tourFooter}>
-                    <span className={styles.tourPrice}>${tour.price}</span>
+                    <span className={styles.tourPrice}>${trip.price}</span>
 
                     <button
                       type="button"
                       className={styles.detailsButton}
-                      onClick={() => onTourClick?.(tour)}
+                      onClick={() => onTourClick?.(trip)}
                     >
                       Details <FaChevronRight />
                     </button>
