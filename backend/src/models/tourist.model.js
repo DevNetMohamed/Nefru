@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const touristProfileSchema = new mongoose.Schema(
   {
-    // user: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: true,
-    //   unique: true,
-    // },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
     // firstName:{
     //   type: String,
     //   trim: true,
