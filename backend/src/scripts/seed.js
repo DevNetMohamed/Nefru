@@ -509,6 +509,7 @@ async function createUsersAndProfiles() {
   const guideProfiles = await GuideProfile.create(
     guideSeedData.map((guide, index) => ({
       user: guideUsers[index]._id,
+      fullName: guide.fullName,
       title: guide.title,
       headline: guide.headline,
       location: guide.location,
@@ -538,11 +539,12 @@ async function createUsersAndProfiles() {
   await TouristProfile.create(
     touristSeedData.map((tourist, index) => ({
       user: touristUsers[index]._id,
+      fullName: tourist.fullName,
       phoneNumber: `+20 100 555 ${String(1000 + index).slice(-4)}`,
       gender: tourist.gender,
       nationality: tourist.nationality,
       dateOfBirth: new Date(tourist.dateOfBirth),
-      preferredLanguage: tourist.preferredLanguage,
+      language: tourist.preferredLanguage,
     })),
   );
 

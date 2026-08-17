@@ -34,8 +34,8 @@ import ReviewsWritten from "../pages/User/Profile/pages/ReviewsWritten/ReviewsWr
 import HelpSupport from "../pages/User/Profile/pages/HelpSupport/HelpSupport";
 import Settings from "../pages/User/Settings/Settings";
 import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
-//Tourist Discover Page
 import Discover from "../pages/User/Discover/Discover";
+import NearbyMap from "../pages/User/NearbyMap/NearbyMap";
 
 import Admin from "../pages/Admin/Admin";
 import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
@@ -86,6 +86,7 @@ export const router = createBrowserRouter([
       { path: "guideprofile", element: <GuideProfile /> },
       //Discover Routes
       { path: "discover", element: <Discover /> },
+      { path: "nearby", element: <NearbyMap /> },
 
       {
         path: "trips",
