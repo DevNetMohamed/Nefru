@@ -46,7 +46,7 @@ export default function DesktopWelcome() {
           <Icons.User />
           <span>Login</span>
         </button>
-      </header>
+        </header>
 
       <section className={styles.mainGrid}>
         <div className={styles.contentSide}>
@@ -58,12 +58,12 @@ export default function DesktopWelcome() {
 
             <h2 className={styles.subtitle}>
               Choose how you want to explore <span>Egypt</span>
-            </h2>
+          </h2>
             <p className={styles.description}>
               Find trusted local tours, clear prices, and unforgettable Egyptian
               experiences from verified guides.
             </p>
-          </div>
+        </div>
 
           <div className={styles.cards} aria-label="Choose account type">
             {roles.map((item) => (
@@ -72,7 +72,7 @@ export default function DesktopWelcome() {
                 type="button"
                 className={styles.roleCard}
                 onClick={() => handleChooseRole(item.role)}
-              >
+          >
                 <img src={item.img} alt="" className={styles.cardImg} />
 
                 <div className={styles.cardOverlay} />
@@ -85,7 +85,7 @@ export default function DesktopWelcome() {
                     {item.cta}
                     <Icons.ArrowRight />
                   </span>
-                </div>
+            </div>
               </button>
             ))}
           </div>
