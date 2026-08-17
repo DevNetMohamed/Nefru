@@ -1,3 +1,84 @@
+/* start mobile view */
+
+.main{
+  background-image:url("../../../assets/images/RecoveryBg.png");
+  background-size: cover;
+  background-position: center;
+
+  background-size:cover;
+  height:100vh;
+  padding:2rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.body{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+  height:85%;
+}
+.label{
+  width:100%;
+  padding-left:40px;
+}
+.cards{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  /* border:1px solid red; */
+  height:100%;
+}
+.card{
+  width:100%;
+  height:100%;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  box-sizing:border-box;
+  background-color:white;
+  border:2px solid rgb(194, 194, 194);
+  border-radius:12px;
+  cursor:pointer;
+}
+.selected{
+  border:2px solid var(--color-primary);
+  background-color:var(--color-primary-mute)
+}
+.select{
+  /* border:1px solid red; */
+  justify-items:right;
+  width:100%;
+  height:18px;
+  /* border:1px solid red; */
+  color:var(--color-secondary)
+}
+.icon{
+  font-size:100px;
+  margin:10px 0;
+  height:50%;
+}
+.cardTitle , .cardSubTitle{
+  width:fit-content;
+  margin:3px;
+}
+.button{
+  background-color:var(--color-primary);
+  width:100%;
+  color:white;
+  padding:15px;
+  box-sizing:border-box;
+  border-radius:12px;
+  font-size:20px;
+}
+/* end mobile view */
 .page {
   min-height: 100vh;
   width: 100%;

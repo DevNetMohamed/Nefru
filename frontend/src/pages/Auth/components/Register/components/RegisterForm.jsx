@@ -152,7 +152,7 @@ function RegisterForm() {
             </div>
 
             <form className={styles.form} onSubmit={formik.handleSubmit}>
-              <div
+              {/* <div
                 className={styles.roleToggle}
                 aria-label="Choose account type"
               >
@@ -184,7 +184,7 @@ function RegisterForm() {
                   <Icons.User />
                   <span>Guide</span>
                 </button>
-              </div>
+              </div> */}
 
               <div className={styles.field}>
                 <Input
