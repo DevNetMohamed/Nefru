@@ -33,14 +33,14 @@ const defaultTours = [
   {
     id: 4,
     image: pyramids,
-    title: "Old Cairo Walking Tour",
-    location: "Old Cairo",
-    time: "04:00 PM - 08:00 PM",
-    price: "$35",
+    title: "Nile Sunset Felucca Ride",
+    location: "Cairo Nile",
+    time: "05:00 PM - 07:00 PM",
+    price: "$30",
   },
 ];
 
-// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
+// Handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
   if (
@@ -78,7 +78,6 @@ function AvailableToday({ tours }) {
           </p>
         </div>
 
-        {/* Bug #7 fixed: View All button now navigates */}
         <button onClick={() => navigate("/user/discover")}>View All</button>
       </div>
 
@@ -87,6 +86,7 @@ function AvailableToday({ tours }) {
           <div
             key={tour.id}
             className={styles.card}
+            onClick={() => navigate("/user/discover")}
           >
             <img
               src={tour.image}
@@ -108,8 +108,10 @@ function AvailableToday({ tours }) {
                 <strong>{tour.price}</strong>
               </div>
 
-              {/* Bug #7 fixed: Book Now navigates to discover */}
-              <button onClick={() => navigate("/user/discover")}>
+              <button onClick={(e) => {
+                e.stopPropagation();
+                navigate("/user/discover");
+              }}>
                 Book Now
               </button>
             </div>
