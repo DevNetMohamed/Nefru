@@ -25,6 +25,8 @@ import {
   X,
   Check,
   Compass,
+  List,
+  ArrowRight,
 } from "lucide-react";
 import axios from "axios";
 
@@ -65,6 +67,16 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const d = R * c;
   return d < 1 ? `${Math.round(d * 1000)} m away` : `${d.toFixed(1)} km away`;
+}
+
+// Helper to format travel duration in hours and minutes (e.g. 2h 51m, 45m)
+function formatTravelTime(mins) {
+  if (!mins || isNaN(mins)) return "";
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h > 0 && m > 0) return `${h}h ${m}m`;
+  if (h > 0) return `${h}h`;
+  return `${m}m`;
 }
 
 // Helper for image URLs
@@ -222,10 +234,10 @@ const createVehiclePinIcon = (mode = "walking") => {
 const defaultNearbyTours = [
   {
     id: 1,
-    title: "Old Cairo & Khan el-Khalili Food Walk",
-    price: 30,
+    title: "Historic Cairo Walking Trip",
+    price: 25,
     timeText: "Tomorrow",
-    duration: "5 Hours",
+    duration: "3 Hours",
     badgeText: "Last seat",
     badgeColor: "bg-red-500",
     position: [30.0477, 31.2623],
@@ -233,16 +245,17 @@ const defaultNearbyTours = [
     image: oldCairoImg,
     pinColor: "#ef4444",
     iconType: "camera",
-    category: "Food & Culture",
-    rating: 4.9,
-    reviewsCount: 342,
+    category: "History",
+    rating: 4.8,
+    reviewsCount: 340,
+    guide: "Mohamed Hassan",
   },
   {
     id: 2,
-    title: "Pyramids, Giza",
-    price: 110,
+    title: "Pyramids Sunrise & Sphinx Experience",
+    price: 45,
     timeText: "2 days left",
-    duration: "2 Hours",
+    duration: "4 Hours",
     badgeText: "4 available",
     badgeColor: "bg-[#0097a7]",
     position: [29.9792, 31.1342],
@@ -250,94 +263,118 @@ const defaultNearbyTours = [
     image: pyramidsImg,
     pinColor: "#ef4444",
     iconType: "pyramid",
-    category: "Historical",
+    category: "History",
     rating: 4.9,
-    reviewsCount: 1250,
+    reviewsCount: 582,
+    guide: "Mohamed Hassan",
   },
   {
     id: 3,
-    title: "Old Cairo & Khan el-Khalili",
-    price: 30,
+    title: "Nile Sunset Felucca",
+    price: 20,
     timeText: "Tomorrow",
-    duration: "5 Hours",
+    duration: "2 Hours",
     badgeText: "Available",
     badgeColor: "bg-emerald-600",
-    position: [30.0488, 31.2610],
-    location: "Coptic & Islamic Cairo",
-    image: oldCairoImg,
-    pinColor: "#ef4444",
-    iconType: "camera",
+    position: [30.0420, 31.2280],
+    location: "River Nile, Cairo",
+    image: nileFeluccaImg,
+    pinColor: "#0284c7",
+    iconType: "boat",
     category: "Culture",
     rating: 4.8,
-    reviewsCount: 890,
+    reviewsCount: 290,
+    guide: "Mariam El-Sayed",
   },
   {
     id: 4,
-    title: "Desert Safari Adventure",
+    title: "Cairo Street Food Evening",
+    price: 30,
+    timeText: "Today",
+    duration: "3 Hours",
+    badgeText: "Popular",
+    badgeColor: "bg-amber-500",
+    position: [30.0460, 31.2400],
+    location: "Downtown & Old Cairo",
+    image: oldCairoImg,
+    pinColor: "#f59e0b",
+    iconType: "camera",
+    category: "Food",
+    rating: 4.9,
+    reviewsCount: 215,
+    guide: "Mariam El-Sayed",
+  },
+  {
+    id: 5,
+    title: "Coptic Cairo & Civilization Museum",
+    price: 35,
+    timeText: "Tomorrow",
+    duration: "5 Hours",
+    badgeText: "8 available",
+    badgeColor: "bg-[#0097a7]",
+    position: [30.0058, 31.2300],
+    location: "Old Cairo & NMEC",
+    image: museumImg,
+    pinColor: "#9333ea",
+    iconType: "museum",
+    category: "Culture",
+    rating: 4.9,
+    reviewsCount: 410,
+    guide: "Mohamed Hassan",
+  },
+  {
+    id: 6,
+    title: "Siwa Desert Safari & Sunset",
     price: 75,
     timeText: "3 days left",
     duration: "6 Hours",
     badgeText: "6 available",
     badgeColor: "bg-[#0097a7]",
-    position: [29.9650, 31.1150],
-    location: "Giza Desert",
+    position: [29.2032, 25.5186],
+    location: "Siwa Oasis",
     image: desertSafariImg,
-    pinColor: "#ef4444",
+    pinColor: "#d97706",
     iconType: "safari",
     category: "Adventure",
-    rating: 4.9,
-    reviewsCount: 520,
-  },
-  {
-    id: 5,
-    title: "Nile Felucca Ride",
-    price: 25,
-    timeText: "Tomorrow",
-    duration: "2 Hours",
-    badgeText: "8 available",
-    badgeColor: "bg-[#0097a7]",
-    position: [30.0420, 31.2280],
-    location: "River Nile, Cairo",
-    image: nileFeluccaImg,
-    pinColor: "#ef4444",
-    iconType: "boat",
-    category: "Sightseeing",
     rating: 4.7,
-    reviewsCount: 410,
-  },
-  {
-    id: 6,
-    title: "Grand Egyptian Museum Highlights",
-    price: 45,
-    timeText: "Today",
-    duration: "4 Hours",
-    badgeText: "Limited Slots",
-    badgeColor: "bg-amber-500",
-    position: [29.9948, 31.1206],
-    location: "Giza",
-    image: museumImg,
-    pinColor: "#0284c7",
-    iconType: "museum",
-    category: "Museum",
-    rating: 4.9,
-    reviewsCount: 980,
+    reviewsCount: 95,
+    guide: "Salma Nassar",
   },
   {
     id: 7,
-    title: "Sphinx Sunset & Light Show",
-    price: 55,
+    title: "Alexandria Coastal & Heritage Trip",
+    price: 50,
     timeText: "Tomorrow",
-    duration: "2.5 Hours",
+    duration: "Full Day",
     badgeText: "Best Seller",
     badgeColor: "bg-purple-600",
-    position: [29.9753, 31.1376],
-    location: "Giza Plateau",
+    position: [31.2001, 29.9187],
+    location: "Alexandria Corniche",
     image: sphinxImg,
-    pinColor: "#9333ea",
-    iconType: "pyramid",
-    category: "Historical",
+    pinColor: "#003D5B",
+    iconType: "camera",
+    category: "Culture",
     rating: 4.8,
-    reviewsCount: 760,
+    reviewsCount: 180,
+    guide: "Youssef Farouk",
+  },
+  {
+    id: 8,
+    title: "Luxor East & West Banks",
+    price: 65,
+    timeText: "Daily",
+    duration: "Full Day",
+    badgeText: "Top Rated",
+    badgeColor: "bg-emerald-700",
+    position: [25.6872, 32.6396],
+    location: "Luxor Temples",
+    image: oldCairoImg,
+    pinColor: "#ef4444",
+    iconType: "pyramid",
+    category: "History",
+    rating: 5.0,
+    reviewsCount: 420,
+    guide: "Omar Khalil",
   },
 ];
 
@@ -377,6 +414,8 @@ export default function NearbyMap() {
   const [sortBy, setSortBy] = useState("recommended"); // "recommended" | "price-asc" | "price-desc" | "duration" | "rating"
   const [savedTourIds, setSavedTourIds] = useState(new Set());
   const [currentLocationName, setCurrentLocationName] = useState("Giza, Egypt");
+  const [isSheetExpanded, setIsSheetExpanded] = useState(false);
+  const touchStartY = useRef(0);
 
   // Popover States
   const [showLocationPicker, setShowLocationPicker] = useState(false);
@@ -387,6 +426,7 @@ export default function NearbyMap() {
   const [maxPriceFilter, setMaxPriceFilter] = useState(150);
 
   const markerRefs = useRef({});
+  const cardRefs = useRef({});
   const mapRef = useRef(null);
   const actionsRef = useRef(null);
 
@@ -531,6 +571,35 @@ export default function NearbyMap() {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
+
+  // 6. Recalibrate Leaflet size & auto-scroll mobile carousel card into view when selectedTour changes
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+    }
+    if (selectedTour && cardRefs.current[selectedTour.id] && !isSheetExpanded) {
+      cardRefs.current[selectedTour.id].scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [selectedTour, isSheetExpanded]);
+
+  // Touch gesture handlers for swipe up & down on bottom sheet handle
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    const diffY = touchStartY.current - touchEndY;
+    if (diffY > 40) {
+      setIsSheetExpanded(true);
+    } else if (diffY < -40) {
+      setIsSheetExpanded(false);
+    }
+  };
 
   // 6. Compute distance, filter and sort tours
   const filteredTours = useMemo(() => {
@@ -938,33 +1007,31 @@ export default function NearbyMap() {
             </button>
           </div>
 
-          {/* Floating Pill: Mode Selector (Walking vs Driving) */}
-          {selectedTour && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[990] hidden md:flex bg-white/95 backdrop-blur-md p-1 rounded-full shadow-lg border border-slate-100 items-center gap-1 text-xs font-bold">
-              <button
-                onClick={() => setTravelMode("walking")}
-                className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all ${
-                  travelMode === "walking"
-                    ? "bg-emerald-600 text-white shadow-xs"
-                    : "text-slate-600 hover:bg-slate-100"
-                }`}
-              >
-                <Footprints className="w-3.5 h-3.5" />
-                <span>On Foot</span>
-              </button>
-              <button
-                onClick={() => setTravelMode("driving")}
-                className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all ${
-                  travelMode === "driving"
-                    ? "bg-[#003D5B] text-white shadow-xs"
-                    : "text-slate-600 hover:bg-slate-100"
-                }`}
-              >
-                <Car className="w-3.5 h-3.5" />
-                <span>By Car</span>
-              </button>
-            </div>
-          )}
+          {/* Floating Pill: Mode Selector (Walking vs Driving) - Visible on Mobile & Desktop */}
+          <div className="absolute top-16 md:top-4 left-1/2 -translate-x-1/2 z-[990] flex bg-white/95 backdrop-blur-md p-1 rounded-full shadow-xl border border-slate-200/80 items-center gap-1 text-xs font-bold">
+            <button
+              onClick={() => setTravelMode("walking")}
+              className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all cursor-pointer ${
+                travelMode === "walking"
+                  ? "bg-emerald-600 text-white shadow-xs font-extrabold"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <Footprints className="w-3.5 h-3.5" />
+              <span>On Foot</span>
+            </button>
+            <button
+              onClick={() => setTravelMode("driving")}
+              className={`px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all cursor-pointer ${
+                travelMode === "driving"
+                  ? "bg-[#003D5B] text-white shadow-xs font-extrabold"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <Car className="w-3.5 h-3.5" />
+              <span>By Car</span>
+            </button>
+          </div>
 
           {/* Floating Bottom-Left Card: Showing tours near */}
           <div className="absolute bottom-6 left-6 z-[990] hidden md:block">
@@ -1154,12 +1221,12 @@ export default function NearbyMap() {
                         📍 {tour.location}
                       </p>
                       {routeData && isSelected ? (
-                        <p className="text-[11px] text-emerald-800 font-bold mb-1.5 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/80 inline-block">
+                        <p className="text-[11px] text-emerald-800 font-bold mb-1.5 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/80 inline-block whitespace-nowrap">
                           {travelMode === "walking" ? "🚶 Walk:" : "🚗 Drive:"}{" "}
-                          {routeData.durationMins} mins ({routeData.distanceKm} km)
+                          {formatTravelTime(routeData.durationMins)} ({routeData.distanceKm} km)
                         </p>
                       ) : (
-                        <p className="text-[11px] text-sky-700 font-bold mb-1.5 bg-sky-50 px-2 py-0.5 rounded border border-sky-200/60 inline-block">
+                        <p className="text-[11px] text-sky-700 font-bold mb-1.5 bg-sky-50 px-2 py-0.5 rounded border border-sky-200/60 inline-block whitespace-nowrap">
                           📏 {tour.distanceStr}
                         </p>
                       )}
@@ -1168,8 +1235,8 @@ export default function NearbyMap() {
                           ${tour.price}
                         </span>
                         <button
-                          onClick={() => navigate("/user/discover")}
-                          className="text-[11px] font-bold text-white bg-[#003D5B] hover:bg-[#002b40] px-2.5 py-1 rounded-md shadow-xs transition-colors"
+                          onClick={() => navigate("/user/trips/book", { state: { tour, trip: tour } })}
+                          className="text-[11px] font-extrabold text-white bg-[#003D5B] hover:bg-[#002b40] px-3 py-1.5 rounded-lg shadow-xs transition-colors shrink-0 whitespace-nowrap"
                         >
                           Book Now →
                         </button>
@@ -1180,12 +1247,200 @@ export default function NearbyMap() {
               );
             })}
           </MapContainer>
+
+          {/* ======================================================================= */}
+          {/* MOBILE SWIPE-UP EXPANDABLE BOTTOM SHEET OVERLAY                          */}
+          {/* ======================================================================= */}
+          <div
+            className={`md:hidden fixed inset-x-0 bottom-0 z-[1000] bg-white/95 backdrop-blur-md rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.2)] border-t border-slate-200/90 transition-all duration-300 ease-out flex flex-col ${
+              isSheetExpanded ? "h-[85vh]" : "h-[265px]"
+            }`}
+          >
+            {/* Drag Handle Bar & Header (Swipable area) */}
+            <div
+              onClick={() => setIsSheetExpanded((prev) => !prev)}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              className="py-2.5 px-4 cursor-pointer select-none shrink-0 flex flex-col items-center bg-white rounded-t-3xl border-b border-slate-200/80 shadow-xs z-10"
+            >
+              <div className="w-12 h-1.5 bg-slate-300 rounded-full mb-1.5" />
+              <div className="w-full flex items-center justify-between">
+                <span className="text-xs font-black text-slate-800 tracking-tight flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#003D5B]" />
+                  <span>Nearby Experiences ({filteredTours.length})</span>
+                </span>
+                <span className="text-[10px] font-extrabold text-[#003D5B] bg-[#003D5B]/10 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  {isSheetExpanded ? "Swipe Down 🔽" : "Swipe Up 🔼"}
+                </span>
+              </div>
+            </div>
+
+            {/* Content Area */}
+            {isSheetExpanded ? (
+              /* EXPANDED STATE: Full vertical scrollable list of tour cards */
+              <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-10">
+                {filteredTours.map((tour) => {
+                  const isSelected = selectedTour?.id === tour.id;
+                  const isSaved = savedTourIds.has(tour.id);
+
+                  return (
+                    <div
+                      key={`mobile-expanded-${tour.id}`}
+                      onClick={() => {
+                        handleSelectTour(tour);
+                        setIsSheetExpanded(false);
+                      }}
+                      className={`bg-white rounded-2xl border p-3 flex gap-3 cursor-pointer shadow-xs transition-all ${
+                        isSelected
+                          ? "border-[#003D5B] ring-2 ring-[#003D5B]/20 bg-[#003D5B]/[0.02]"
+                          : "border-slate-200/80 hover:border-slate-300"
+                      }`}
+                    >
+                      <img
+                        src={tour.image}
+                        alt={tour.title}
+                        className="w-24 h-24 rounded-xl object-cover shrink-0 shadow-xs"
+                      />
+                      <div className="flex-1 flex flex-col justify-between min-w-0">
+                        <div>
+                          <div className="flex items-start justify-between gap-1">
+                            <h4 className="font-extrabold text-xs text-slate-900 leading-snug line-clamp-2">
+                              {tour.title}
+                            </h4>
+                            <button
+                              onClick={(e) => toggleSave(tour.id, e)}
+                              className="text-slate-400 hover:text-red-500 p-0.5 shrink-0"
+                            >
+                              <Heart className={`w-4 h-4 ${isSaved ? "fill-red-500 text-red-500" : ""}`} />
+                            </button>
+                          </div>
+                          <p className="text-[11px] text-slate-500 font-medium truncate mt-1">
+                            📍 {tour.location}
+                          </p>
+                          <div className="flex items-center gap-2 text-[10px] text-slate-500 font-semibold mt-1">
+                            <span>⏱️ {tour.duration}</span>
+                            <span>⭐ {tour.rating} ({tour.reviewsCount})</span>
+                            {isSelected && routeData && (
+                              <span className="text-emerald-800 font-extrabold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap">
+                                {travelMode === "walking" ? "🚶" : "🚗"} {formatTravelTime(routeData.durationMins)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-100">
+                          <div className="flex items-baseline gap-1 leading-none shrink-0 whitespace-nowrap">
+                            <span className="font-black text-sm text-[#003D5B]">${tour.price}</span>
+                            <span className="text-[9px] text-slate-400 font-normal">/person</span>
+                          </div>
+                          <span className="text-[10px] font-extrabold text-white bg-[#003D5B] px-3 py-1.5 rounded-xl shrink-0 whitespace-nowrap">
+                            View Map Pin →
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* COLLAPSED STATE: Horizontal scrollable carousel */
+              <div className="flex-1 overflow-x-auto px-4 py-3 flex gap-3.5 snap-x snap-mandatory no-scrollbar items-center">
+                {filteredTours.map((tour) => {
+                  const isSelected = selectedTour?.id === tour.id;
+                  const isSaved = savedTourIds.has(tour.id);
+
+                  return (
+                    <div
+                      key={`mobile-collapsed-${tour.id}`}
+                      ref={(el) => {
+                        if (el) cardRefs.current[tour.id] = el;
+                      }}
+                      onClick={() => handleSelectTour(tour)}
+                      className={`snap-center shrink-0 w-[320px] sm:w-[340px] h-[148px] bg-white rounded-2xl border p-2.5 flex gap-3 shadow-md transition-all cursor-pointer overflow-hidden ${
+                        isSelected
+                          ? "border-[#003D5B] ring-2 ring-[#003D5B]/30 shadow-lg"
+                          : "border-slate-200/90 hover:border-slate-300"
+                      }`}
+                    >
+                      {/* Thumbnail */}
+                      <div className="relative w-24 h-full rounded-xl overflow-hidden shrink-0 shadow-xs">
+                        <img src={tour.image} alt={tour.title} className="w-full h-full object-cover" />
+                        <span
+                          className={`absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full text-[9px] font-extrabold text-white shadow-xs z-10 ${
+                            tour.badgeColor || "bg-red-500"
+                          }`}
+                        >
+                          {tour.badgeText || "Nearby"}
+                        </span>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 flex flex-col justify-between min-w-0 h-full py-0.5">
+                        <div>
+                          <div className="flex items-start justify-between gap-1">
+                            <h4
+                              className={`font-extrabold text-xs leading-snug line-clamp-1 ${
+                                isSelected ? "text-[#003D5B]" : "text-slate-900"
+                              }`}
+                            >
+                              {tour.title}
+                            </h4>
+                            <button
+                              onClick={(e) => toggleSave(tour.id, e)}
+                              className="text-slate-400 hover:text-red-500 p-0.5 shrink-0"
+                            >
+                              <Heart
+                                className={`w-3.5 h-3.5 ${
+                                  isSaved ? "fill-red-500 text-red-500" : "text-slate-400"
+                                }`}
+                              />
+                            </button>
+                          </div>
+
+                          <p className="text-[10.5px] text-slate-500 font-medium truncate mt-0.5">
+                            📍 {tour.location}
+                          </p>
+
+                          {/* Travel Time Pill */}
+                          {isSelected && routeData ? (
+                            <div className="flex items-center mt-1">
+                              <span className="text-[9px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap inline-flex items-center gap-1">
+                                {travelMode === "walking" ? "🚶" : "🚗"} {formatTravelTime(routeData.durationMins)} ({routeData.distanceKm} km)
+                              </span>
+                            </div>
+                          ) : (
+                            <p className="text-[9.5px] text-slate-400 font-semibold mt-1">
+                              ⏱️ {tour.duration} • {tour.distanceStr}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Bottom Action Row */}
+                        <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 mt-auto">
+                          <div className="flex items-baseline gap-1 shrink-0 whitespace-nowrap leading-none">
+                            <span className="font-black text-sm text-[#003D5B]">${tour.price}</span>
+                            <span className="text-[9px] text-slate-400 font-medium">/person</span>
+                          </div>
+                          {tour.rating && (
+                            <div className="flex items-center gap-1 text-[10.5px] font-bold text-slate-700 shrink-0">
+                              <span className="text-amber-500 text-xs">⭐</span>
+                              <span>{tour.rating}</span>
+                              <span className="text-slate-400 font-normal text-[9.5px]">({tour.reviewsCount})</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ======================================================================= */}
         {/* 2B. RIGHT SIDEBAR SECTION (DESKTOP TOURS EXPLORER)                      */}
         {/* ======================================================================= */}
-        <aside className="w-full md:w-[410px] lg:w-[440px] xl:w-[470px] h-full bg-white border-l border-slate-200/80 flex flex-col shrink-0 z-20 shadow-md">
+        <aside className="hidden md:flex w-full md:w-[410px] lg:w-[440px] xl:w-[470px] h-full bg-white border-l border-slate-200/80 flex-col shrink-0 z-20 shadow-md">
           {/* Sidebar Header: Count + Sort By */}
           <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
             <h2 className="text-lg font-black text-slate-900 tracking-tight">
@@ -1283,7 +1538,7 @@ export default function NearbyMap() {
 
                         {isSelected && routeData && (
                           <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full text-[10px]">
-                            {travelMode === "walking" ? "🚶" : "🚗"} {routeData.durationMins} mins
+                            {travelMode === "walking" ? "🚶" : "🚗"} {formatTravelTime(routeData.durationMins)}
                           </span>
                         )}
                       </div>

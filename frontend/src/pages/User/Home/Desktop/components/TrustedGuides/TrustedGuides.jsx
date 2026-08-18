@@ -8,7 +8,7 @@ import guide3 from "../../../../../../assets/images/guiders/guide4.webp";
 const defaultGuides = [
   {
     id: 1,
-    name: "Ahmed Kamal",
+    name: "Mohamed Hassan",
     rating: "4.9",
     languages: "Arabic • English",
     experience: "8 Years Experience",
@@ -16,26 +16,26 @@ const defaultGuides = [
   },
   {
     id: 2,
-    name: "Sara Hassan",
+    name: "Mariam El-Sayed",
     rating: "4.8",
-    languages: "English • French",
+    languages: "Arabic • English • French",
     experience: "6 Years Experience",
     image: guide2,
   },
   {
     id: 3,
-    name: "Mohamed Adel",
-    rating: "4.9",
-    languages: "Arabic • German",
+    name: "Omar Khalil",
+    rating: "5.0",
+    languages: "Arabic • English • German",
     experience: "10 Years Experience",
     image: guide3,
   },
   {
     id: 4,
-    name: "Nour Ramadan",
+    name: "Salma Nassar",
     rating: "4.7",
-    languages: "Arabic • English",
-    experience: "5 Years Experience",
+    languages: "Arabic • English • Italian",
+    experience: "4 Years Experience",
     image: guide1,
   },
 ];
