@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { Button } from "../../../../../shared/components/Button/Button";
-import { Input } from "../../../../../shared/components/inputs/inputs";
+import { Input } from "../../../../../shared/components/Inputs/Inputs";
 import Icons from "../../../../../assets/icons";
 import LogoLight from "../../../../../assets/images/Logo_Light.png";
 import { apiRequest } from "../../../../../services/api";
