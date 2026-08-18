@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - prod
-
+  workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
