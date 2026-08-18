@@ -16,18 +16,17 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: runner
     container_name: backend
     ports:
       - "5000:5000"
     env_file:
       - ./backend/.env
     environment:
-      MONGO_URI: mongodb://database:27017/Nefru-DB
+      MONGO_URI: mongodb://database:27017/nefru
       NODE_ENV: production
       PORT: 5000
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5000/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:5000/api/health"]
       interval: 5s
       timeout: 5s
       retries: 10
