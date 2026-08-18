@@ -9,33 +9,33 @@ const defaultTours = [
   {
     id: 1,
     image: pyramids,
-    title: "Giza Sunset Experience",
+    title: "Pyramids Sunrise & Sphinx Experience",
     location: "Giza",
-    time: "09:00 AM - 01:00 PM",
-    price: "$65",
+    time: "09:30 AM - 01:30 PM",
+    price: "$45",
   },
   {
     id: 2,
-    image: museum,
-    title: "Museum Highlights Tour",
-    location: "Cairo",
-    time: "02:00 PM - 05:00 PM",
-    price: "$40",
-  },
-  {
-    id: 3,
     image: oldCairo,
-    title: "Old Cairo Walking Tour",
-    location: "Old Cairo",
-    time: "04:00 PM - 08:00 PM",
+    title: "Historic Cairo Walking Trip",
+    location: "Cairo",
+    time: "04:00 PM - 07:00 PM",
     price: "$35",
   },
   {
-    id: 4,
+    id: 3,
     image: pyramids,
-    title: "Nile Sunset Felucca Ride",
-    location: "Cairo Nile",
+    title: "Nile Sunset Felucca",
+    location: "Cairo",
     time: "05:00 PM - 07:00 PM",
+    price: "$25",
+  },
+  {
+    id: 4,
+    image: oldCairo,
+    title: "Cairo Street Food Evening",
+    location: "Cairo",
+    time: "06:00 PM - 09:00 PM",
     price: "$30",
   },
 ];
@@ -110,7 +110,7 @@ function AvailableToday({ tours }) {
 
               <button onClick={(e) => {
                 e.stopPropagation();
-                navigate("/user/discover");
+                navigate("/user/trips/book", { state: { tour, trip: tour } });
               }}>
                 Book Now
               </button>

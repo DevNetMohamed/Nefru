@@ -1,7 +1,7 @@
 import style from "./Date.module.css";
 import MyDatePicker from "../DatePicker/DatePicker";
 
-export default function Date() {
+export default function Date({ selected, onChange, availableDates }) {
   return (
     <div>
       <div className={style.headerDate}>
@@ -10,7 +10,11 @@ export default function Date() {
       </div>
 
       <div className={style.DatePicker}>
-        <MyDatePicker />
+        <MyDatePicker
+          selected={selected}
+          onChange={onChange}
+          availableDates={availableDates}
+        />
       </div>
     </div>
   );

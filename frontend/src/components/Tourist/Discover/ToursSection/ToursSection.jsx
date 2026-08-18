@@ -11,31 +11,34 @@ import khanImage from "../../../../assets/images/tours/khan-el-khalili.jpg";
 function ToursSection({ searchQuery }) {
     // console.log("ToursSection Rendered");
     const tours = [
-
         {
             id: 1,
-            title: "Giza Pyramids Half-Day Trip",
+            title: "Pyramids Sunrise & Sphinx Experience",
             duration: "4 Hours",
             price: 45,
             image: pyramidsImage,
         },
-
         {
             id: 2,
-            title: "Luxor East Bank Trip",
-            duration: "6 Hours",
-            price: 65,
-            image: luxorImage,
-        },
-
-        {
-            id: 3,
-            title: "Khan El Khalili Food Experience",
+            title: "Historic Cairo Walking Trip",
             duration: "3 Hours",
             price: 35,
             image: khanImage,
         },
-
+        {
+            id: 3,
+            title: "Luxor East & West Banks",
+            duration: "Full Day",
+            price: 65,
+            image: luxorImage,
+        },
+        {
+            id: 4,
+            title: "Nile Sunset Felucca",
+            duration: "2 Hours",
+            price: 25,
+            image: khanImage,
+        },
     ];
 
     const filteredTours = tours.filter((trip) =>
