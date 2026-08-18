@@ -11,7 +11,7 @@ export default function PaymentSuccessStep({ bookingData }) {
   const navigate = useNavigate();
 
   const bookingId = bookingData?.bookingId || "NF-8829-Luxor";
-  const title = bookingData?.title || "Private Tour: Valley of the Kings";
+  const title = bookingData?.title || "Private Trip: Valley of the Kings";
   const date = bookingData?.date || "Oct 14, 2023";
   const travelers = bookingData?.adults || 2;
 
@@ -41,7 +41,7 @@ export default function PaymentSuccessStep({ bookingData }) {
           <div style={{ display: "flex", gap: "12px", alignItems: "center", textAlign: "left" }}>
             <img
               src="https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=120&q=80"
-              alt="Tour"
+              alt="Trip"
               style={{ width: "48px", height: "48px", borderRadius: "10px", objectFit: "cover" }}
             />
             <div>

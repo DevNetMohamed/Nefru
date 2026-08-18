@@ -1,4 +1,5 @@
 import styles from "./AvailableToday.module.css";
+import { useNavigate } from "react-router-dom";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
@@ -8,46 +9,54 @@ const defaultTours = [
   {
     id: 1,
     image: pyramids,
-    title: "Giza Sunset Experience",
+    title: "Pyramids Sunrise & Sphinx Experience",
     location: "Giza",
-    time: "09:00 AM - 01:00 PM",
-    price: "$65",
+    time: "09:30 AM - 01:30 PM",
+    price: "$45",
   },
   {
     id: 2,
-    image: museum,
-    title: "Museum Highlights Tour",
+    image: oldCairo,
+    title: "Historic Cairo Walking Trip",
     location: "Cairo",
-    time: "02:00 PM - 05:00 PM",
-    price: "$40",
+    time: "04:00 PM - 07:00 PM",
+    price: "$35",
   },
   {
     id: 3,
-    image: oldCairo,
-    title: "Old Cairo Walking Tour",
-    location: "Old Cairo",
-    time: "04:00 PM - 08:00 PM",
-    price: "$35",
+    image: pyramids,
+    title: "Nile Sunset Felucca",
+    location: "Cairo",
+    time: "05:00 PM - 07:00 PM",
+    price: "$25",
   },
   {
     id: 4,
-    image: pyramids,
-    title: "Old Cairo Walking Tour",
-    location: "Old Cairo",
-    time: "04:00 PM - 08:00 PM",
-    price: "$35",
+    image: oldCairo,
+    title: "Cairo Street Food Evening",
+    location: "Cairo",
+    time: "06:00 PM - 09:00 PM",
+    price: "$30",
   },
 ];
 
+// Handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
     return img;
   }
   return `http://localhost:5000/uploads/${img}`;
 };
 
 function AvailableToday({ tours }) {
+  const navigate = useNavigate();
   const displayTours = tours && tours.length > 0
     ? tours.map((t, idx) => ({
         id: t._id || idx,
@@ -69,7 +78,7 @@ function AvailableToday({ tours }) {
           </p>
         </div>
 
-        <button>View All</button>
+        <button onClick={() => navigate("/user/discover")}>View All</button>
       </div>
 
       <div className={styles.cards}>
@@ -77,6 +86,7 @@ function AvailableToday({ tours }) {
           <div
             key={tour.id}
             className={styles.card}
+            onClick={() => navigate("/user/discover")}
           >
             <img
               src={tour.image}
@@ -98,7 +108,10 @@ function AvailableToday({ tours }) {
                 <strong>{tour.price}</strong>
               </div>
 
-              <button>
+              <button onClick={(e) => {
+                e.stopPropagation();
+                navigate("/user/trips/book", { state: { tour, trip: tour } });
+              }}>
                 Book Now
               </button>
             </div>
@@ -109,4 +122,4 @@ function AvailableToday({ tours }) {
   );
 }
 
-export default AvailableToday;
+export default AvailableToday;

@@ -34,8 +34,8 @@ import ReviewsWritten from "../pages/User/Profile/pages/ReviewsWritten/ReviewsWr
 import HelpSupport from "../pages/User/Profile/pages/HelpSupport/HelpSupport";
 import Settings from "../pages/User/Settings/Settings";
 import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
-//Tourist Discover Page
 import Discover from "../pages/User/Discover/Discover";
+import NearbyMap from "../pages/User/NearbyMap/NearbyMap";
 
 import Admin from "../pages/Admin/Admin";
 import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
@@ -56,6 +56,8 @@ import GuideDashboard from "../pages/Guide/GuideDashboard/GuideDashboard";
 import GuideCalendar from "../pages/Guide/GuideCalendar/GuideCalendar";
 import GuideAccountProfile from "../pages/Guide/GuideAccountProfile/GuideAccountProfile";
 import GuideNotifications from "../pages/Guide/GuideNotifications/GuideNotifications";
+
+import { Navigate } from "react-router-dom";
 
 
 export const router = createBrowserRouter([
@@ -84,6 +86,7 @@ export const router = createBrowserRouter([
       { path: "guideprofile", element: <GuideProfile /> },
       //Discover Routes
       { path: "discover", element: <Discover /> },
+      { path: "nearby", element: <NearbyMap /> },
 
       {
         path: "trips",
@@ -165,7 +168,7 @@ export const router = createBrowserRouter([
       ],
     },
 
-    // Existing create-tour flow — left completely unchanged and outside
+    // Existing create-trip flow — left completely unchanged and outside
     // GuidePortalLayout to avoid adding another global header/navigation.
     { path: "createtour", element: <CreateTour /> },
     { path: "schedule", element: <Schedule /> },
@@ -180,6 +183,7 @@ export const router = createBrowserRouter([
     element: <Admin />,
 
     children: [
+      { index: true , element:<Navigate to="/admin/overview" replace/>},
       { path: "overview", element: <DashboardStatus /> },
       { path: "accounts", element: <Accounts /> },
       { path: "cms", element: <CMS /> },

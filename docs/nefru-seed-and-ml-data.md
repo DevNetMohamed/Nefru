@@ -100,7 +100,7 @@ The export deliberately excludes names, emails, phone numbers, exact birth dates
 - inactive tourist
 - admin review queue
 
-### Tour lifecycle
+### Trip lifecycle
 
 - active public tours
 - reviewing tours
@@ -136,7 +136,7 @@ The export deliberately excludes names, emails, phone numbers, exact birth dates
 
 ## ML use cases supported by the exported shape
 
-1. **Tour recommendation/ranking**
+1. **Trip recommendation/ranking**
    - Primary file: `interactions.csv`
    - Supporting files: `users.csv`, `tours.csv`
    - Start with popularity and content-based baselines before collaborative filtering.

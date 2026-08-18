@@ -60,11 +60,11 @@ export default function PaymentMethodStep({ bookingData, onNext }) {
       <div className={styles.miniSummary}>
         <img
           src="https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=150&q=80"
-          alt="Tour"
+          alt="Trip"
           className={styles.miniThumb}
         />
         <div>
-          <h5 className={styles.miniTitle}>Private Giza Plateau Tour</h5>
+          <h5 className={styles.miniTitle}>Private Giza Plateau Trip</h5>
           <p className={styles.miniMeta}>2 Travelers • Oct 14, 2023</p>
         </div>
         <div className={styles.miniPrice}>{totalAmount.toFixed(2)} {symbol}</div>

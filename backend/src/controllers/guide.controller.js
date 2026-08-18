@@ -10,7 +10,7 @@ export const getGuideById = asyncHandler(async (req, res) => {
 
   if (!guide) {
     res.status(404);
-    throw new Error("Guide not found");
+    throw new Error("GuideProfile not found");
   }
 
   res.status(200).json({
@@ -24,7 +24,7 @@ export const getMyGuideProfile = asyncHandler(async (req, res) => {
 
   if (!guide) {
     res.status(404);
-    throw new Error("Guide profile not found");
+    throw new Error("GuideProfile profile not found");
   }
 
   res.status(200).json({
@@ -38,12 +38,12 @@ export const updateMyGuideProfile = asyncHandler(async (req, res) => {
 
   if (!guide) {
     res.status(404);
-    throw new Error("Guide profile not found");
+    throw new Error("GuideProfile profile not found");
   }
 
   res.status(200).json({
     success: true,
-    message: "Guide profile updated successfully",
+    message: "GuideProfile profile updated successfully",
     data: { guide },
   });
 });

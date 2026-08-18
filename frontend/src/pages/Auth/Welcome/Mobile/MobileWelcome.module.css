@@ -1,0 +1,328 @@
+/* Mobile Welcome Screen Styles */
+
+.mobilePageWrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #ffffff;
+  padding: 36px 20px 28px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #111827;
+}
+
+.mobileContainer {
+  width: 100%;
+  max-width: 390px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Brand Header */
+.brandHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.logoCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1.8px solid #b88215;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  box-sizing: border-box;
+  background: #ffffff;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(184, 130, 21, 0.08);
+}
+
+.logoEmblem {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.brandName {
+  font-family: Georgia, "Playfair Display", "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.38em;
+  text-indent: 0.38em;
+  color: #111827;
+  margin: 0;
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* Intro Block */
+.introBlock {
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.eyebrow {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: #b88215;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.mainTitle {
+  font-family: Georgia, "Playfair Display", "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.22;
+  color: #111827;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 14.5px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Cards Container */
+.cardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.roleCard {
+  display: flex;
+  align-items: stretch;
+  background-color: #f7f7f5;
+  border: 1.5px solid #ecece7;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  outline: none;
+  min-height: 110px;
+}
+
+.roleCard:hover {
+  border-color: #b88215;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(184, 130, 21, 0.12);
+}
+
+.roleCard:focus-visible {
+  border-color: #b88215;
+  outline: 2px solid rgba(184, 130, 21, 0.35);
+}
+
+.selectedCard {
+  border-color: #b88215;
+  background-color: #faf7f1;
+  box-shadow: 0 4px 16px rgba(184, 130, 21, 0.15);
+}
+
+/* Image Wrapper */
+.imageWrapper {
+  position: relative;
+  width: 120px;
+  min-width: 120px;
+  align-self: stretch;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.iconBadge {
+  position: absolute;
+  right: -10px;
+  bottom: 8px;
+  width: 28px;
+  height: 28px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+  z-index: 2;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.badgeIcon {
+  font-size: 15px;
+  color: #b88215;
+}
+
+/* Card Body */
+.cardBody {
+  flex: 1;
+  padding: 14px 14px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.roleTitle {
+  font-family: Georgia, "Playfair Display", "Times New Roman", serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.chevronIcon {
+  font-size: 15px;
+  color: #9ca3af;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.roleCard:hover .chevronIcon {
+  color: #b88215;
+  transform: translateX(3px);
+}
+
+.roleDesc {
+  font-size: 12.5px;
+  line-height: 1.42;
+  color: #4b5563;
+  margin: 0;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.loginBtn {
+  width: 100%;
+  height: 48px;
+  background-color: #b88215;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(184, 130, 21, 0.25);
+}
+
+.loginBtn:hover {
+  background-color: #a37210;
+  box-shadow: 0 6px 16px rgba(184, 130, 21, 0.35);
+}
+
+.loginBtn:active {
+  transform: scale(0.99);
+}
+
+.createAccountBtn {
+  width: 100%;
+  height: 48px;
+  background-color: #ffffff;
+  color: #111827;
+  border: 1.5px solid #222222;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createAccountBtn:hover {
+  background-color: #f9fafb;
+  border-color: #000000;
+}
+
+.createAccountBtn:active {
+  transform: scale(0.99);
+}
+
+/* Legal Notice */
+.legalNotice {
+  text-align: center;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #6b7280;
+  margin: 0;
+}
+
+.legalLink {
+  color: #b88215;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.legalLink:hover {
+  color: #90630b;
+  text-decoration: underline;
+}
+
+/* Small screen adjustments */
+@media (max-width: 360px) {
+  .mobilePageWrapper {
+    padding: 24px 16px 18px;
+  }
+
+  .mainTitle {
+    font-size: 23px;
+  }
+
+  .imageWrapper {
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .cardBody {
+    padding: 12px 10px 12px 14px;
+  }
+
+  .roleTitle {
+    font-size: 17px;
+  }
+
+  .roleDesc {
+    font-size: 11.5px;
+  }
+}

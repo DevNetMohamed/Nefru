@@ -11,17 +11,7 @@ import {getAccount, getTrips, getDashboard} from '../../api'
 
 export default function DashboardStatus(){
     const [tours, setTrips] = useState([]);
-    const [dashboard, setDashboard] = useState({
-        totalUsers: 0,
-        totalTours: 0,
-        totalBookings: 0,
-        paidBookings: 0,
-        toursStatus: {
-            approved: 0,
-            rejected: 0,
-            pending: 0
-        }
-    })
+    const [dashboard, setDashboard] = useState({})
     const [selectedRow, setSelectedRow] = useState(null);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false)
@@ -30,7 +20,7 @@ export default function DashboardStatus(){
     const loadTrips = useCallback(async (pageNum = 1) => {
         try {
             const data = await getDashboard();
-            if (!data.error) setDashboard(data);
+            if (!data.error) setDashboard(data.data);
         } catch (err) {
             if (err.name === "AbortError") return;
             setError(err.message || "Failed to load dashboard");
@@ -47,51 +37,44 @@ export default function DashboardStatus(){
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
-        setSelectedRow(null); // clear the detail card when moving to another page
+        setSelectedRow(null);
     };
 
     return(
         <>
         <div className={styles.container}>
             <div className={styles.status}>
-                <Status data={[
-                    {title:"Total Users",}
-                ]}/>
+                <Status data={dashboard.cards}/>
             </div>
             <div className={styles.body}>
                 <div className={styles.section}>
-                    <div className={`${styles.layout} ${styles.chart}`}>
-                        <p style={{fontWeight:"500",fontSize:"18px"}}>Bookings Overview</p>
-                        <LineChart/>
-                    </div>
-                    <div className={`${styles.layout} ${styles.chart}`}
-                        style={{maxWidth:"400px"}}>
-                        <p style={{fontWeight:"500",fontSize:"18px"}}>Tours by Status</p>
-                        <DoughnutChart/>
-                    </div>
+                    {dashboard?.charts?.map((item,index)=>(
+                        <div key={index} className={`${styles.layout} ${styles.chart}`}>
+                            <p style={{fontWeight:"500",fontSize:"18px", width:"fit-content"}}>{item.title}</p>
+                            {(()=>{
+                                switch (item.type){
+                                    case "DoughnutChart":return <DoughnutChart  dataSet={item.data}/>;
+                                    case "LineChart":return <LineChart/>;
+                                    default:<></>
+                                }
+                            })()}
+                        </div>
+                    ))}
                 </div>
                 <div className={styles.section}>
                     <div className={styles.layout} style={{padding:"20px"}}>
                         <Table
-                            data={tours}
+                            title="Top Tours"
+                            data={dashboard.topTours}
                             item={TopTourItem}
                             onRowSelect={setSelectedRow}
                             onPageChange={handlePageChange}
-                            isPagination={false}
+                            // isPagination={false}
                         />
                     </div>
                     <div className={`${styles.layout} ${styles.list}`}>
                         <List title="Pending Approvals">
                             <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-                            <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
-
                         </List>
                     </div>
                 </div>

@@ -1,10 +1,10 @@
 import { User } from "../models/user.model.js";
 import { TouristProfile } from "../models/tourist.model.js";
-import { Guide } from "../models/guide.model.js";
+import { GuideProfile } from "../models/guide.model.js";
 
 const getProfileModelByRole = (role) => {
   if (role === "tourist") return TouristProfile;
-  if (role === "guide") return Guide;
+  if (role === "guide") return GuideProfile;
   return null;
 };
 

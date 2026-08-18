@@ -100,7 +100,7 @@ export default function MyBookings() {
             </div>
             <h3>No bookings yet</h3>
             <p>
-              Your {activeTab} bookings will appear here once you book a tour through Nefru.
+              Your {activeTab} bookings will appear here once you book a trip through Nefru.
             </p>
           </div>
         ) : (

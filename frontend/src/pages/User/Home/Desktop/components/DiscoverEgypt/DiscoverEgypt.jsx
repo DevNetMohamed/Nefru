@@ -1,4 +1,5 @@
 import styles from "./DiscoverEgypt.module.css";
+import { useNavigate } from "react-router-dom";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
@@ -33,6 +34,7 @@ const categories = [
 ];
 
 function DiscoverEgypt() {
+  const navigate = useNavigate();
   return (
     <section
       id="explore-egypt"
@@ -53,6 +55,7 @@ function DiscoverEgypt() {
           <div
             key={item.title}
             className={styles.card}
+            onClick={() => navigate(`/user/discover?search=${encodeURIComponent(item.title)}`)}
           >
             <img
               src={item.image}
@@ -64,7 +67,10 @@ function DiscoverEgypt() {
 
               <p>{item.description}</p>
 
-              <button>
+              <button onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/user/discover?search=${encodeURIComponent(item.title)}`);
+              }}>
                 Explore Guide →
               </button>
             </div>

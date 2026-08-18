@@ -5,14 +5,17 @@ import { LuTicket } from "react-icons/lu";
 import { BsCashStack } from "react-icons/bs";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 
-export default function Status({}) {
+import { formatNumber } from '../../../../utils/formatters'
+
+export default function Status({data=[]}) {
   return (
     <>
       <div className={styles.container}>
-          <Card title="Total Users" counter="12,450" rate="12.4%" rateStatus="UP" duration="vs Apr 1 - Apr 30"/>
-          <Card title="Total Tours" counter="1,245" rate="8.7%" rateStatus="UP" duration="vs Apr 1 - Apr 30"/>
-          <Card title="Total BOOKINGS" counter="3,860" rate="15.6%" rateStatus="DOWN" duration="vs Apr 1 - Apr 30"/>
-          <Card title="Revenue (USD)" counter="$48,750" rate="18.3%" rateStatus="NORMAL" duration="vs Apr 1 - Apr 30"/>
+          {
+            data.map((item,index)=>(
+              <Card key={index} title={item.title} counter={formatNumber(item.counter)} rate={item.rate} rateStatus={item.rateStatus} duration={item.duration}/>
+            ))
+          }
       </div>
     </>
   );
@@ -68,10 +71,19 @@ export function LineChart({x, y, points, max, step, lineColor, pointColor}) {
     labels: x || ["May 1","May 5", "May 10", "May 15", "May 20", "May 25", "May 30"],
     datasets: [
       {
-        label: "",
+        label: "Bookings",
         data: points || [1.5,2.2,3.1,.9,1.2,3.9,2.3],
         borderColor:lineColor|| "#5656df",
         backgroundColor:pointColor|| "#5656df",
+        tension: 0.4,
+        borderWidth: 3,
+        pointRadius: 4,
+      },
+      {
+        label: "Revenue",
+        data: points || [1,2.6,3,1,2,3.1,2.2],
+        borderColor:lineColor|| "#db7d11",
+        backgroundColor:pointColor|| "#db7d11",
         tension: 0.4,
         borderWidth: 3,
         pointRadius: 4,

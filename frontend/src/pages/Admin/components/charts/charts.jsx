@@ -6,24 +6,26 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
-
+ import styles from './Charts.module.css'
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export const DoughnutChart = () => {
+export const DoughnutChart = ({dataSet=[]}) => {
   // Chart data
   const data = {
-    labels: ['Approved', 'Pending', 'Rejected'],
+    // labels: ['Approved', 'Pending', 'Rejected'],
+    labels: dataSet.labels,
     datasets: [
       {
         label: '# of Votes',
-        data: [12, 19, 3],
+        // data: [12, 19, 3],
+        data: dataSet.values,
         backgroundColor: [
-          '#D95A45',
           '#4E924D',
-          '#CF9633'
+          '#CF9633',
+          '#D95A45',
         ],
-        borderWidth: 5,
-        cutout: '60%', 
+        borderWidth: 3,
+        cutout: '70%', 
       },
     ],
   };
@@ -36,21 +38,21 @@ export const DoughnutChart = () => {
     plugins: {
       legend: {
         position: 'right',
-        // This changes the shape to a sharp square/rectangle
         pointStyle: 'rect', 
-        // Optional: You can adjust the size of the squares here
         boxWidth: 15, 
         boxHeight: 5,
-        // Optional: Padding between the icon and the text
-        // padding: 20, 
       },
-    //   tooltip: {
-    //     enabled: true,
-    //   },
     },
   };
 
   return (
+    <div className={styles.container}>
       <Doughnut data={data} options={options} />
+      <div>
+        {dataSet.values.map((item,index)=>(
+          <p key={index} style={{color:"#797979",fontSize:"14px"}}>{item}</p>
+        ))}
+      </div>
+    </div>
   );
 };

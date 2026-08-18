@@ -1,4 +1,4 @@
-# NEFRU - Tourist & Tour Guide Platform
+# NEFRU - Tourist & Trip Guide Platform
 
 NEFRU is a full-stack application designed to connect tourists with professional tour guides in Egypt. Tourists can discover unique trips, view detailed itineraries, and book guides for personalized experiences.
 

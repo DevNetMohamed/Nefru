@@ -57,14 +57,14 @@ const TopTrips = () => {
       </div>
 
       <div className={styles.grid}>
-        {tours.map((tour) => (
+        {tours.map((trip) => (
           <TourCard
-            key={tour.id}
-            image={tour.image}
-            location={tour.location}
-            nights={tour.nights}
-            title={tour.title}
-            price={tour.price}
+            key={trip.id}
+            image={trip.image}
+            location={trip.location}
+            nights={trip.nights}
+            title={trip.title}
+            price={trip.price}
           />
         ))}
       </div>

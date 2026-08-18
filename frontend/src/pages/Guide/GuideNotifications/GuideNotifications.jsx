@@ -83,7 +83,7 @@ export default function GuideNotifications() {
           <div className={styles.emptyState}>
             <span><Bell size={28} /></span>
             <h2>No notifications here</h2>
-            <p>New booking updates and tour alerts will appear in this section.</p>
+            <p>New booking updates and trip alerts will appear in this section.</p>
           </div>
         ) : (
           <div className={styles.list}>

@@ -1,4 +1,5 @@
 import styles from "./TrustedGuides.module.css";
+import { useNavigate } from "react-router-dom";
 
 import guide1 from "../../../../../../assets/images/guiders/guide1.webp";
 import guide2 from "../../../../../../assets/images/guiders/guide3.webp";
@@ -7,7 +8,7 @@ import guide3 from "../../../../../../assets/images/guiders/guide4.webp";
 const defaultGuides = [
   {
     id: 1,
-    name: "Ahmed Kamal",
+    name: "Mohamed Hassan",
     rating: "4.9",
     languages: "Arabic • English",
     experience: "8 Years Experience",
@@ -15,43 +16,51 @@ const defaultGuides = [
   },
   {
     id: 2,
-    name: "Sara Hassan",
+    name: "Mariam El-Sayed",
     rating: "4.8",
-    languages: "English • French",
+    languages: "Arabic • English • French",
     experience: "6 Years Experience",
     image: guide2,
   },
   {
     id: 3,
-    name: "Mohamed Adel",
-    rating: "4.9",
-    languages: "Arabic • German",
+    name: "Omar Khalil",
+    rating: "5.0",
+    languages: "Arabic • English • German",
     experience: "10 Years Experience",
     image: guide3,
   },
   {
     id: 4,
-    name: "Nour Ramadan",
+    name: "Salma Nassar",
     rating: "4.7",
-    languages: "Arabic • English",
-    experience: "5 Years Experience",
+    languages: "Arabic • English • Italian",
+    experience: "4 Years Experience",
     image: guide1,
   },
 ];
 
+// Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:"))) {
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
     return img;
   }
   return `http://localhost:5000/uploads/${img}`;
 };
 
 function TrustedGuides({ guides }) {
+  const navigate = useNavigate();
   const displayGuides = guides && guides.length > 0
     ? guides.map((g, idx) => ({
         id: g._id || idx,
-        name: g.user?.fullName || g.name || "Local Guide",
+        name: g.fullName || g.user?.fullName || g.name || "Local Guide",
         rating: g.rating ? String(g.rating) : "4.9",
         languages: Array.isArray(g.languages) && g.languages.length > 0
           ? g.languages.join(" • ")
@@ -59,7 +68,7 @@ function TrustedGuides({ guides }) {
         experience: g.yearsExperience
           ? `${g.yearsExperience} Years Experience`
           : (g.experience || "5 Years Experience"),
-        image: getImgSrc(g.user?.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
+        image: getImgSrc(g.image || g.user?.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
       }))
     : defaultGuides;
 
@@ -78,7 +87,7 @@ function TrustedGuides({ guides }) {
           </p>
         </div>
 
-        <button>
+        <button onClick={() => navigate("/user/discover")}>
           View All Guides
         </button>
       </div>
@@ -88,6 +97,8 @@ function TrustedGuides({ guides }) {
           <div
             key={guide.id}
             className={styles.card}
+            onClick={() => navigate("/user/guideprofile")}
+            style={{ cursor: "pointer" }}
           >
             <img
               src={guide.image}
@@ -106,7 +117,10 @@ function TrustedGuides({ guides }) {
               {guide.experience}
             </span>
 
-            <button>
+            <button onClick={(e) => {
+              e.stopPropagation();
+              navigate("/user/guideprofile");
+            }}>
               View Profile
             </button>
           </div>

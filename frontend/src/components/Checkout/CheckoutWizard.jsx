@@ -26,7 +26,7 @@ export default function CheckoutWizard({ initialData }) {
   // حفظ بيانات الحجز ووسيلة الدفع المختارة
   const [bookingState, setBookingState] = useState({
     bookingId: initialData?.bookingId || "NF-8829-Luxor",
-    title: initialData?.title || "Giza Pyramids Private Tour",
+    title: initialData?.title || "Giza Pyramids Private Trip",
     date: initialData?.date || "Oct 24, 2023",
     time: initialData?.time || "09:00 AM",
     adults: initialData?.adults || 2,
