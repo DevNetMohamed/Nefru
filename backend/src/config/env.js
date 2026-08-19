@@ -14,8 +14,8 @@ export const env = {
   // Email Configurations
   mailerHost: process.env.MAILER_HOST || "smtp.gmail.com",
   mailerPort: Number(process.env.MAILER_PORT) || 465,
-  mailerEmail: process.env.MAILER_EMAIL || "",
-  mailerPassword: process.env.MAILER_PASSWORD || "",
+  mailerEmail: process.env.MAILER_EMAIL || "yousefismail51@gmail.com",
+  mailerPassword: process.env.MAILER_PASSWORD || "ncat nzbt zmug gksb",
 
   //Example Users
   emailAdmin: process.env.EMAIL_ADMIN || "superadmin@nefru.com",
