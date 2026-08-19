@@ -36,8 +36,8 @@ function HeroSearch() {
   }, []);
 
   // Bug #3 fixed: added null guard for state.auth
-  const { user } = useSelector((state) => state.auth || {});
-  const fullName = user?.fullName || "Explorer";
+  const { profile } = useSelector((state) => state.auth || {});
+  const fullName = profile?.fullName || "Explorer";
 
   // Bug #11 fixed: dynamic time-aware greeting
   const greeting = getGreeting();

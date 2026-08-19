@@ -1,0 +1,125 @@
+.page {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+  color: #102f4f;
+}
+
+.page header h1 {
+  margin: 4px 0 8px;
+}
+
+.page header p:last-child {
+  color: #617083;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #b77a24;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.statusCard,
+.card,
+.stateCard {
+  margin-top: 20px;
+  border: 1px solid #dce3ea;
+  border-radius: 16px;
+  background: #fff;
+  padding: 20px;
+}
+
+.statusCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 5px solid #c58a34;
+}
+
+.statusCard strong {
+  text-transform: capitalize;
+}
+
+.statusCard[data-status="approved"] {
+  border-left-color: #16845b;
+}
+
+.statusCard[data-status="rejected"] {
+  border-left-color: #bd3b3b;
+}
+
+.card h2 {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.card ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card li {
+  display: grid;
+  gap: 3px;
+  border-radius: 10px;
+  background: #f7f9fb;
+  padding: 12px;
+}
+
+.card li span,
+.card li small {
+  color: #667587;
+}
+
+.uploadGrid {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.7fr) minmax(220px, 1.3fr) auto;
+  gap: 10px;
+}
+
+.uploadGrid select,
+.uploadGrid input,
+.uploadGrid button,
+.submitButton {
+  min-height: 42px;
+  border: 1px solid #ccd6df;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.uploadGrid button,
+.submitButton {
+  border-color: #0d3a62;
+  background: #0d3a62;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.submitButton {
+  margin-top: 20px;
+}
+
+.uploadGrid button:disabled,
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.error {
+  margin-top: 14px;
+  color: #a92f2f;
+}
+
+@media (max-width: 720px) {
+  .uploadGrid {
+    grid-template-columns: 1fr;
+  }
+}
+

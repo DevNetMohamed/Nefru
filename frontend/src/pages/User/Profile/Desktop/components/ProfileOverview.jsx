@@ -45,7 +45,7 @@ export default function ProfileOverview() {
 
   const profileData = useMemo(
     () => ({
-      fullName: user?.fullName || "Not added yet",
+      fullName: profile?.fullName || "Not added yet",
       email: user?.email || "Not added yet",
       phoneNumber: profile?.phoneNumber || "Not added yet",
       nationality: profile?.nationality || "Not added yet",
@@ -53,8 +53,10 @@ export default function ProfileOverview() {
       gender: profile?.gender || "",
       role: user?.role === "guide" ? "Guide" : "Traveler",
       memberSince: user?.createdAt || null,
-      verificationStatus: user?.verificationStatus || "pending",
-      avatar: user?.avatar || "",
+      verificationStatus:
+        profile?.verificationStatus ||
+        (user?.role === "guide" ? "draft" : "Not required"),
+      avatar: profile?.avatar || "",
     }),
     [user, profile]
   );

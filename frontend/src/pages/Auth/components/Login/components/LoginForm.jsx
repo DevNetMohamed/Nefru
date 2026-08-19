@@ -45,6 +45,7 @@ function LoginForm() {
         // Validate backend response shape before storing
         const token = response?.meta.token;
         const user = response?.data?.user;
+        const profile = response?.data?.profile;
 
         if (!token || !user) {
           throw new Error("Login failed: invalid server response");
@@ -54,6 +55,7 @@ function LoginForm() {
           loginSuccess({
             token,
             user,
+            profile,
           }),
         );
 

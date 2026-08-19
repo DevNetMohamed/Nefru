@@ -51,9 +51,9 @@ export default function GuideAccountProfile() {
 
   const guideData = useMemo(
     () => ({
-      fullName: user?.fullName || "Ahmed Farouk",
+      fullName: profile?.fullName || "not entered",
       email: user?.email || "ahmed.farouk@nefru.com",
-      avatar: user?.avatar || profile?.profileImage || fallbackAvatar,
+      avatar: profile?.avatar || profile?.profileImage || fallbackAvatar,
       phone: profile?.phoneNumber || "+20 100 123 4567",
       location: profile?.location || profile?.city || "Cairo, Egypt",
       languages: formatLanguages(profile?.languages),
@@ -62,7 +62,7 @@ export default function GuideAccountProfile() {
         : "10+ years",
       rating: profile?.rating || 4.8,
       reviewsCount: profile?.reviewsCount || 124,
-      verificationStatus: user?.verificationStatus || "approved",
+      verificationStatus: profile?.verificationStatus || "draft",
       memberSince: profile?.guideSince || "January 2016",
     }),
     [profile, user],
@@ -203,7 +203,9 @@ export default function GuideAccountProfile() {
             <div>
               <BadgeCheck size={18} />
               <span>Verification</span>
-              <strong className={styles.status}>Approved</strong>
+              <strong className={styles.status}>
+                {guideData.verificationStatus}
+              </strong>
             </div>
           </div>
         </section>

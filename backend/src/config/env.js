@@ -3,13 +3,21 @@
 dotenv.config();
 
 export const env = {
-  nodeEnv: "development" || process.env.NODE_ENV || "development",
-  port: 5000 || Number(process.env.PORT) || 5000,
-  // mongoUri: "mongodb+srv://NEFRU:NEFRUow1dcs8D7YCVaiOi@nefru.vxsueiy.mongodb.net/?appName=NEFRU" || process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/nefru",
-  mongoUri:"mongodb://127.0.0.1:27017/nefru",
+  nodeEnv: process.env.NODE_ENV || "development",
+  port: Number(process.env.PORT) || 5000,
+  mongoUri: process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/nefru",
 
   jwtSecret: process.env.JWT_SECRET || "L6-210+1",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
+
+
+  // Email Configurations
+  mailerHost: process.env.MAILER_HOST || "smtp.gmail.com",
+  mailerPort: Number(process.env.MAILER_PORT) || 465,
+  mailerEmail: process.env.MAILER_EMAIL || "",
+  mailerPassword: process.env.MAILER_PASSWORD || "",
+
+  //Example Users
   emailAdmin: process.env.EMAIL_ADMIN || "superadmin@nefru.com",
   passwordAdmin: process.env.PASSWORD_ADMIN || "superpassword",
   emailTourist: process.env.EMAIL_TOURIST || "tourist@test.com",

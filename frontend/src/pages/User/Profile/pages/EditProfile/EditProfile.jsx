@@ -30,13 +30,13 @@ export default function EditProfile() {
 
   const fileInputRef = useRef(null);
 
-  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || "");
+  const [avatarPreview, setAvatarPreview] = useState(profile?.avatar || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
 
   const initialFormData = useMemo(
     () => ({
-      fullName: user?.fullName || "",
+      fullName: profile?.fullName || "",
       email: user?.email || "",
       phoneNumber: profile?.phoneNumber || "",
       dateOfBirth: formatDateForInput(profile?.dateOfBirth),
@@ -51,8 +51,8 @@ export default function EditProfile() {
 
   useEffect(() => {
     setFormData(initialFormData);
-    setAvatarPreview(user?.avatar || "");
-  }, [initialFormData, user?.avatar]);
+    setAvatarPreview(profile?.avatar || "");
+  }, [initialFormData, profile?.avatar]);
 
   const handleChoosePhoto = () => {
     fileInputRef.current?.click();

@@ -56,6 +56,7 @@ import GuideDashboard from "../pages/Guide/GuideDashboard/GuideDashboard";
 import GuideCalendar from "../pages/Guide/GuideCalendar/GuideCalendar";
 import GuideAccountProfile from "../pages/Guide/GuideAccountProfile/GuideAccountProfile";
 import GuideNotifications from "../pages/Guide/GuideNotifications/GuideNotifications";
+import GuideVerification from "../pages/Guide/GuideVerification/GuideVerification";
 
 import { Navigate } from "react-router-dom";
 
@@ -165,6 +166,7 @@ export const router = createBrowserRouter([
         { path: "calendar", element: <GuideCalendar /> },
         { path: "profile", element: <GuideAccountProfile /> },
         { path: "notifications", element: <GuideNotifications /> },
+        { path: "verification", element: <GuideVerification /> },
       ],
     },
 

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./MobileWelcome.module.css";
 import travelerCardImg from "../../../../assets/images/auth/welcome-traveler.jpg";
 import guideCardImg from "../../../../assets/images/auth/welcome-guide.jpg";
-import logoImg from "../../../../assets/logo.png";
+import logoImg from "../../../../assets/images/logo.png";
 import { HiOutlineUser } from "react-icons/hi";
 import { CiLocationOn } from "react-icons/ci";
 import { IoIosArrowForward } from "react-icons/io";
@@ -17,7 +17,7 @@ export default function MobileWelcome() {
   };
 
   const handleCreateAccount = () => {
-    navigate(`/auth/register?role=${selectedRole || "tourist"}`);
+    navigate(`/auth/register?role=${selectedRole}`);
   };
 
   const handleLogin = () => {
@@ -49,7 +49,7 @@ export default function MobileWelcome() {
           {/* Traveler Card */}
           <div
             className={`${styles.roleCard} ${selectedRole === "tourist" ? styles.selectedCard : ""}`}
-            onClick={() => handleSelectRole("tourist")}
+            onClick={() => navigate(`/auth/register?role=${"tourist"}`)}
             role="radio"
             aria-checked={selectedRole === "tourist"}
             tabIndex={0}
@@ -79,7 +79,8 @@ export default function MobileWelcome() {
           {/* Tour Guide Card */}
           <div
             className={`${styles.roleCard} ${selectedRole === "guide" ? styles.selectedCard : ""}`}
-            onClick={() => handleSelectRole("guide")}
+            onClick={() => navigate(`/auth/register?role=${"guide"}`)}
+            // onClick={() =>{ handleSelectRole("guide"); handleCreateAccount()}}
             role="radio"
             aria-checked={selectedRole === "guide"}
             tabIndex={0}
@@ -95,7 +96,7 @@ export default function MobileWelcome() {
                 <CiLocationOn className={styles.badgeIcon} />
               </div>
             </div>
-            <div className={styles.cardBody}>
+            <div className={styles.cardBody} onClick={() => { handleSelectRole("guide"); handleCreateAccount(); }}>
               <div className={styles.cardHeader}>
                 <h3 className={styles.roleTitle}>Tour Guide</h3>
                 <IoIosArrowForward className={styles.chevronIcon} />

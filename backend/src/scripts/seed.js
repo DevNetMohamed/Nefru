@@ -6,6 +6,7 @@ import { Trip } from "../models/trip.model.js";
 import { Booking } from "../models/booking.model.js";
 import { TouristProfile } from "../models/tourist.model.js";
 import { GuideProfile } from "../models/guide.model.js";
+import { GuideVerification } from "../models/guideVerification.model.js";
 import { Notification } from "../models/notification.model.js";
 import { Review } from "../models/review.model.js";
 import { Interaction } from "../models/interaction.model.js";
@@ -30,7 +31,11 @@ function roundMoney(value) {
 
 function average(values) {
   if (!values.length) return 0;
-  return Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10;
+  return (
+    Math.round(
+      (values.reduce((sum, value) => sum + value, 0) / values.length) * 10,
+    ) / 10
+  );
 }
 
 function createRng(seed = 20260715) {
@@ -116,7 +121,7 @@ const guideSeedData = [
     fullName: "Youssef Farouk",
     email: `youssefguide${SEED_EMAIL_SUFFIX}`,
     verificationStatus: "approved",
-    isActive: false,
+    status: "suspended" ,
     avatar: "https://i.pravatar.cc/300?img=11",
     title: "Alexandria Local GuideProfile",
     headline: "Mediterranean history and coastal city walks",
@@ -131,37 +136,141 @@ const guideSeedData = [
 
 const touristSeedData = [
   ["John Carter", env.emailTourist, "American", "en", "male", "1993-04-12"],
-  ["Laura Martinez", `laura${SEED_EMAIL_SUFFIX}`, "Spanish", "es", "female", "1995-08-09"],
-  ["Thomas Becker", `thomas${SEED_EMAIL_SUFFIX}`, "German", "de", "male", "1988-11-21"],
-  ["Sophie Anderson", `sophie${SEED_EMAIL_SUFFIX}`, "British", "en", "female", "1997-02-16"],
-  ["Piotr Kowalski", `piotr${SEED_EMAIL_SUFFIX}`, "Polish", "pl", "male", "1991-07-03"],
-  ["Camille Dubois", `camille${SEED_EMAIL_SUFFIX}`, "French", "fr", "female", "1994-05-29"],
-  ["Luca Rossi", `luca${SEED_EMAIL_SUFFIX}`, "Italian", "it", "male", "1989-09-18"],
-  ["Ana Silva", `ana${SEED_EMAIL_SUFFIX}`, "Portuguese", "pt", "female", "1996-01-11"],
-  ["Daniel Kim", `daniel${SEED_EMAIL_SUFFIX}`, "South Korean", "ko", "male", "1992-10-05"],
-  ["Emma Wilson", `emma${SEED_EMAIL_SUFFIX}`, "Canadian", "en", "female", "1998-06-22"],
-  ["Carlos Rivera", `carlos${SEED_EMAIL_SUFFIX}`, "Mexican", "es", "male", "1990-12-14"],
-  ["Nora Jensen", `nora${SEED_EMAIL_SUFFIX}`, "Danish", "en", "female", "1987-03-30"],
-  ["Hiro Tanaka", `hiro${SEED_EMAIL_SUFFIX}`, "Japanese", "en", "male", "1995-09-02"],
-  ["Maya Patel", `maya${SEED_EMAIL_SUFFIX}`, "Indian", "en", "female", "1999-05-17"],
-  ["Adam Novak", `adam${SEED_EMAIL_SUFFIX}`, "Czech", "en", "male", "1993-01-27"],
-].map(([fullName, email, nationality, preferredLanguage, gender, dateOfBirth], index) => ({
-  fullName,
-  email,
-  nationality,
-  preferredLanguage,
-  gender,
-  dateOfBirth,
-  isActive: index !== 14,
-  verificationStatus: "approved",
-  avatar: `https://i.pravatar.cc/300?img=${20 + index}`,
-}));
+  [
+    "Laura Martinez",
+    `laura${SEED_EMAIL_SUFFIX}`,
+    "Spanish",
+    "es",
+    "female",
+    "1995-08-09",
+  ],
+  [
+    "Thomas Becker",
+    `thomas${SEED_EMAIL_SUFFIX}`,
+    "German",
+    "de",
+    "male",
+    "1988-11-21",
+  ],
+  [
+    "Sophie Anderson",
+    `sophie${SEED_EMAIL_SUFFIX}`,
+    "British",
+    "en",
+    "female",
+    "1997-02-16",
+  ],
+  [
+    "Piotr Kowalski",
+    `piotr${SEED_EMAIL_SUFFIX}`,
+    "Polish",
+    "pl",
+    "male",
+    "1991-07-03",
+  ],
+  [
+    "Camille Dubois",
+    `camille${SEED_EMAIL_SUFFIX}`,
+    "French",
+    "fr",
+    "female",
+    "1994-05-29",
+  ],
+  [
+    "Luca Rossi",
+    `luca${SEED_EMAIL_SUFFIX}`,
+    "Italian",
+    "it",
+    "male",
+    "1989-09-18",
+  ],
+  [
+    "Ana Silva",
+    `ana${SEED_EMAIL_SUFFIX}`,
+    "Portuguese",
+    "pt",
+    "female",
+    "1996-01-11",
+  ],
+  [
+    "Daniel Kim",
+    `daniel${SEED_EMAIL_SUFFIX}`,
+    "South Korean",
+    "ko",
+    "male",
+    "1992-10-05",
+  ],
+  [
+    "Emma Wilson",
+    `emma${SEED_EMAIL_SUFFIX}`,
+    "Canadian",
+    "en",
+    "female",
+    "1998-06-22",
+  ],
+  [
+    "Carlos Rivera",
+    `carlos${SEED_EMAIL_SUFFIX}`,
+    "Mexican",
+    "es",
+    "male",
+    "1990-12-14",
+  ],
+  [
+    "Nora Jensen",
+    `nora${SEED_EMAIL_SUFFIX}`,
+    "Danish",
+    "en",
+    "female",
+    "1987-03-30",
+  ],
+  [
+    "Hiro Tanaka",
+    `hiro${SEED_EMAIL_SUFFIX}`,
+    "Japanese",
+    "en",
+    "male",
+    "1995-09-02",
+  ],
+  [
+    "Maya Patel",
+    `maya${SEED_EMAIL_SUFFIX}`,
+    "Indian",
+    "en",
+    "female",
+    "1999-05-17",
+  ],
+  [
+    "Adam Novak",
+    `adam${SEED_EMAIL_SUFFIX}`,
+    "Czech",
+    "en",
+    "male",
+    "1993-01-27",
+  ],
+].map(
+  (
+    [fullName, email, nationality, preferredLanguage, gender, dateOfBirth],
+    index,
+  ) => ({
+    fullName,
+    email,
+    nationality,
+    preferredLanguage,
+    gender,
+    dateOfBirth,
+    isActive: index !== 14,
+    verificationStatus: "approved",
+    avatar: `https://i.pravatar.cc/300?img=${20 + index}`,
+  }),
+);
 
 const tripSeedData = [
   {
     guideIndex: 0,
     title: "Pyramids Sunrise & Sphinx Experience",
-    description: "Visit the Giza Pyramids and Sphinx early with a licensed local guide.",
+    description:
+      "Visit the Giza Pyramids and Sphinx early with a licensed local guide.",
     longDescription:
       "A structured early-morning experience with clear meeting instructions, historical context, photo stops, and no forced shopping detours.",
     location: "Giza",
@@ -174,8 +283,14 @@ const tripSeedData = [
     dateOffsets: [-35, -12, 1, 8, 20],
     slots: [{ startTime: "09:30 AM", endTime: "01:30 PM", maxGuests: 12 }],
     highlights: [
-      { title: "Early Entry", text: "Start before the busiest visitor period." },
-      { title: "Licensed GuideProfile", text: "Historical explanations in simple English." },
+      {
+        title: "Early Entry",
+        text: "Start before the busiest visitor period.",
+      },
+      {
+        title: "Licensed GuideProfile",
+        text: "Historical explanations in simple English.",
+      },
     ],
   },
   {
@@ -194,14 +309,21 @@ const tripSeedData = [
     dateOffsets: [-22, -5, 2, 10, 17],
     slots: [{ startTime: "04:00 PM", endTime: "07:00 PM", maxGuests: 10 }],
     highlights: [
-      { title: "Al-Muizz Street", text: "Walk through one of Cairo's richest historic areas." },
-      { title: "Local Context", text: "Understand traditions, markets, and daily life." },
+      {
+        title: "Al-Muizz Street",
+        text: "Walk through one of Cairo's richest historic areas.",
+      },
+      {
+        title: "Local Context",
+        text: "Understand traditions, markets, and daily life.",
+      },
     ],
   },
   {
     guideIndex: 4,
     title: "Alexandria Coastal & Heritage Trip",
-    description: "Discover Alexandria's coastline, library district, and historic landmarks.",
+    description:
+      "Discover Alexandria's coastline, library district, and historic landmarks.",
     longDescription:
       "A full-day coastal experience with organized stops, Mediterranean views, and stories from ancient and modern Alexandria.",
     location: "Alexandria",
@@ -214,14 +336,21 @@ const tripSeedData = [
     dateOffsets: [-30, 4, 14],
     slots: [{ startTime: "08:00 AM", endTime: "05:00 PM", maxGuests: 8 }],
     highlights: [
-      { title: "Mediterranean Coast", text: "See Alexandria's waterfront and landmarks." },
-      { title: "City Heritage", text: "Connect ancient history with modern Alexandria." },
+      {
+        title: "Mediterranean Coast",
+        text: "See Alexandria's waterfront and landmarks.",
+      },
+      {
+        title: "City Heritage",
+        text: "Connect ancient history with modern Alexandria.",
+      },
     ],
   },
   {
     guideIndex: 2,
     title: "Luxor East & West Banks",
-    description: "A full-day journey through Luxor's major temples and royal sites.",
+    description:
+      "A full-day journey through Luxor's major temples and royal sites.",
     longDescription:
       "Visit selected East and West Bank landmarks with an Upper Egypt specialist, with time for questions and practical breaks.",
     location: "Luxor",
@@ -234,8 +363,14 @@ const tripSeedData = [
     dateOffsets: [-28, -15, -3, 6, 18],
     slots: [{ startTime: "08:00 AM", endTime: "05:00 PM", maxGuests: 14 }],
     highlights: [
-      { title: "Temple Route", text: "A balanced route across major Luxor sites." },
-      { title: "Archaeology", text: "Clear explanations without overwhelming jargon." },
+      {
+        title: "Temple Route",
+        text: "A balanced route across major Luxor sites.",
+      },
+      {
+        title: "Archaeology",
+        text: "Clear explanations without overwhelming jargon.",
+      },
     ],
   },
   {
@@ -254,8 +389,14 @@ const tripSeedData = [
     dateOffsets: [-18, -4, 3, 9, 15],
     slots: [{ startTime: "05:00 PM", endTime: "07:00 PM", maxGuests: 8 }],
     highlights: [
-      { title: "Sunset Sailing", text: "Enjoy a calm Nile view at golden hour." },
-      { title: "Small Group", text: "Limited capacity for a relaxed experience." },
+      {
+        title: "Sunset Sailing",
+        text: "Enjoy a calm Nile view at golden hour.",
+      },
+      {
+        title: "Small Group",
+        text: "Limited capacity for a relaxed experience.",
+      },
     ],
   },
   {
@@ -274,8 +415,14 @@ const tripSeedData = [
     dateOffsets: [-16, -6, 5, 12],
     slots: [{ startTime: "06:00 PM", endTime: "09:00 PM", maxGuests: 8 }],
     highlights: [
-      { title: "Local Tastings", text: "Try selected Egyptian dishes and drinks." },
-      { title: "Dietary Notes", text: "Share dietary requests before the trip." },
+      {
+        title: "Local Tastings",
+        text: "Try selected Egyptian dishes and drinks.",
+      },
+      {
+        title: "Dietary Notes",
+        text: "Share dietary requests before the trip.",
+      },
     ],
   },
   {
@@ -293,12 +440,18 @@ const tripSeedData = [
     groupSize: 6,
     dateOffsets: [12, 26],
     slots: [{ startTime: "01:00 PM", endTime: "07:00 PM", maxGuests: 6 }],
-    highlights: [{ title: "Desert Route", text: "Planned stops with safety considerations." }],
+    highlights: [
+      {
+        title: "Desert Route",
+        text: "Planned stops with safety considerations.",
+      },
+    ],
   },
   {
     guideIndex: 0,
     title: "Coptic Cairo & Civilization Museum",
-    description: "Explore Coptic Cairo and the National Museum of Egyptian Civilization.",
+    description:
+      "Explore Coptic Cairo and the National Museum of Egyptian Civilization.",
     longDescription:
       "A new cultural itinerary submitted for admin review, with an organized route between Old Cairo and Fustat.",
     location: "Cairo",
@@ -310,7 +463,12 @@ const tripSeedData = [
     groupSize: 10,
     dateOffsets: [11, 21],
     slots: [{ startTime: "09:00 AM", endTime: "02:00 PM", maxGuests: 10 }],
-    highlights: [{ title: "Two Eras", text: "Connect Coptic heritage with Egyptian civilization." }],
+    highlights: [
+      {
+        title: "Two Eras",
+        text: "Connect Coptic heritage with Egyptian civilization.",
+      },
+    ],
   },
   {
     guideIndex: 2,
@@ -350,7 +508,17 @@ const tripSeedData = [
 
 const bookingSeedData = [
   // Upcoming confirmed bookings: 13 unique tourists appear across the total booking set.
-  [0, 0, 1, 9, 30, 2, "confirmed", "paid", ["Hotel pickup information requested"]],
+  [
+    0,
+    0,
+    1,
+    9,
+    30,
+    2,
+    "confirmed",
+    "paid",
+    ["Hotel pickup information requested"],
+  ],
   [1, 0, 1, 9, 30, 1, "confirmed", "paid", []],
   [2, 1, 2, 16, 0, 2, "confirmed", "paid", ["Vegetarian food preference"]],
   [3, 2, 4, 8, 0, 1, "confirmed", "paid", []],
@@ -375,10 +543,46 @@ const bookingSeedData = [
   [7, 4, -4, 17, 0, 2, "completed", "paid", []],
 
   // Negative and edge scenarios.
-  [8, 0, 20, 9, 30, 1, "cancelled", "refunded", [], "Changed travel dates", "tourist"],
-  [9, 2, 14, 8, 0, 1, "cancelled", "refunded", [], "Flight schedule changed", "tourist"],
+  [
+    8,
+    0,
+    20,
+    9,
+    30,
+    1,
+    "cancelled",
+    "refunded",
+    [],
+    "Changed travel dates",
+    "tourist",
+  ],
+  [
+    9,
+    2,
+    14,
+    8,
+    0,
+    1,
+    "cancelled",
+    "refunded",
+    [],
+    "Flight schedule changed",
+    "tourist",
+  ],
   [10, 5, -6, 18, 0, 1, "no_show", "paid", []],
-  [11, 0, -12, 9, 30, 2, "refunded", "refunded", [], "Trip cancelled by platform due to site closure", "system"],
+  [
+    11,
+    0,
+    -12,
+    9,
+    30,
+    2,
+    "refunded",
+    "refunded",
+    [],
+    "Trip cancelled by platform due to site closure",
+    "system",
+  ],
 ];
 
 const reviewSeedData = [
@@ -386,49 +590,57 @@ const reviewSeedData = [
     bookingIndex: 13,
     rating: 5,
     title: "Peaceful sunset experience",
-    comment: "The boat was clean, the meeting point was easy to find, and Mariam made the group feel comfortable. The sunset timing was perfect.",
+    comment:
+      "The boat was clean, the meeting point was easy to find, and Mariam made the group feel comfortable. The sunset timing was perfect.",
   },
   {
     bookingIndex: 14,
     rating: 4,
     title: "Great historical walk",
-    comment: "Mohamed explained the architecture clearly and helped us avoid the confusing parts of the market. The trip started around ten minutes late, but the experience was very good.",
+    comment:
+      "Mohamed explained the architecture clearly and helped us avoid the confusing parts of the market. The trip started around ten minutes late, but the experience was very good.",
   },
   {
     bookingIndex: 15,
     rating: 5,
     title: "Excellent Luxor guide",
-    comment: "Omar had deep knowledge and kept the long day organized. We had enough breaks and never felt rushed.",
+    comment:
+      "Omar had deep knowledge and kept the long day organized. We had enough breaks and never felt rushed.",
   },
   {
     bookingIndex: 16,
     rating: 4,
     title: "Tasty and friendly trip",
-    comment: "The food choices were interesting and the vegetarian alternatives were handled well. A few streets were crowded, but the guide managed the group professionally.",
+    comment:
+      "The food choices were interesting and the vegetarian alternatives were handled well. A few streets were crowded, but the guide managed the group professionally.",
   },
   {
     bookingIndex: 17,
     rating: 5,
     title: "Best start to our Egypt trip",
-    comment: "Clear instructions, no surprise fees, and enough time for photos. Mohamed answered every question without making the explanation too complicated.",
+    comment:
+      "Clear instructions, no surprise fees, and enough time for photos. Mohamed answered every question without making the explanation too complicated.",
   },
   {
     bookingIndex: 18,
     rating: 3,
     title: "Informative but a long day",
-    comment: "The temples were amazing and the guide was knowledgeable. The day felt longer than expected and the lunch stop could have been better organized.",
+    comment:
+      "The temples were amazing and the guide was knowledgeable. The day felt longer than expected and the lunch stop could have been better organized.",
   },
   {
     bookingIndex: 19,
     rating: 3,
     title: "Good route, crowded timing",
-    comment: "The historic area was worth visiting and the explanations were useful. We arrived during a very busy period, so some parts felt rushed.",
+    comment:
+      "The historic area was worth visiting and the explanations were useful. We arrived during a very busy period, so some parts felt rushed.",
   },
   {
     bookingIndex: 20,
     rating: 2,
     title: "Nice view but communication can improve",
-    comment: "The Nile view was beautiful, but the meeting instructions changed late and the update was not very clear. The guide was polite and apologized.",
+    comment:
+      "The Nile view was beautiful, but the meeting instructions changed late and the update was not very clear. The guide was polite and apologized.",
   },
 ];
 
@@ -437,17 +649,23 @@ async function removeOldSeedData() {
   const oldUsers = await User.find({
     $or: [
       { email: { $in: seedEmails } },
-      { email: { $regex: `${SEED_EMAIL_SUFFIX.replace(".", "\\.")}$`, $options: "i" } },
+      {
+        email: {
+          $regex: `${SEED_EMAIL_SUFFIX.replace(".", "\\.")}$`,
+          $options: "i",
+        },
+      },
     ],
   }).select("_id");
 
   const oldUserIds = oldUsers.map((user) => user._id);
-  const oldGuideProfiles = await GuideProfile.find({ user: { $in: oldUserIds } }).select("_id");
+  const oldGuideProfiles = await GuideProfile.find({
+    user: { $in: oldUserIds },
+  }).select("_id");
   const oldGuideProfileIds = oldGuideProfiles.map((guide) => guide._id);
-  const seedTitles = tripSeedData.map((trip) => trip.title).concat([
-    "Pyramids Half-Day Experience",
-    "Alexandria Coastal Trip",
-  ]);
+  const seedTitles = tripSeedData
+    .map((trip) => trip.title)
+    .concat(["Pyramids Half-Day Experience", "Alexandria Coastal Trip"]);
 
   const oldTrips = await Trip.find({
     $or: [
@@ -479,6 +697,9 @@ async function removeOldSeedData() {
   ]);
 
   await Trip.deleteMany({ _id: { $in: oldTripIds } });
+  await GuideVerification.deleteMany({
+    guideProfile: { $in: oldGuideProfileIds },
+  });
   await TouristProfile.deleteMany({ user: { $in: oldUserIds } });
   await GuideProfile.deleteMany({ user: { $in: oldUserIds } });
   await User.deleteMany({ _id: { $in: oldUserIds } });
@@ -486,23 +707,19 @@ async function removeOldSeedData() {
 
 async function createUsersAndProfiles() {
   const admin = await User.create({
-    fullName: "Nefru Admin",
     email: env.emailAdmin,
     password: env.passwordAdmin,
     role: "admin",
-    verificationStatus: "approved",
-    isActive: true,
+    status: "active",
   });
 
   const guideUsers = await User.create(
     guideSeedData.map((guide) => ({
-      fullName: guide.fullName,
       email: guide.email,
       password: env.passwordGuide,
       role: "guide",
-      verificationStatus: guide.verificationStatus,
-      isActive: guide.isActive,
-      avatar: guide.avatar,
+      status: guide.isActive ? "active" : "suspended",
+      roleProfile: "GuideProfile",
     })),
   );
 
@@ -510,41 +727,58 @@ async function createUsersAndProfiles() {
     guideSeedData.map((guide, index) => ({
       user: guideUsers[index]._id,
       fullName: guide.fullName,
-      title: guide.title,
+      avatar: guide.avatar,
+      verificationStatus: guide.verificationStatus,
       headline: guide.headline,
       location: guide.location,
       about: guide.about,
       yearsExperience: guide.yearsExperience,
       languages: guide.languages,
       specialties: guide.specialties,
-      heroImage: "",
       gallery: [],
       rating: 0,
       reviewsCount: 0,
     })),
   );
 
-  const touristUsers = await User.create(
-    touristSeedData.map((tourist) => ({
-      fullName: tourist.fullName,
-      email: tourist.email,
-      password: env.passwordTourist,
-      role: "tourist",
-      verificationStatus: tourist.verificationStatus,
-      isActive: tourist.isActive,
-      avatar: tourist.avatar,
+  await User.bulkWrite(
+    guideUsers.map((user, index) => ({
+      updateOne: {
+        filter: { _id: user._id },
+        update: { $set: { profileId: guideProfiles[index]._id } },
+      },
     })),
   );
 
-  await TouristProfile.create(
+  const touristUsers = await User.create(
+    touristSeedData.map((tourist) => ({
+      email: tourist.email,
+      password: env.passwordTourist,
+      role: "tourist",
+      status: tourist.isActive ? "active" : "suspended",
+      roleProfile: "TouristProfile",
+    })),
+  );
+
+  const touristProfiles = await TouristProfile.create(
     touristSeedData.map((tourist, index) => ({
       user: touristUsers[index]._id,
       fullName: tourist.fullName,
+      avatar: tourist.avatar,
       phoneNumber: `+20 100 555 ${String(1000 + index).slice(-4)}`,
       gender: tourist.gender,
       nationality: tourist.nationality,
       dateOfBirth: new Date(tourist.dateOfBirth),
-      language: tourist.preferredLanguage,
+      preferredLanguage: tourist.preferredLanguage,
+    })),
+  );
+
+  await User.bulkWrite(
+    touristUsers.map((user, index) => ({
+      updateOne: {
+        filter: { _id: user._id },
+        update: { $set: { profileId: touristProfiles[index]._id } },
+      },
     })),
   );
 
@@ -567,7 +801,8 @@ async function createTrips(guideUsers) {
       description: trip.description,
       longDescription: trip.longDescription,
       location: trip.location,
-      coordinates: trip.coordinates || defaultCoordinates[trip.location] || { lat: 30.0444, lng: 31.2357 },
+      coordinates: trip.coordinates ||
+        defaultCoordinates[trip.location] || { lat: 30.0444, lng: 31.2357 },
       price: trip.price,
       duration: trip.duration,
       image: trip.image,
@@ -608,13 +843,17 @@ async function createBookings(trips, guideUsers, touristUsers) {
     ) => {
       const trip = trips[tripIndex];
       const totalPrice = trip.price * numberOfGuests;
-      const earnsRevenue = paymentStatus === "paid" && !["cancelled", "refunded"].includes(status);
-      const platformFee = earnsRevenue ? roundMoney(totalPrice * PLATFORM_FEE_RATE) : 0;
-      const guideEarnings = earnsRevenue ? roundMoney(totalPrice - platformFee) : 0;
+      const earnsRevenue =
+        paymentStatus === "paid" && !["cancelled", "refunded"].includes(status);
+      const platformFee = earnsRevenue
+        ? roundMoney(totalPrice * PLATFORM_FEE_RATE)
+        : 0;
+      const guideEarnings = earnsRevenue
+        ? roundMoney(totalPrice - platformFee)
+        : 0;
       const date = dateAt(dayOffset, hour, minute);
       const isPastFinal = ["completed", "no_show", "refunded"].includes(status);
       const isCancelled = ["cancelled", "refunded"].includes(status);
-
 
       return {
         trip: trip._id,
@@ -633,14 +872,24 @@ async function createBookings(trips, guideUsers, touristUsers) {
         currency: "EGP",
         status,
         paymentStatus,
-        paymentMethod: paymentStatus === "unpaid" ? "none" : index % 3 === 0 ? "wallet" : "card",
-        paymentReference: paymentStatus === "unpaid" ? "" : `NEFRU-SEED-${String(index + 1).padStart(4, "0")}`,
+        paymentMethod:
+          paymentStatus === "unpaid"
+            ? "none"
+            : index % 3 === 0
+              ? "wallet"
+              : "card",
+        paymentReference:
+          paymentStatus === "unpaid"
+            ? ""
+            : `NEFRU-SEED-${String(index + 1).padStart(4, "0")}`,
         specialRequests,
         bookingSource: index % 4 === 0 ? "web" : "mobile",
         cancellationReason,
         cancelledBy,
         cancelledAt: isCancelled ? new Date(date.getTime() - 2 * DAY_MS) : null,
-        completedAt: isPastFinal ? new Date(date.getTime() + 6 * 60 * 60 * 1000) : null,
+        completedAt: isPastFinal
+          ? new Date(date.getTime() + 6 * 60 * 60 * 1000)
+          : null,
         createdAt: new Date(date.getTime() - randomInt(2, 30) * DAY_MS),
       };
     },
@@ -649,14 +898,22 @@ async function createBookings(trips, guideUsers, touristUsers) {
   return Booking.create(bookingDocs);
 }
 
-async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffset,hour, minute) {
+async function createReviews(
+  bookings,
+  trips,
+  guideUsers,
+  touristUsers,
+  dayOffset,
+  hour,
+  minute,
+) {
   const reviewDocs = reviewSeedData.map((review, index) => {
     const booking = bookings[review.bookingIndex];
     const tripIndex = bookingSeedData[review.bookingIndex][1];
     const touristIndex = bookingSeedData[review.bookingIndex][0];
-    
+
     const date = dateAt(dayOffset, hour, minute);
-    console.log(Date(bookings[review.bookingIndex]))
+    console.log(Date(bookings[review.bookingIndex]));
     // console.log(date.getTime())
     return {
       booking: booking._id,
@@ -666,7 +923,8 @@ async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffse
       rating: review.rating,
       title: review.title,
       comment: review.comment,
-      language: touristSeedData[touristIndex].preferredLanguage === "en" ? "en" : "en",
+      language:
+        touristSeedData[touristIndex].preferredLanguage === "en" ? "en" : "en",
       isVerifiedBooking: true,
       isVisible: true,
       guideResponse:
@@ -692,7 +950,7 @@ async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffse
         name: touristSeedData[touristIndex]?.fullName || "Verified Tourist",
         date: review.createdAt.toISOString().slice(0, 10),
         text: review.comment,
-        avatar: touristUsers[touristIndex]?.avatar || "",
+        avatar: touristSeedData[touristIndex]?.avatar || "",
         rating: review.rating,
       };
     });
@@ -706,7 +964,8 @@ async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffse
 
   for (let guideIndex = 0; guideIndex < guideUsers.length; guideIndex += 1) {
     const guideReviews = reviews.filter(
-      (review) => review.guide.toString() === guideUsers[guideIndex]._id.toString(),
+      (review) =>
+        review.guide.toString() === guideUsers[guideIndex]._id.toString(),
     );
 
     await GuideProfile.findOneAndUpdate(
@@ -721,13 +980,24 @@ async function createReviews(bookings, trips, guideUsers, touristUsers, dayOffse
   return reviews;
 }
 
-async function createNotifications({ admin, guideUsers, touristUsers, trips, bookings, reviews }) {
+async function createNotifications({
+  admin,
+  guideUsers,
+  touristUsers,
+  trips,
+  bookings,
+  reviews,
+}) {
   const notifications = [];
 
   for (let index = 0; index < bookings.length; index += 1) {
     const booking = bookings[index];
-    const trip = trips.find((item) => item._id.toString() === booking.trip.toString());
-    const tourist = touristUsers.find((item) => item._id.toString() === booking.tourist.toString());
+    const trip = trips.find(
+      (item) => item._id.toString() === booking.trip.toString(),
+    );
+    const tourist = touristUsers.find(
+      (item) => item._id.toString() === booking.tourist.toString(),
+    );
 
     if (["confirmed", "completed"].includes(booking.status)) {
       notifications.push(
@@ -791,7 +1061,10 @@ async function createNotifications({ admin, guideUsers, touristUsers, trips, boo
       notifications.push({
         user: booking.tourist,
         type: "booking",
-        title: booking.status === "refunded" ? "Booking refunded" : "Booking cancelled",
+        title:
+          booking.status === "refunded"
+            ? "Booking refunded"
+            : "Booking cancelled",
         message: `${trip.title}: ${booking.cancellationReason || "The booking was cancelled."}`,
         isRead: false,
         link: "/user/profile/bookings",
@@ -817,7 +1090,9 @@ async function createNotifications({ admin, guideUsers, touristUsers, trips, boo
   }
 
   for (const review of reviews) {
-    const trip = trips.find((item) => item._id.toString() === review.trip.toString());
+    const trip = trips.find(
+      (item) => item._id.toString() === review.trip.toString(),
+    );
     notifications.push({
       user: review.guide,
       type: "review",
@@ -886,13 +1161,21 @@ async function createInteractions(touristUsers, trips, bookings, reviews) {
     "small group trip",
   ];
 
-  for (let touristIndex = 0; touristIndex < touristUsers.length; touristIndex += 1) {
+  for (
+    let touristIndex = 0;
+    touristIndex < touristUsers.length;
+    touristIndex += 1
+  ) {
     const tourist = touristUsers[touristIndex];
     const sessionCount = randomInt(3, 6);
 
     for (let session = 0; session < sessionCount; session += 1) {
       const sessionId = `seed-${touristIndex + 1}-${session + 1}`;
-      const sessionDate = dateAt(-randomInt(1, 55), randomInt(8, 22), randomInt(0, 59));
+      const sessionDate = dateAt(
+        -randomInt(1, 55),
+        randomInt(8, 22),
+        randomInt(0, 59),
+      );
       const viewedTrips = new Set();
       const viewCount = randomInt(2, 5);
 
@@ -918,7 +1201,9 @@ async function createInteractions(touristUsers, trips, bookings, reviews) {
         let tripIndex = randomInt(0, 7);
         while (viewedTrips.has(tripIndex)) tripIndex = randomInt(0, 7);
         viewedTrips.add(tripIndex);
-        const eventAt = new Date(sessionDate.getTime() + position * randomInt(1, 5) * 60 * 1000);
+        const eventAt = new Date(
+          sessionDate.getTime() + position * randomInt(1, 5) * 60 * 1000,
+        );
 
         interactions.push(
           {
@@ -1011,7 +1296,9 @@ async function createInteractions(touristUsers, trips, bookings, reviews) {
       eventAt: startedAt,
     });
 
-    if (["confirmed", "completed", "refunded", "no_show"].includes(booking.status)) {
+    if (
+      ["confirmed", "completed", "refunded", "no_show"].includes(booking.status)
+    ) {
       interactions.push({
         tourist: booking.tourist,
         trip: booking.trip,
@@ -1057,7 +1344,15 @@ async function createInteractions(touristUsers, trips, bookings, reviews) {
   return Interaction.create(interactions);
 }
 
-async function printSummary({ guideUsers, touristUsers, trips, bookings, notifications, reviews, interactions }) {
+async function printSummary({
+  guideUsers,
+  touristUsers,
+  trips,
+  bookings,
+  notifications,
+  reviews,
+  interactions,
+}) {
   const bookingStatusSummary = bookings.reduce((result, booking) => {
     result[booking.status] = (result[booking.status] || 0) + 1;
     return result;
@@ -1068,7 +1363,9 @@ async function printSummary({ guideUsers, touristUsers, trips, bookings, notific
     return result;
   }, {});
 
-  const touristsWithBookings = new Set(bookings.map((booking) => booking.tourist.toString())).size;
+  const touristsWithBookings = new Set(
+    bookings.map((booking) => booking.tourist.toString()),
+  ).size;
 
   console.log("\n-----------------------------------");
   console.log("Nefru scenario seed completed");
@@ -1076,7 +1373,9 @@ async function printSummary({ guideUsers, touristUsers, trips, bookings, notific
   console.log(`Guides: ${guideUsers.length}`);
   console.log(`Tourists: ${touristUsers.length}`);
   console.log(`Tourists with bookings: ${touristsWithBookings}`);
-  console.log(`Cold-start tourists: ${touristUsers.length - touristsWithBookings}`);
+  console.log(
+    `Cold-start tourists: ${touristUsers.length - touristsWithBookings}`,
+  );
   console.log(`Trips: ${trips.length}`, tripStatusSummary);
   console.log(`Bookings: ${bookings.length}`, bookingStatusSummary);
   console.log(`Reviews: ${reviews.length}`);
@@ -1086,7 +1385,9 @@ async function printSummary({ guideUsers, touristUsers, trips, bookings, notific
   console.log(`Admin login: ${env.emailAdmin} / ${env.passwordAdmin}`);
   console.log(`GuideProfile login: ${env.emailGuide} / ${env.passwordGuide}`);
   console.log(`Tourist login: ${env.emailTourist} / ${env.passwordTourist}`);
-  console.log(`Other seed users use the same role password and end with ${SEED_EMAIL_SUFFIX}`);
+  console.log(
+    `Other seed users use the same role password and end with ${SEED_EMAIL_SUFFIX}`,
+  );
   console.log("-----------------------------------\n");
 }
 
@@ -1098,10 +1399,16 @@ async function seedDatabase() {
     await removeOldSeedData();
     console.log("Old Nefru seed data removed");
 
-    const { admin, guideUsers, guideProfiles, touristUsers } = await createUsersAndProfiles();
+    const { admin, guideUsers, guideProfiles, touristUsers } =
+      await createUsersAndProfiles();
     const trips = await createTrips(guideUsers);
     const bookings = await createBookings(trips, guideUsers, touristUsers);
-    const reviews = await createReviews(bookings, trips, guideUsers, touristUsers);
+    const reviews = await createReviews(
+      bookings,
+      trips,
+      guideUsers,
+      touristUsers,
+    );
     const notifications = await createNotifications({
       admin,
       guideUsers,
@@ -1110,7 +1417,12 @@ async function seedDatabase() {
       bookings,
       reviews,
     });
-    const interactions = await createInteractions(touristUsers, trips, bookings, reviews);
+    const interactions = await createInteractions(
+      touristUsers,
+      trips,
+      bookings,
+      reviews,
+    );
 
     await printSummary({
       guideUsers,

@@ -1,12 +1,12 @@
 import Joi from "joi";
 
 export const registerUserSchema = Joi.object({
-  // fullName: Joi.string().trim().min(2).max(50).required(),
+  fullName: Joi.string().trim().min(2).max(50).required(),
   email: Joi.string().trim().lowercase().email().required(),
   password: Joi.string().min(8).required(),
-  // password confirmation is for client-side only
-  // confirmPassword: Joi.string().valid(Joi.ref("password")),
-  // role: Joi.string().valid("tourist", "guide").default("tourist"),
+  confirmPassword: Joi.string().valid(Joi.ref("password")).required(),
+  role: Joi.string().valid("tourist", "guide").required(),
+
 });
 
 export const loginUserSchema = Joi.object({

@@ -17,6 +17,8 @@ function RegisterForm() {
   const dispatch = useDispatch();
 
   const [apiError, setApiError] = useState("");
+  const [registeredAccount, setRegisteredAccount] = useState(null);
+  const [documentUploaded, setDocumentUploaded] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -53,8 +55,30 @@ function RegisterForm() {
 
       document:
         role === "guide"
-          ? Yup.mixed().required("Verification document is required.")
+          ? Yup.mixed()
+              .required("Verification document is required.")
+              .test(
+                "document-type",
+                "Only JPEG, PNG, or PDF files are allowed.",
+                (file) =>
+                  !file ||
+                  ["image/jpeg", "image/png", "application/pdf"].includes(
+                    file.type,
+                  ),
+              )
+              .test(
+                "document-size",
+                "The document must be 5 MB or smaller.",
+                (file) => !file || file.size <= 5 * 1024 * 1024,
+              )
           : Yup.mixed().nullable(),
+
+      documentType:
+        role === "guide"
+          ? Yup.string()
+              .oneOf(["national_id", "passport"])
+              .required("Document type is required.")
+          : Yup.string().nullable(),
 
       terms: Yup.boolean()
         .oneOf([true], "You must agree to the terms.")
@@ -92,6 +116,7 @@ function RegisterForm() {
       password: "",
       confirmPassword: "",
       document: null,
+      documentType: "national_id",
       terms: false,
     },
 
@@ -101,28 +126,67 @@ function RegisterForm() {
       setApiError("");
 
       try {
-        const response = await apiRequest("/auth/register", {
-          method: "POST",
-          body: JSON.stringify({
-            fullName: values.fullName,
-            email: values.email,
-            password: values.password,
-            confirmPassword: values.confirmPassword,
-            role,
-          }),
-        });
+        let account = registeredAccount;
+
+        if (!account) {
+          const response = await apiRequest("/auth/register", {
+            method: "POST",
+            body: JSON.stringify({
+              fullName: values.fullName,
+              email: values.email,
+              password: values.password,
+              confirmPassword: values.confirmPassword,
+              role,
+            }),
+          });
+
+          account = {
+            token: response?.meta?.token,
+            user: response?.data?.user,
+            profile: response?.data?.profile,
+          };
+
+          if (!account.token || !account.user) {
+            throw new Error("Registration failed: invalid server response");
+          }
+
+          setRegisteredAccount(account);
+          dispatch(loginSuccess(account));
+        }
 
         if (role === "guide") {
+          if (!documentUploaded) {
+            const formData = new FormData();
+            formData.append("document", values.document);
+            formData.append("documentType", values.documentType);
+
+            await apiRequest("/guide-verification/documents", {
+              method: "POST",
+              body: formData,
+            });
+
+            setDocumentUploaded(true);
+          }
+
+          const submitResponse = await apiRequest(
+            "/guide-verification/submit",
+            { method: "POST" },
+          );
+
+          dispatch(
+            loginSuccess({
+              ...account,
+              profile: {
+                ...account.profile,
+                verificationStatus:
+                  submitResponse?.data?.verificationStatus || "pending",
+              },
+            }),
+          );
+
           navigate("/auth/application-received");
           return;
         }
-
-        dispatch(
-          loginSuccess({
-            token: response.token,
-            user: response.data.user,
-          }),
-        );
 
         navigate("/user/home");
       } catch (error) {
@@ -164,6 +228,8 @@ function RegisterForm() {
                   onClick={() => {
                     setRole("tourist");
                     setUploadedFile(null);
+                    setRegisteredAccount(null);
+                    setDocumentUploaded(false);
                     formik.setFieldValue("document", null);
                     formik.setFieldTouched("document", false);
                   }}
@@ -265,6 +331,29 @@ function RegisterForm() {
                   <label className={styles.label}>Document Verification</label>
 
                   <div className={styles.field}>
+                    <select
+                      className={styles.documentTypeSelect}
+                      value={formik.values.documentType}
+                      onChange={(event) =>
+                        formik.setFieldValue("documentType", event.target.value)
+                      }
+                      onBlur={() =>
+                        formik.setFieldTouched("documentType", true)
+                      }
+                    >
+                      <option value="national_id">National ID</option>
+                      <option value="passport">Passport</option>
+                    </select>
+
+                    {formik.touched.documentType &&
+                      formik.errors.documentType && (
+                        <span className={styles.errorMsg}>
+                          {formik.errors.documentType}
+                        </span>
+                      )}
+                  </div>
+
+                  <div className={styles.field}>
                     <div
                       className={`${styles.uploadZone} ${
                         isDragging ? styles.uploadZoneDragging : ""
@@ -286,7 +375,7 @@ function RegisterForm() {
                       <input
                         ref={fileInputRef}
                         type="file"
-                        accept="image/*,.pdf"
+                        accept="image/jpeg,image/png,application/pdf"
                         className={styles.hiddenInput}
                         onChange={handleFileInput}
                         aria-hidden="true"
