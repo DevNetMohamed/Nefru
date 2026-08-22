@@ -2,14 +2,13 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files first for better Docker caching
+ENV NODE_ENV=production
+
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+RUN npm ci --omit=dev
 
-# Copy application source
-COPY . .
+COPY src ./src
 
 EXPOSE 5000
 

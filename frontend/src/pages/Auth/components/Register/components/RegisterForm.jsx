@@ -5,7 +5,7 @@ import * as Yup from "yup";
 
 import LogoLight from "../../../../../assets/images/Logo_Light.png";
 import Icons from "../../../../../assets/icons";
-import { Input } from "../../../../../shared/components/inputs/inputs";
+import { Input } from "../../../../../shared/components/Inputs/Inputs";
 import { Button } from "../../../../../shared/components/Button/Button";
 import { apiRequest } from "../../../../../services/api";
 import GoogleAuthButton from "../../GoogleAuthButton/GoogleAuthButton";

@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { apiRequest } from "../../../../../services/api";
 import { loginSuccess } from "../../../../../store/slices/authSlice";
 import { Button } from "../../../../../shared/components/Button/Button";
-import { Input } from "../../../../../shared/components/inputs/inputs";
+import { Input } from "../../../../../shared/components/Inputs/Inputs";
 import Icons from "../../../../../assets/icons";
 import LogoLight from "../../../../../assets/images/Logo_Light.png";
 import GoogleAuthButton from "../../GoogleAuthButton/GoogleAuthButton";
