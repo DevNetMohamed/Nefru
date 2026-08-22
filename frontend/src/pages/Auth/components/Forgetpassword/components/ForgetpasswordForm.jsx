@@ -18,26 +18,41 @@ const FORGOT_PASSWORD_SCHEMA = Yup.object({
 
 export default function ForgetpasswordForm() {
   const navigate = useNavigate();
+
   const [apiError, setApiError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [resetToken, setResetToken] = useState("");
 
   const formik = useFormik({
-    initialValues: { email: "" },
+    initialValues: {
+      email: "",
+    },
+
     validationSchema: FORGOT_PASSWORD_SCHEMA,
+
     onSubmit: async (values, { setSubmitting }) => {
       setApiError("");
       setSuccessMessage("");
+      setResetToken("");
 
       try {
         const response = await apiRequest("/auth/forgot-password", {
           method: "POST",
-          body: JSON.stringify({ email: values.email }),
+          body: JSON.stringify({
+            email: values.email,
+          }),
         });
 
         setSuccessMessage(
-          response.message ||
-            "If this email has a password-based account, a reset link has been sent.",
+          response.message || "Password reset instructions have been sent.",
         );
+
+        // in future here will be handled by email service / node mailer on backend,
+        // and the user will receive the reset password link by email.
+        // For development only, backend may return resetToken directly.
+        if (response.resetToken) {
+          setResetToken(response.resetToken);
+        }
       } catch (error) {
         setApiError(error.message || "Failed to send reset instructions.");
       } finally {
@@ -54,7 +69,7 @@ export default function ForgetpasswordForm() {
             <img src={LogoLight} alt="Nefru logo" className={styles.logo} />
             <h1 className={styles.title}>Password Recovery</h1>
             <p className={`${styles.subtitle} fs-5`}>
-              We’ll email you a secure reset link that expires in 10 minutes.
+              Don’t worry! We’ll send reset instructions to your email.
             </p>
           </div>
 
@@ -62,8 +77,8 @@ export default function ForgetpasswordForm() {
             <div className={styles.infoBox}>
               <Icons.EmailOutline />
               <p>
-                Use the email connected to your Nefru account. For privacy, we
-                show the same response whether an account exists or not.
+                Use the same email you used to create your Traveler or Guide
+                account.
               </p>
             </div>
 
@@ -86,6 +101,7 @@ export default function ForgetpasswordForm() {
             </div>
 
             {apiError && <p className={styles.errorMsg}>{apiError}</p>}
+
             {successMessage && (
               <p className={styles.successMsg}>{successMessage}</p>
             )}
@@ -97,6 +113,25 @@ export default function ForgetpasswordForm() {
             >
               {formik.isSubmitting ? "Sending..." : "Send Reset Link"}
             </Button>
+
+            {resetToken && (
+              <>
+                {/* remember to delete in production */}
+                <Button
+                  type="normal"
+                  htmlType="button"
+                  onClick={() =>
+                    navigate(
+                      `/auth/reset-password?token=${encodeURIComponent(
+                        resetToken,
+                      )}`,
+                    )
+                  }
+                >
+                  Continue to Reset Password
+                </Button>
+              </>
+            )}
           </form>
 
           <p className={styles.loginRow}>

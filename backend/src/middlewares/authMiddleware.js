@@ -1,61 +1,40 @@
-import jwt from "jsonwebtoken";
+﻿import jwt from "jsonwebtoken";
 
 import { env } from "../config/env.js";
-import { GuideProfile } from "../models/guide.model.js";
 import { User } from "../models/user.model.js";
-import { AUTH_COOKIE_NAME, getCookieValue } from "../utils/authSession.js";
-
-function getRequestToken(req) {
-  const authHeader = req.headers.authorization;
-
-  if (authHeader?.startsWith("Bearer ")) {
-    return authHeader.slice(7).trim();
-  }
-
-  return getCookieValue(req, AUTH_COOKIE_NAME);
-}
+import { GuideProfile } from "../models/guide.model.js";
 
 export const protect = async (req, res, next) => {
   try {
-    const token = getRequestToken(req);
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.status(401);
+      throw new Error("Not authorized");
+    }
+
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Not authorized",
-      });
+      return res.status(401).json({ msg: "No token, authorization denied" });
     }
 
     const decoded = jwt.verify(token, env.jwtSecret);
-    const user = await User.findById(decoded.id).select("+tokenVersion");
+
+    const user = await User.findById(decoded.id);
 
     if (!user || user.status !== "active") {
-      return res.status(401).json({
-        success: false,
-        message: "User not found or inactive",
-      });
+      return res
+        .status(401)
+        .json({ msg: "User not found or inactive, authorization denied" });
     }
-
-    const tokenVersion = Number(decoded.tokenVersion ?? 0);
-    const currentVersion = Number(user.tokenVersion ?? 0);
-
-    if (tokenVersion !== currentVersion) {
-      return res.status(401).json({
-        success: false,
-        message: "Session expired. Please log in again.",
-      });
-    }
-
     req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: "Not authorized",
-    });
+    res.status(401);
+    next(new Error("Not authorized"));
   }
 };
-
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!allowedRoles.includes(req.user.role)) {
@@ -69,7 +48,6 @@ export const authorizeRoles = (...allowedRoles) => {
     next();
   };
 };
-
 export const requireApprovedGuide = async (req, res, next) => {
   try {
     if (req.user.role !== "guide") {

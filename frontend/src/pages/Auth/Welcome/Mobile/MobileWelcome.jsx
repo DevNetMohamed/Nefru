@@ -49,7 +49,7 @@ export default function MobileWelcome() {
           {/* Traveler Card */}
           <div
             className={`${styles.roleCard} ${selectedRole === "tourist" ? styles.selectedCard : ""}`}
-            onClick={() => handleSelectRole("tourist")}
+            onClick={() => navigate(`/auth/register?role=${"tourist"}`)}
             role="radio"
             aria-checked={selectedRole === "tourist"}
             tabIndex={0}
@@ -79,7 +79,8 @@ export default function MobileWelcome() {
           {/* Tour Guide Card */}
           <div
             className={`${styles.roleCard} ${selectedRole === "guide" ? styles.selectedCard : ""}`}
-            onClick={() => handleSelectRole("guide")}
+            onClick={() => navigate(`/auth/register?role=${"guide"}`)}
+            // onClick={() =>{ handleSelectRole("guide"); handleCreateAccount()}}
             role="radio"
             aria-checked={selectedRole === "guide"}
             tabIndex={0}
@@ -95,7 +96,7 @@ export default function MobileWelcome() {
                 <CiLocationOn className={styles.badgeIcon} />
               </div>
             </div>
-            <div className={styles.cardBody}>
+            <div className={styles.cardBody} onClick={() => { handleSelectRole("guide"); handleCreateAccount(); }}>
               <div className={styles.cardHeader}>
                 <h3 className={styles.roleTitle}>Tour Guide</h3>
                 <IoIosArrowForward className={styles.chevronIcon} />

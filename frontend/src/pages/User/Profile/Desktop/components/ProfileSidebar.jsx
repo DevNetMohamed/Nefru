@@ -11,14 +11,13 @@ import {
 } from "react-icons/fi";
 
 import styles from "./ProfileSidebar.module.css";
-import { resolveMediaUrl } from "../../../../../services/api";
 
 const menuItems = [
   { to: "/user/profile", label: "Profile Overview", icon: FiUser, end: true },
   { to: "/user/profile/bookings", label: "My Bookings", icon: FiCalendar },
   { to: "/user/profile/payments", label: "Payment Methods", icon: FiCreditCard },
   { to: "/user/profile/reviews", label: "Reviews Written", icon: FiStar },
-  { to: "/user/profile/change-password", label: "Sign-in & Security", icon: FiLock },
+  { to: "/user/profile/change-password", label: "Change Password", icon: FiLock },
   { to: "/user/profile/support", label: "Help & Support", icon: FiHeadphones },
 ];
 
@@ -40,15 +39,7 @@ export default function ProfileSidebar({ onLogout }) {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.summaryCard}>
-        {profile?.avatar ? (
-          <img
-            className={styles.avatar}
-            src={resolveMediaUrl(profile.avatar)}
-            alt={`${fullName} profile`}
-          />
-        ) : (
-          <div className={styles.avatar}>{getInitials(fullName)}</div>
-        )}
+        <div className={styles.avatar}>{getInitials(fullName)}</div>
         <div>
           <h2>{fullName}</h2>
           <p>{email}</p>

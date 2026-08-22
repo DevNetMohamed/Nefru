@@ -1,22 +1,21 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
+// DONT DELETE THIS COMMENT, IT'S IMPORTANT
+
+// لما نخلص المشروع شيل الcomment اللي تحت
+// ولف الRouterProvider بالProtectedRoute وحدد الallowedRoles حسب كل route
+// عشان يسهل  الشغل علينا
+// import ProtectedRoute from "./ProtectedRoute";
 
 import AuthLayout from "../shared/AuthLayout/AuthLayout";
 import MasterLayout from "../shared/MasterLayout/MasterLayout";
 import NotFound from "../shared/NotFound/NotFound";
-import ProtectedRoute from "./ProtectedRoute";
-import RequireApprovedGuide from "./RequireApprovedGuide";
-
 // Auth Pages
 import Welcome from "../pages/Auth/Welcome/Welcome";
 import Login from "../pages/Auth/components/Login/Login";
 import Register from "../pages/Auth/components/Register/Register";
 import Forgetpassword from "../pages/Auth/components/Forgetpassword/Forgetpassword";
 import ResetPassword from "../pages/Auth/components/ResetPassword/ResetPassword";
-import CheckEmail from "../pages/Auth/Onboarding/CheckEmail";
-import VerifyEmail from "../pages/Auth/Onboarding/VerifyEmail";
-import ChooseRole from "../pages/Auth/Onboarding/ChooseRole";
-import LinkGoogleAccount from "../pages/Auth/Onboarding/LinkGoogleAccount";
-
+import ApplicationReceived from "../pages/Auth/components/ApplicationReceived/ApplicationReceived";
 // User Pages
 import Home from "../pages/User/Home/Home";
 import Trips from "../pages/User/Trips/Trips";
@@ -38,7 +37,6 @@ import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
 import Discover from "../pages/User/Discover/Discover";
 import NearbyMap from "../pages/User/NearbyMap/NearbyMap";
 
-// Admin
 import Admin from "../pages/Admin/Admin";
 import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
 import Accounts from "../pages/Admin/pages/Accounts/Accounts";
@@ -59,7 +57,9 @@ import GuideCalendar from "../pages/Guide/GuideCalendar/GuideCalendar";
 import GuideAccountProfile from "../pages/Guide/GuideAccountProfile/GuideAccountProfile";
 import GuideNotifications from "../pages/Guide/GuideNotifications/GuideNotifications";
 import GuideVerification from "../pages/Guide/GuideVerification/GuideVerification";
-import GuideApplicationReceived from "../pages/Guide/GuideApplicationReceived/GuideApplicationReceived";
+
+import { Navigate } from "react-router-dom";
+
 
 export const router = createBrowserRouter([
   {
@@ -73,16 +73,9 @@ export const router = createBrowserRouter([
     children: [
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      {
-        path: "application-received",
-        element: <Navigate to="/guide/application-received" replace />,
-      },
+      { path: "application-received", element: <ApplicationReceived /> },
       { path: "forget-password", element: <Forgetpassword /> },
       { path: "reset-password", element: <ResetPassword /> },
-      { path: "check-email", element: <CheckEmail /> },
-      { path: "verify-email", element: <VerifyEmail /> },
-      { path: "choose-role", element: <ChooseRole /> },
-      { path: "link-google", element: <LinkGoogleAccount /> },
     ],
   },
   {
@@ -92,104 +85,131 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "home", element: <Home /> },
       { path: "guideprofile", element: <GuideProfile /> },
+      //Discover Routes
       { path: "discover", element: <Discover /> },
       { path: "nearby", element: <NearbyMap /> },
+
       {
         path: "trips",
         children: [
           { index: true, element: <Trips /> },
           { path: "info", element: <Info /> },
+          { path: "book", element: <Book /> },
+          { path: "book/status", element: <Status /> },
           { path: "guide", element: <Guide /> },
-          {
-            element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
-            children: [
-              { path: "book", element: <Book /> },
-              { path: "book/status", element: <Status /> },
-            ],
-          },
         ],
       },
+      { path: "saved", element: <Saved /> },
       {
-        element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
+        path: "profile",
+        element: <Profile />,
         children: [
-          { path: "saved", element: <Saved /> },
-          {
-            path: "profile",
-            element: <Profile />,
-            children: [
-              { index: true, element: <ProfileOverview /> },
-              { path: "edit", element: <EditProfile /> },
-              { path: "change-password", element: <ChangePassword /> },
-              { path: "bookings", element: <MyBookings /> },
-              { path: "payments", element: <PaymentMethods /> },
-              { path: "reviews", element: <ReviewsWritten /> },
-              { path: "support", element: <HelpSupport /> },
-            ],
-          },
-          { path: "settings", element: <Settings /> },
-          { path: "notifications", element: <NotificationsPage /> },
+          { index: true, element: <ProfileOverview /> },
+          { path: "edit", element: <EditProfile /> },
+          { path: "change-password", element: <ChangePassword /> },
+          { path: "bookings", element: <MyBookings /> },
+          { path: "payments", element: <PaymentMethods /> },
+          { path: "reviews", element: <ReviewsWritten /> },
+          { path: "support", element: <HelpSupport /> },
         ],
       },
+      { path: "settings", element: <Settings /> },
+      {path: "notifications", element: <NotificationsPage />},
     ],
+
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
+
+    //protected route for tourist and guide, we will protect after we finish the project
+    // لما نخلص المشروع شيل الcomment اللي تحت
+
+    // element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
+    // children: [
+    //   {
+    //     element: <MasterLayout />,
+    //     children: [
+    //       { index: true, element: <Home /> },
+    //       { path: "home", element: <Home /> },
+
+    //       //Discover Routes
+    //       { path: "discover", element: <Discover /> },
+
+    //       {
+    //         path: "trips",
+    //         children: [
+    //           { index: true, element: <Trips /> },
+    //           { path: "info", element: <Info /> },
+    //           { path: "book", element: <Book /> },
+    //           { path: "book/status", element: <Status /> },
+    //           { path: "guide", element: <Guide /> },
+    //         ],
+    //       },
+    //       { path: "saved", element: <Saved /> },
+    //       { path: "profile", element: <Profile /> },
+    //       { path: "settings", element: <Settings /> },
+    //     ],
+    //   },
+    // ],
+
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
   },
-  {
-    path: "guide",
-    element: <ProtectedRoute allowedRoles={["guide"]} />,
-    children: [
-      {
-        element: <GuidePortalLayout />,
-        children: [
-          { index: true, element: <ToursManagement /> },
-          { path: "dashboard", element: <GuideDashboard /> },
-          { path: "calendar", element: <GuideCalendar /> },
-          { path: "profile", element: <GuideAccountProfile /> },
-          { path: "notifications", element: <GuideNotifications /> },
-          { path: "verification", element: <GuideVerification /> },
-          { path: "application-received", element: <GuideApplicationReceived /> },
-        ],
-      },
-      {
-        element: <RequireApprovedGuide />,
-        children: [
-          { path: "createtour", element: <CreateTour /> },
-          { path: "schedule", element: <Schedule /> },
-          { path: "tourmedia", element: <TourMedia /> },
-          { path: "tourapprove", element: <TourApprove /> },
-        ],
-      },
-    ],
-  },
+ 
+ {
+  path: "guide",
+  children: [
+    // Shared guide shell. ToursManagement stays untouched inside the Outlet,
+    // so its own header/navigation can still be compared with the new shell.
+    {
+      element: <GuidePortalLayout />,
+      children: [
+        { index: true, element: <ToursManagement /> },
+        { path: "dashboard", element: <GuideDashboard /> },
+        { path: "calendar", element: <GuideCalendar /> },
+        { path: "profile", element: <GuideAccountProfile /> },
+        { path: "notifications", element: <GuideNotifications /> },
+        { path: "verification", element: <GuideVerification /> },
+      ],
+    },
+
+    // Existing create-trip flow — left completely unchanged and outside
+    // GuidePortalLayout to avoid adding another global header/navigation.
+    { path: "createtour", element: <CreateTour /> },
+    { path: "schedule", element: <Schedule /> },
+    { path: "tourmedia", element: <TourMedia /> },
+    { path: "tourapprove", element: <TourApprove /> },
+  ],
+},
   {
     path: "admin",
-<<<<<<< HEAD
 
     // not protected yet, we will protect after we finish the project
     element: <Admin />,
-    // element: <ProtectedRoute allowedRoles={["admin"]} />,
 
     children: [
-      { path: "*" ,index:true, element:<Navigate to="/admin/overview" replace/>},
+      { index: true , element:<Navigate to="/admin/overview" replace/>},
       { path: "overview", element: <DashboardStatus /> },
       { path: "accounts", element: <Accounts /> },
       { path: "cms", element: <CMS /> },
       { path: "analytics", element: <Analytics /> },
       { path: "booking", element: <Booking /> },
-=======
-    element: <ProtectedRoute allowedRoles={["admin"]} />,
-    children: [
-      {
-        element: <Admin />,
-        children: [
-          { index: true, element: <Navigate to="/admin/overview" replace /> },
-          { path: "overview", element: <DashboardStatus /> },
-          { path: "accounts", element: <Accounts /> },
-          { path: "cms", element: <CMS /> },
-          { path: "analytics", element: <Analytics /> },
-          { path: "booking", element: <Booking /> },
-        ],
-      },
->>>>>>> 876106d4a5a2ebc2e5dbf16864c90247d47ed8b1
     ],
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
+
+    //protected route for admin, we will protect after we finish the project
+    // لما نخلص المشروع شيل الcomment اللي تحت
+    // element: <ProtectedRoute allowedRoles={["admin"]} />,
+    // children: [
+    //   {
+    //     element: <Admin />,
+    //     children: [
+    //       { path: "overview", element: <DashboardStatus /> },
+    //       { path: "accounts", element: <Accounts /> },
+    //       { path: "cms", element: <CMS /> },
+    //       { path: "analytics", element: <Analytics /> },
+    //       { path: "booking", element: <Booking /> },
+    //     ],
+    //   },
+    // ],
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
   },
   {
     path: "*",

@@ -1,27 +1,11 @@
-<<<<<<< HEAD
-import styles from "./Accounts.module.css";
-import Table, { AccountItem } from "../../components/Table/Table";
-import Status from "../../components/Status/Status";
-import { Button } from "../../../../shared/components/Button/Button";
-import { Input } from "../../../../shared/components/Inputs/Inputs";
-import { useCallback, useEffect, useState } from "react";
-import Icons from "../../../../assets/icons";
-import Form, {
-  FormInput,
-  FormSelect,
-  FormAction,
-} from "../../components/Form/Form";
-import { Card, LineChart } from "../../components/Status/Status";
-=======
 import styles from './Accounts.module.css'
 import Table,{AccountItem} from '../../components/Table/Table'
 import {Button }from '../../../../shared/components/Button/Button'
-import {Input }from '../../../../shared/components/inputs/inputs'
+import {Input }from '../../../../shared/components/Inputs/Inputs'
 import {useCallback, useEffect, useState} from 'react'
 import Icons from '../../../../assets/icons'
 import Form, {FormInput, FormSelect, FormAction} from '../../components/Form/Form'
 import { Card , LineChart } from '../../components/Status/Status'
->>>>>>> 876106d4a5a2ebc2e5dbf16864c90247d47ed8b1
 
 import { getAccountByRole,getAccount } from "../../api";
 

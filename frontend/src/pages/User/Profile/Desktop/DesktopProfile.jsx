@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { logoutUser } from "../../../../store/slices/authSlice";
+import { logout } from "../../../../store/slices/authSlice";
 import ProfileSidebar from "./components/ProfileSidebar";
 import styles from "./DesktopProfile.module.css";
 
@@ -10,7 +10,7 @@ export default function DesktopProfile({ children }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logoutUser());
+    dispatch(logout());
     navigate("/auth/login", { replace: true });
   };
 

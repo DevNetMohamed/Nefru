@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import { apiRequest } from "../../../services/api";
 import { updateProfile } from "../../../store/slices/authSlice";
@@ -14,7 +13,6 @@ const DOCUMENT_LABELS = {
 
 export default function GuideVerification() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { user, profile } = useSelector((state) => state.auth);
   const [verification, setVerification] = useState(null);
   const [documentType, setDocumentType] = useState("national_id");
@@ -100,10 +98,6 @@ export default function GuideVerification() {
       const response = await apiRequest(endpoint, { method: "POST" });
       syncProfileStatus(response.data.verificationStatus);
       await loadVerification();
-
-      if (response.data.verificationStatus === "pending") {
-        navigate("/guide/application-received");
-      }
     } catch (requestError) {
       setError(requestError.message || "Unable to submit the application");
     } finally {
@@ -210,3 +204,4 @@ export default function GuideVerification() {
     </main>
   );
 }
+

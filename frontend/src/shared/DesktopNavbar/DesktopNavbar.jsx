@@ -1,6 +1,6 @@
 import styles from "./DesktopNavbar.module.css";
 import { Bell, Heart, User } from "lucide-react";
-import logo from "../../assets/images/logo.png";
+import logo from "../../../../../assets/images/logo.png";
 function DesktopNavbar() {
   return (
     <nav className={styles.navbar}>

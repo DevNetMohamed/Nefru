@@ -1,49 +1,28 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
-
-const API_ORIGIN = (() => {
-  try {
-    return new URL(API_BASE_URL, window.location.origin).origin;
-  } catch {
-    return window.location.origin;
-  }
-})();
+const API_BASE_URL = "http://localhost:5000/api";
 
 export async function apiRequest(endpoint, options = {}) {
+  const token = localStorage.getItem("token");
+
   const headers = { ...options.headers };
 
-  if (options.body && !(options.body instanceof FormData)) {
-    headers["Content-Type"] = headers["Content-Type"] || "application/json";
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
   }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
-    credentials: "include",
   });
 
-  const contentType = response.headers.get("content-type") || "";
-  const data = contentType.includes("application/json")
-    ? await response.json()
-    : null;
+  const data = await response.json();
 
   if (!response.ok) {
-    const error = new Error(
-      data?.message || data?.msg || "Something went wrong",
-    );
-    error.status = response.status;
-    error.code = data?.error?.code;
-    error.data = data;
-    throw error;
+    throw new Error(data.message || data.msg || "Something went wrong");
   }
 
   return data;
-}
-
-export { API_BASE_URL };
-
-export function resolveMediaUrl(value) {
-  if (!value || typeof value !== "string") return "";
-  if (/^(https?:|data:|blob:)/i.test(value)) return value;
-  return `${API_ORIGIN}${value.startsWith("/") ? value : `/${value}`}`;
 }
