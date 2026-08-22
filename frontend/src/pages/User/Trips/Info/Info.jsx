@@ -13,46 +13,30 @@ import {
 } from "react-icons/fa6";
 import { FiShare2, FiBookmark } from "react-icons/fi";
 import styles from "./Info.module.css";
+import { useEffect, useState, useCallback } from "react";
 
-function Info({ tourData }) {
+import { getTourById } from "../../api";
+import { useParams } from "react-router-dom";
+
+function Info() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const trip = tourData || {};
+  const [tour, seTrip] = useState({})
+  const loadTrip = useCallback(async () => {
+    try {
+      const data = await getTourById(id);
+      if (!data.error) seTrip(data.data);
+    } catch (err) {
+      if (err.name === "AbortError") return;
+      setError(err.message || "Failed to load tour");
+    }
+  }, []);
 
-  const highlights = trip.highlights || [
-    { icon: <FaUsers />, title: "Small Group", text: "(Max 6)" },
-    { icon: <FaCarSide />, title: "Luxury", text: "Transfers" },
-    { icon: <FaUtensils />, title: "Breakfast", text: "Included" },
-    { icon: <FaUserTie />, title: "Expert", text: "Egyptologist" },
-  ];
-
-  const reviews = trip.reviews || [
-    {
-      id: 1,
-      name: "Eleanor V.",
-      date: "October 2023",
-      text: "Absolutely mesmerizing. Seeing the pyramids at sunrise without the crowds is a must.",
-      avatar: "",
-      rating: 5,
-    },
-    {
-      id: 2,
-      name: "James W.",
-      date: "September 2023",
-      text: "The luxury transfer was smooth, and the breakfast view was incredible.",
-      avatar: "",
-      rating: 5,
-    },
-  ];
-
-  const guide = trip.guide || {
-    name: "Dr. Zahi M.",
-    badge: "PhD Egyptology",
-    rating: "4.9",
-    reviewsCount: "450",
-    about:
-      "A passionate historian and seasoned storyteller. With over 15 years of experience, he brings the ancient world to life.",
-    avatar: "",
-  };
+  useEffect(() => {
+    const controller = new AbortController();
+    loadTrip();
+    return () => controller.abort();
+  }, [loadTrip]);
 
   return (
     <div className={styles.page}>
@@ -80,8 +64,8 @@ function Info({ tourData }) {
       <main className={styles.content}>
         <section className={styles.hero}>
           <img
-            src={trip.image || ""}
-            alt={trip.title || "Trip"}
+            src={tour.image || "/"}
+            alt={tour.title || "Trip"}
             className={styles.heroImage}
           />
         </section>
@@ -89,17 +73,17 @@ function Info({ tourData }) {
         <section className={styles.bookingBar}>
           <div className={styles.priceBox}>
             <div className={styles.priceLine}>
-              <span className={styles.price}>${trip.price || 185}</span>
+              <span className={styles.price}>{tour.price }</span>
               <span className={styles.perPerson}>/ person</span>
             </div>
 
             <p className={styles.dateLine}>
-              {trip.date || "Oct 24"} - {trip.guests || "1 guest"}
+              {tour.date} 
             </p>
           </div>
 
           <button type="button" className={styles.reserveButton}>
-            Reserve
+            Book
           </button>
         </section>
 
@@ -110,31 +94,29 @@ function Info({ tourData }) {
 
         <section className={styles.titleSection}>
           <h2 className={styles.title}>
-            {trip.title || "Majestic Pyramids & Sphinx Exclusive Sunrise Trip"}
+            {tour.title}
           </h2>
 
           <div className={styles.metaRow}>
             <div className={styles.metaItem}>
               <FaStar className={styles.starIcon} />
-              <span className={styles.boldText}>
-                {trip.rating || "4.96"}
-              </span>
+              <span className={styles.boldText}>{tour.rating}</span>
               <span className={styles.linkText}>
-                ({trip.reviewsCount || "128 reviews"})
+                {tour.reviewsCount}
               </span>
             </div>
 
             <div className={styles.metaItem}>
               <FaLocationDot className={styles.metaIcon} />
               <span className={styles.normalText}>
-                {trip.location || "Giza, Egypt"}
+                {tour.location}
               </span>
             </div>
 
             <div className={styles.metaItem}>
               <FaClock className={styles.metaIcon} />
               <span className={styles.normalText}>
-                {trip.duration || "4 Hours"}
+                {tour.duration}
               </span>
             </div>
           </div>
@@ -143,13 +125,11 @@ function Info({ tourData }) {
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>About this experience</h3>
           <p className={styles.paragraph}>
-            {trip.description ||
-              "Experience the awe-inspiring Great Pyramids of Giza before the crowds arrive. This exclusive sunrise trip offers unparalleled access to one of the world's most iconic ancient sites."}
+            {tour.description }
           </p>
 
           <p className={styles.paragraph}>
-            {trip.longDescription ||
-              "Accompanied by a leading Egyptologist, you'll uncover the secrets of the Pharaohs, explore the enigmatic Sphinx, and gain a deeper understanding of the monumental architecture."}
+            {tour.longDescription }
           </p>
 
           <button type="button" className={styles.readMore}>
@@ -159,9 +139,8 @@ function Info({ tourData }) {
 
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>Experience Highlights</h3>
-
           <div className={styles.highlightsGrid}>
-            {highlights.map((item, index) => (
+            {tour.highlights?.map((item, index) => (
               <div key={index} className={styles.highlightCard}>
                 <div className={styles.highlightIcon}>{item.icon}</div>
                 <div className={styles.highlightText}>
@@ -178,23 +157,22 @@ function Info({ tourData }) {
 
           <div className={styles.guideCard}>
             <img
-              src={guide.avatar || ""}
-              alt={guide.name}
+              src={tour.guide?.avatar}
+              alt={tour.guide?.name}
               className={styles.guideAvatar}
             />
 
             <div className={styles.guideBody}>
-              <h4 className={styles.guideName}>{guide.name}</h4>
+              <h4 className={styles.guideName}>{tour.guide?.name}</h4>
 
               <div className={styles.guideMeta}>
-                <span className={styles.guideBadge}>{guide.badge}</span>
+                <span className={styles.guideBadge}>{tour.guide?.badge}</span>
                 <span className={styles.guideRate}>
                   <FaStar className={styles.starIcon} />
-                  {guide.rating} ({guide.reviewsCount} reviews)
+                  {tour.guide?.rating} ({tour.guide?.reviewsCount} reviews)
                 </span>
               </div>
-
-              <p className={styles.guideText}>{guide.about}</p>
+              <p className={styles.guideText}>{tour.guide?.about}</p>
             </div>
           </div>
         </section>
@@ -203,16 +181,16 @@ function Info({ tourData }) {
           <div className={styles.reviewsHeader}>
             <h3 className={styles.sectionTitle}>Guest Reviews</h3>
             <button type="button" className={styles.seeAll}>
-              See all {trip.reviewsCount || 128}
+              See all {tour.reviewsCount}
             </button>
           </div>
 
           <div className={styles.reviewsList}>
-            {reviews.map((review) => (
-              <div key={review.id} className={styles.reviewCard}>
+            {tour.reviews?.map((review,index) => (
+              <div key={index} className={styles.reviewCard}>
                 <div className={styles.reviewTop}>
                   <img
-                    src={review.avatar || ""}
+                    src={review.avatar}
                     alt={review.name}
                     className={styles.reviewAvatar}
                   />
@@ -224,7 +202,7 @@ function Info({ tourData }) {
                 </div>
 
                 <div className={styles.reviewStars}>
-                  {Array.from({ length: review.rating || 5 }).map((_, i) => (
+                  {Array.from({ length: review.rating}).map((_, i) => (
                     <FaStar key={i} />
                   ))}
                 </div>
