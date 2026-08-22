@@ -10,7 +10,8 @@
     "seed": "node backend/src/scripts/seed.js"
   },
   "devDependencies": {
-    "concurrently": "^9.2.4"
+    "concurrently": "^9.2.4",
+    "marked": "^18.0.9"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.8.0",
