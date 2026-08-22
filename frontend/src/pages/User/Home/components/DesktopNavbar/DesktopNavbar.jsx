@@ -77,7 +77,7 @@ function DesktopNavbar() {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.auth || {});
+  const { user, profile } = useSelector((state) => state.auth || {});
   const notifications = useSelector(
     (state) => state.notifications?.notifications || []
   );
@@ -86,9 +86,9 @@ function DesktopNavbar() {
     (notification) => !notification.isRead
   ).length;
 
-  const fullName = user?.fullName || "Not Logged In";
+  const fullName = profile?.fullName || "Not Logged In";
   const email = user?.email || "Not Logged In";
-  const avatar = getImgSrc(user?.profileImage || user?.avatar, profileImage);
+  const avatar = getImgSrc(profile?.avatar || profile?.profileImage, profileImage);
 
   const scrollToSection = (e, sectionId) => {
     e.preventDefault();

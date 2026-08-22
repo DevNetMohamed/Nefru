@@ -14,19 +14,19 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters"],
+      minlength: [8, "Password must be at least 8 characters"],
+      select: false,
     },
     role: {
       type: String,
       enum: ["tourist", "guide", "admin"],
       required: true,
-      default: "tourist",
       index: true,
     },
     status: {
       type: String,
       // suspended > temporary block , deactivated > permenant block
-      enum: ["active", "suspended", "deactivated"], 
+      enum: ["active", "suspended", "deactivated"],
       default: "active",
       index: true,
     },
@@ -36,16 +36,24 @@ const userSchema = new mongoose.Schema(
       // required: false
     },
     roleProfile: {
-      type: String, 
+      type: String,
       enum: ["TouristProfile", "GuideProfile"],
-      default:"TouristProfile", 
-      // required: true
-    }
+      required() {
+        return this.role !== "admin";
+      },
+    },
+    passwordResetToken: {
+      type: String,
+      select: false,
+    },
+
+    passwordResetExpires: {
+      type: Date,
+      select: false,
+    },
   },
-  {timestamps: true,}
+  { timestamps: true },
 );
-
-
 
 // export default User;
 

@@ -1,5 +1,10 @@
 ﻿export function errorHandler(err, req, res, next) {
-  const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+  const isUploadLimitError =
+    typeof err.code === "string" && err.code.startsWith("LIMIT_");
+  const statusCode =
+    err.statusCode ||
+    (isUploadLimitError ? 400 : null) ||
+    (res.statusCode && res.statusCode !== 200 ? res.statusCode : 500);
 
   res.status(statusCode).json({
     success: false,

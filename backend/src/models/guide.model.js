@@ -61,10 +61,34 @@ const guideProfileSchema = new mongoose.Schema(
     //   maxlength: 15,
     //   required:true,
     // },
-    fullName:{
-      type:String,
-      required:true
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+      index: true,
     },
+
+    fullName: {
+      type: String,
+      required: true,
+    },
+
+    verificationStatus: {
+      type: String,
+      enum: ["draft", "pending", "approved", "rejected"],
+      default: "draft",
+      index: true,
+    },
+
+    rejectionReason: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default: "",
+      select: false,
+    },
+
     headline: {
       type: String,
       trim: true,
@@ -98,7 +122,7 @@ const guideProfileSchema = new mongoose.Schema(
       enum: GUIDE_SPECIALTIES,
       default: [],
     },
-    image: {
+    avatar: {
       type: String,
       trim: true,
       default: "",
@@ -119,11 +143,9 @@ const guideProfileSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  {timestamps: true,},
+  { timestamps: true },
 );
-
 
 const GuideProfile = mongoose.model("GuideProfile", guideProfileSchema);
 
 export { GuideProfile, GUIDE_SPECIALTIES };
-

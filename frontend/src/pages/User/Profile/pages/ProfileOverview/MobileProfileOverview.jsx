@@ -26,9 +26,9 @@ function getInitials(fullName = "Traveler") {
 export default function MobileProfileOverview() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const { user, profile } = useSelector((state) => state.auth);
 
-  const fullName = user?.fullName || "Not added yet";
+  const fullName = profile?.fullName || "Not added yet";
   const email = user?.email || "Not added yet";
   const initials = useMemo(() => getInitials(fullName), [fullName]);
 
@@ -40,8 +40,8 @@ export default function MobileProfileOverview() {
   return (
     <>
       <section className={styles.profileCard}>
-        {user?.avatar ? (
-          <img src={user.avatar} alt={fullName} />
+        {profile?.avatar ? (
+          <img src={profile.avatar} alt={fullName} />
         ) : (
           <div className={styles.avatar}>{initials}</div>
         )}

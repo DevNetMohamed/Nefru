@@ -128,9 +128,9 @@ export function TopTourItem({ data, selected, onSelect}) {
   return (
     <tr className={styles.item}>
       <td></td>
-      <td>
+      {/* <td>
         <img src={data.image}/>
-      </td>
+      </td> */}
       <td>
         <p>{data.title}</p>
       </td>
@@ -221,7 +221,7 @@ export function AccountItem({ data, selected, onSelect }) {
             {data.avatar? 
               <img className={styles.avatarImg} src={data.avatar} /> 
               : 
-              <p>{data.fullName.split(" ").map(word => word[0]).join("")}</p>}
+              <p>{data.fullName}</p>}
           </div>
           <p>{data.fullName}</p>
         </div>

@@ -12,6 +12,8 @@ const specialtiesSchema = Joi.array()
   .unique();
 
 export const updateGuideProfileSchema = Joi.object({
+  fullName: Joi.string().trim().min(2).max(50),
+  avatar: Joi.string().trim().uri(),
   headline: Joi.string().trim().max(120).allow(""),
   location: Joi.string().trim().max(100).allow(""),
   about: Joi.string().trim().max(2000).allow(""),

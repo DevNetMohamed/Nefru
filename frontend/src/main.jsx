@@ -8,10 +8,12 @@ import './index.css'
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import "leaflet/dist/leaflet.css";
+import NotificationSync from "./shared/components/NotificationSync/NotificationSync";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
+      <NotificationSync />
       <RouterProvider router={router} />
     </Provider>
   </StrictMode>,

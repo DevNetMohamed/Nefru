@@ -7,7 +7,7 @@ import Icons from '../../../../assets/icons'
 import {useEffect, useState, useCallback} from 'react'
 import { DoughnutChart } from '../../components/charts/charts'
 
-import {getAccount, getTrips, getDashboard} from '../../api'
+import {getAccountByRole, getTrips, getDashboard} from '../../api'
 
 export default function DashboardStatus(){
     const [tours, setTrips] = useState([]);
@@ -69,7 +69,7 @@ export default function DashboardStatus(){
                             item={TopTourItem}
                             onRowSelect={setSelectedRow}
                             onPageChange={handlePageChange}
-                            // isPagination={false}
+                            isPagination={false}
                         />
                     </div>
                     <div className={`${styles.layout} ${styles.list}`}>

@@ -6,6 +6,7 @@ import {
   Home,
   LogOut,
   MapPinned,
+  ShieldCheck,
   User,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -29,6 +30,7 @@ const resolveGuideNotificationLink = (notification) => {
 
 const profileMenuItems = [
   { path: "/guide/profile", label: "Guide Profile", icon: User },
+  { path: "/guide/verification", label: "Verification", icon: ShieldCheck },
   { path: "/guide/dashboard", label: "Dashboard", icon: Home },
   { path: "/guide", label: "My Tours", icon: MapPinned },
   { path: "/guide/calendar", label: "Calendar", icon: CalendarDays },
@@ -37,6 +39,7 @@ const profileMenuItems = [
 const mobileBackFallbacks = {
   "/guide/profile": "/guide/dashboard",
   "/guide/notifications": "/guide/dashboard",
+  "/guide/verification": "/guide/profile",
 };
 
 export default function GuideHeader() {
@@ -54,9 +57,9 @@ export default function GuideHeader() {
   );
 
   const unreadCount = notifications.filter((item) => !item.isRead).length;
-  const fullName = user?.fullName || "Ahmed Farouk";
+  const fullName = profile?.fullName || profile?.name || "not entered";
   const email = user?.email || "guide@nefru.com";
-  const avatar = user?.avatar || profile?.profileImage || fallbackAvatar;
+  const avatar = profile?.avatar || profile?.profileImage || fallbackAvatar;
   const backFallback = mobileBackFallbacks[location.pathname];
   const showMobileBack = Boolean(backFallback);
 

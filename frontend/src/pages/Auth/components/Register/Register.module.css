@@ -189,6 +189,22 @@
   display: none;
 }
 
+.documentTypeSelect {
+  width: 100%;
+  min-height: 32px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.documentTypeSelect:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 1px;
+}
+
 .passportIcon {
   color: var(--color-primary);
   display: flex;

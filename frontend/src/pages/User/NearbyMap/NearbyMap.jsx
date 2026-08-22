@@ -399,7 +399,7 @@ function MapController({ center, zoom, onMapReady }) {
 
 export default function NearbyMap() {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth || {});
+  const { profile } = useSelector((state) => state.auth || {});
   const notifications = useSelector((state) => state.notifications?.notifications || []);
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -430,7 +430,7 @@ export default function NearbyMap() {
   const mapRef = useRef(null);
   const actionsRef = useRef(null);
 
-  const avatar = getImgSrc(user?.profileImage || user?.avatar, profileImage);
+  const avatar = getImgSrc(profile?.avatar || profile?.profileImage, profileImage);
 
   // 1. AUTO-DETECT GPS location on page load
   useEffect(() => {
