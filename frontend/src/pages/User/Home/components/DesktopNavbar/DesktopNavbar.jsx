@@ -18,17 +18,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import logo from "../../../../../assets/images/logo.png";
 import profileImage from "../../../../../assets/images/user/user1.png";
-import { logoutUser } from "../../../../../store/slices/authSlice";
+import { logout } from "../../../../../store/slices/authSlice";
 import NotificationPopover from "../../../Notifications/components/NotificationPopover";
-import { resolveMediaUrl } from "../../../../../services/api";
 
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (typeof img !== "string") return fallback;
-  const source = /^(https?:|data:|blob:)/i.test(img) || img.startsWith("/")
-    ? img
-    : `/uploads/${img}`;
-  return resolveMediaUrl(source);
+  if (
+    typeof img === "string" &&
+    (img.startsWith("http://") ||
+      img.startsWith("https://") ||
+      img.startsWith("data:") ||
+      img.startsWith("/"))
+  ) {
+    return img;
+  }
+  return `http://localhost:5000/uploads/${img}`;
 };
 
 const profileMenuItems = [
@@ -54,7 +58,7 @@ const profileMenuItems = [
   },
   {
     path: "/user/profile/change-password",
-    label: "Sign-in & Security",
+    label: "Change Password",
     icon: FiLock,
   },
   {
@@ -131,7 +135,7 @@ function DesktopNavbar() {
 
   const handleLogout = () => {
     setShowProfile(false);
-    dispatch(logoutUser());
+    dispatch(logout());
     navigate("/auth/login", { replace: true });
   };
 

@@ -1,13 +1,9 @@
-import { User } from "../models/user.model.js";
-import { generateToken } from "../utils/generateToken.js";
+﻿import { Admin } from "../models/admin.model.js";
 
 export async function loginAdminService({ email, password }) {
-  const admin = await User.findOne({
-    email: email.toLowerCase(),
-    role: "admin",
-  }).select("+password +tokenVersion");
+  const admin = await Admin.findOne({ email: email.toLowerCase() });
 
-  if (!admin || !(await admin.comparePassword(password))) {
+  if (!admin || admin.password !== password) {
     const error = new Error("Invalid admin credentials");
     error.statusCode = 401;
     error.code = "UNAUTHORIZED";
@@ -17,9 +13,10 @@ export async function loginAdminService({ email, password }) {
   return {
     admin: {
       id: admin._id,
+      fullName: admin.fullName,
       email: admin.email,
-      role: admin.role,
+      role: "admin",
     },
-    token: generateToken(admin),
+    token: "admin-token",
   };
 }

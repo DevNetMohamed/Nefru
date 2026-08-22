@@ -711,7 +711,6 @@ async function createUsersAndProfiles() {
     password: env.passwordAdmin,
     role: "admin",
     status: "active",
-    emailVerified: true,
   });
 
   const guideUsers = await User.create(
@@ -719,7 +718,6 @@ async function createUsersAndProfiles() {
       email: guide.email,
       password: env.passwordGuide,
       role: "guide",
-      emailVerified: true,
       status: guide.isActive ? "active" : "suspended",
       roleProfile: "GuideProfile",
     })),
@@ -757,7 +755,6 @@ async function createUsersAndProfiles() {
       email: tourist.email,
       password: env.passwordTourist,
       role: "tourist",
-      emailVerified: true,
       status: tourist.isActive ? "active" : "suspended",
       roleProfile: "TouristProfile",
     })),

@@ -1,11 +1,7 @@
-import mongoose from "mongoose";
+﻿import mongoose from "mongoose";
 
 import {User} from '../../models/user.model.js'
 import {Trip} from '../../models/trip.model.js'
-import { GuideProfile } from '../../models/guide.model.js'
-import { GuideVerification } from '../../models/guideVerification.model.js'
-import { Notification } from '../../models/notification.model.js'
-import { sendEmail } from '../../utils/sendEmail.js'
 
 import {getDashboardData, getAccountsStatusData} from './services.js'
 
@@ -309,131 +305,56 @@ export const deleteUserById = async(req,res)=>{
   }
 }
 
-export const guideActivation = async (req, res) => {
-  try {
-    const action = req.route.path.split("/").at(-1);
-    const userId = req.params.id;
-
-    if (!["approve", "reject", "suspend"].includes(action)) {
-      return res.status(400).json({
-        success: false,
-        message: "Action is invalid",
-        error: { code: "VALIDATION_ERROR", details: ["Action is not valid"] },
-      });
+export const guideActivation = async(req,res)=>{
+  try{
+    const action = req.route.path.split("/").at(-1)
+    const userId = req.params.id
+    const allowed = {
+      approve:"approved",
+      reject:"rejected",
+      suspend:"suspended"
     }
-
-    const user = await User.findById(userId);
-    if (!user || user.role !== "guide") {
-      return res.status(404).json({
-        success: false,
-        message: "Guide account not found",
-        error: { code: "NOT_FOUND", details: [] },
-      });
-    }
-
-    const guideProfile = await GuideProfile.findOne({ user: user._id }).select(
-      "+rejectionReason",
-    );
-    if (!guideProfile) {
-      return res.status(404).json({
-        success: false,
-        message: "Guide profile not found",
-        error: { code: "NOT_FOUND", details: [] },
-      });
-    }
-
-    let title;
-    let message;
-    let notificationLink = "/guide/verification";
-
-    if (action === "suspend") {
-      user.status = "suspended";
-      await user.save({ validateBeforeSave: false });
-      title = "Guide account suspended";
-      message = "Your Nefru guide account has been suspended. Contact support if you need help.";
-    } else {
-      const nextStatus = action === "approve" ? "approved" : "rejected";
-      const reason =
-        action === "reject"
-          ? String(req.body?.rejectionReason || "Please review your verification documents and submit the requested changes.").trim()
-          : "";
-
-      guideProfile.verificationStatus = nextStatus;
-      guideProfile.rejectionReason = reason;
-      await guideProfile.save();
-
-      const verification = await GuideVerification.findOne({
-        guideProfile: guideProfile._id,
-      }).select("+reviewHistory +requestedChanges");
-
-      if (verification) {
-        verification.reviewedAt = new Date();
-        verification.reviewedBy = req.user?._id || null;
-        verification.reviewHistory.push({
-          status: nextStatus,
-          reason,
-          reviewedBy: req.user?._id || null,
-          reviewedAt: verification.reviewedAt,
-        });
-        await verification.save();
-      }
-
-      if (action === "approve") {
-        title = "Your guide account is approved";
-        message = "Congratulations! Your Nefru guide verification was approved. You can now create and publish tours.";
-        notificationLink = "/guide/dashboard";
-      } else {
-        title = "Changes needed for your guide application";
-        message = `Your Nefru guide application needs changes. ${reason}`;
-      }
-    }
-
-    await Notification.create({
-      user: user._id,
-      type: "account",
-      title,
-      message,
-      link: notificationLink,
-      entityType: "user",
-      entityId: user._id,
-      metadata: {
-        verificationStatus: guideProfile.verificationStatus,
-        accountStatus: user.status,
-      },
-    }).catch(() => {});
-
-    await sendEmail({
-      email: user.email,
-      subject: title,
-      message,
-    }).catch((error) => {
-      console.error("Guide status email could not be sent:", error.message);
+    if(!action in allowed) return res.status(404).json({
+      success: false,
+      message: "Action is invalid",
+      error: { code: "VLIDATION_ERROR", details: ["Action is not a valid option"] }
     });
 
+    const isUser = await User.findById(userId)
+    if(!isUser) return res.status(404).json({
+      success: false,
+      message: "User not found",
+      error: { code: "NO_CONTENT_ERROR", details: ["User not registered"] }
+    });
+
+    if(isUser.verificationStatus == allowed[action])return res.status(200).json({
+      success: false,
+      message: `GuideProfile already ${allowed[action]}`,
+      error: { code: "NO_ACTION", details: [`GuideProfile already ${allowed[action]}`] }
+    });
+
+    const user = await User.findByIdAndUpdate(userId,{verificationStatus:allowed[action]},{new:true})
     return res.status(200).json({
-      success: true,
-      message: "Guide status updated successfully",
-      data: {
-        user,
-        guideProfile,
-      },
-    });
-  } catch (error) {
+      "success": true,
+      "message": "Operation completed successfully",
+      "data":user
+    })
+  }catch(error){
     if (error.name === "CastError") {
       return res.status(400).json({
         success: false,
         message: "Invalid user ID",
-        error: { code: "VALIDATION_ERROR", details: [] },
+        data:error,
+        error: { code: "VALIDATION_ERROR", details: ["The provided user ID is not a valid format"] }
       });
     }
-
     return res.status(500).json({
       success: false,
-      message: "An unexpected error occurred while updating guide status",
-      error: { code: "INTERNAL_SERVER_ERROR", details: [] },
+      message: "An unexpected error occurred while updating user",
+      error: { code: "INTERNAL_SERVER_ERROR", details: [error] }
     });
   }
-};
+}
 
 export const getAllTours = async(req,res)=>{
   try{

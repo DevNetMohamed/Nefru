@@ -1,7 +1,7 @@
 import styles from './Accounts.module.css'
 import Table,{AccountItem} from '../../components/Table/Table'
 import {Button }from '../../../../shared/components/Button/Button'
-import {Input }from '../../../../shared/components/inputs/inputs'
+import {Input }from '../../../../shared/components/Inputs/Inputs'
 import {useCallback, useEffect, useState} from 'react'
 import Icons from '../../../../assets/icons'
 import Form, {FormInput, FormSelect, FormAction} from '../../components/Form/Form'

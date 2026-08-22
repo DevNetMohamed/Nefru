@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 import { GuideProfile } from "../models/guide.model.js";
 import { Trip } from "../models/trip.model.js";
 
-const GUIDE_USER_FIELDS =
-  "email status createdAt authProviders emailVerified";
+const GUIDE_USER_FIELDS = "email status";
 
 function toGuideResponse(guide, tours, { includePrivate = false } = {}) {
   const user = guide.user;
@@ -19,11 +18,6 @@ function toGuideResponse(guide, tours, { includePrivate = false } = {}) {
     title: guide.headline,
     headline: guide.headline,
     location: guide.location,
-    phoneNumber: guide.phoneNumber,
-    gender: guide.gender,
-    nationality: guide.nationality,
-    dateOfBirth: guide.dateOfBirth,
-    preferredLanguage: guide.preferredLanguage,
     verified: guide.verificationStatus === "approved",
     verificationStatus: guide.verificationStatus,
     status: user.status,
@@ -33,8 +27,6 @@ function toGuideResponse(guide, tours, { includePrivate = false } = {}) {
     languages: guide.languages,
     specialties: guide.specialties,
     about: guide.about,
-    email: user.email,
-    memberSince: user.createdAt,
     gallery: guide.gallery.map((item) => ({
       id: item._id,
       src: item.src,

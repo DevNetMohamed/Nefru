@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import logo from "../../../../assets/images/logo.png";
-import { resolveMediaUrl } from "../../../../services/api";
-import { logoutUser } from "../../../../store/slices/authSlice";
+import fallbackAvatar from "../../../../assets/images/guiders/guide1.webp";
+import { logout } from "../../../../store/slices/authSlice";
 import NotificationPopover from "../../../User/Notifications/components/NotificationPopover";
 import styles from "./GuideHeader.module.css";
 
@@ -40,23 +40,11 @@ const mobileBackFallbacks = {
   "/guide/profile": "/guide/dashboard",
   "/guide/notifications": "/guide/dashboard",
   "/guide/verification": "/guide/profile",
-  "/guide/application-received": "/guide/verification",
 };
-
-function getInitials(fullName = "Guide") {
-  return fullName
-    .split(" ")
-    .filter(Boolean)
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 export default function GuideHeader() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [failedAvatar, setFailedAvatar] = useState("");
   const actionsRef = useRef(null);
 
   const navigate = useNavigate();
@@ -70,10 +58,15 @@ export default function GuideHeader() {
 
   const unreadCount = notifications.filter((item) => !item.isRead).length;
   const fullName = profile?.fullName || profile?.name || "not entered";
-  const email = user?.email || "Not added yet";
-  const avatar = profile?.avatar || profile?.profileImage || "";
+  const email = user?.email || "guide@nefru.com";
+  const avatar = profile?.avatar || profile?.profileImage || fallbackAvatar;
   const backFallback = mobileBackFallbacks[location.pathname];
   const showMobileBack = Boolean(backFallback);
+
+  useEffect(() => {
+    setShowNotifications(false);
+    setShowProfile(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!showNotifications && !showProfile) return undefined;
@@ -131,7 +124,7 @@ export default function GuideHeader() {
 
   const handleLogout = () => {
     setShowProfile(false);
-    dispatch(logoutUser());
+    dispatch(logout());
     navigate("/auth/login", { replace: true });
   };
 
@@ -221,17 +214,7 @@ export default function GuideHeader() {
                   onClick={() => navigateFromMenu("/guide/profile")}
                 >
                   <span className={styles.avatarWrapper}>
-                    {avatar && failedAvatar !== avatar ? (
-                      <img
-                        src={resolveMediaUrl(avatar)}
-                        alt={`${fullName} profile`}
-                        onError={() => setFailedAvatar(avatar)}
-                      />
-                    ) : (
-                      <span className={styles.avatarFallback} aria-hidden="true">
-                        {getInitials(fullName)}
-                      </span>
-                    )}
+                    <img src={avatar} alt={`${fullName} profile`} />
                   </span>
 
                   <span className={styles.profileHeaderText}>

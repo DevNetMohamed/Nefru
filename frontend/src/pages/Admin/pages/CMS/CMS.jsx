@@ -1,7 +1,7 @@
 import styles from './CMS.module.css'
 import Table,{TourItem} from '../../components/Table/Table'
 import {Button }from '../../../../shared/components/Button/Button'
-import {Input }from '../../../../shared/components/inputs/inputs'
+import {Input }from '../../../../shared/components/Inputs/Inputs'
 import {useState, useCallback, useEffect} from 'react'
 import Icons from '../../../../assets/icons'
 

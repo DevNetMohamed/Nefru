@@ -2,7 +2,7 @@ import styles from './Navbar.module.css';
 import Icons from '../../../../assets/icons'
 import {Link, useLocation } from 'react-router-dom'
 import {Button} from '../../../../shared/components/Button/Button'
-import {Input} from '../../../../shared/components/inputs/inputs'
+import {Input} from '../../../../shared/components/Inputs/Inputs'
 
 
 export default function Navbar({data}) {
