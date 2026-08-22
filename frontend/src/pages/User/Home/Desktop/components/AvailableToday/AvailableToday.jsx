@@ -78,7 +78,7 @@ function AvailableToday({ tours }) {
           </p>
         </div>
 
-        <button onClick={() => navigate("/user/discover")}>View All</button>
+        <button onClick={() => navigate("/user/available-today")}>View All</button>
       </div>
 
       <div className={styles.cards}>
@@ -86,7 +86,7 @@ function AvailableToday({ tours }) {
           <div
             key={tour.id}
             className={styles.card}
-            onClick={() => navigate("/user/discover")}
+            onClick={() => navigate("/user/available-today")}
           >
             <img
               src={tour.image}
