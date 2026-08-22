@@ -7,9 +7,12 @@ export const env = {
   port: Number(process.env.PORT) || 5000,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   mongoUri:
     process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/nefru",
 
+=======
+>>>>>>> parent of 00a7b75 (Auth Refactor with Nodemailer)
 =======
 >>>>>>> parent of 00a7b75 (Auth Refactor with Nodemailer)
   jwtSecret: process.env.JWT_SECRET || "L6-210+1",
