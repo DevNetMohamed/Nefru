@@ -6,7 +6,7 @@ import { loginSuccess } from "../../../../../store/slices/authSlice";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../../../../shared/components/Button/Button";
-import { Input } from "../../../../../shared/components/inputs/inputs";
+import { Input } from "../../../../../shared/components/Inputs/Inputs";
 import Icons from "../../../../../assets/icons";
 import styles from "../Login.module.css";
 import LogoLight from "../../../../../assets/images/Logo_Light.png";
