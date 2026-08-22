@@ -10,7 +10,8 @@ import {
   FiStar,
 } from "react-icons/fi";
 
-import { logout } from "../../../../../store/slices/authSlice";
+import { logoutUser } from "../../../../../store/slices/authSlice";
+import { resolveMediaUrl } from "../../../../../services/api";
 import styles from "../../Mobile/MobileProfile.module.css";
 
 function getInitials(fullName = "Traveler") {
@@ -33,7 +34,7 @@ export default function MobileProfileOverview() {
   const initials = useMemo(() => getInitials(fullName), [fullName]);
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate("/auth/login", { replace: true });
   };
 
@@ -41,7 +42,7 @@ export default function MobileProfileOverview() {
     <>
       <section className={styles.profileCard}>
         {profile?.avatar ? (
-          <img src={profile.avatar} alt={fullName} />
+          <img src={resolveMediaUrl(profile.avatar)} alt={fullName} />
         ) : (
           <div className={styles.avatar}>{initials}</div>
         )}
@@ -84,8 +85,8 @@ export default function MobileProfileOverview() {
         <Link to="/user/profile/change-password" className={styles.menuItem}>
           <FiLock />
           <span>
-            <strong>Change Password</strong>
-            <small>Update your account password</small>
+            <strong>Sign-in &amp; Security</strong>
+            <small>Password and connected Google account</small>
           </span>
           <b>›</b>
         </Link>
