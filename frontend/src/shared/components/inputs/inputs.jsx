@@ -28,7 +28,7 @@ export default function Input({
   onFocus,
 
   onBlur,
-  className,
+  className
 }) {
   const [isFocused, setIsFocused] = useState(false);
 
