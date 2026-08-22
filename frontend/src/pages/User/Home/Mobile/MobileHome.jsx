@@ -197,7 +197,7 @@ function getGreeting() {
 
 const MobileHome = () => {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth || {});
+  const { profile } = useSelector((state) => state.auth || {});
   const notifications = useSelector((state) => state.notifications?.notifications || []);
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -207,7 +207,9 @@ const MobileHome = () => {
   const [availableTodayTours, setAvailableTodayTours] = useState(defaultAvailableToday);
   const [guidesList, setGuidesList] = useState(localGuides);
 
-  const fullName = user?.fullName ? user.fullName.split(" ")[0] : "Traveler";
+  const fullName = profile?.fullName
+    ? profile.fullName.split(" ")[0]
+    : "Traveler";
   const greeting = getGreeting();
 
   useEffect(() => {
@@ -246,7 +248,7 @@ const MobileHome = () => {
           if (trustedGuides && trustedGuides.length > 0) {
             const apiGuides = trustedGuides.map((g, idx) => ({
               id: g._id || idx,
-              name: g.fullName || g.user?.fullName || g.name || "Local Guide",
+              name: g.fullName || g.name || "Local Guide",
               rating: g.rating ? String(g.rating) : "4.9",
               languages: Array.isArray(g.languages) && g.languages.length > 0
                 ? g.languages.join(" • ")
@@ -254,7 +256,7 @@ const MobileHome = () => {
               experience: g.yearsExperience
                 ? `${g.yearsExperience} Yrs Exp.`
                 : (g.experience || "5 Yrs Exp."),
-              image: getImgSrc(g.image || g.user?.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
+              image: getImgSrc(g.avatar || g.heroImage, [guide1, guide2, guide3][idx % 3]),
             }));
             setGuidesList(apiGuides);
           }

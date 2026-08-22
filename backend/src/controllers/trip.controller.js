@@ -67,14 +67,45 @@ export const getAllTrips = asyncHandler(async (req, res) => {
   }
 
   const trips = await Trip.find(query)
-    .populate("guide", "fullName avatar verificationStatus")
+    .populate("guide", "email status")
     .sort({ createdAt: -1 })
     .lean();
 
+  const guideUserIds = trips
+    .map((trip) => trip.guide?._id)
+    .filter(Boolean);
+  const guideProfiles = await GuideProfile.find({
+    user: { $in: guideUserIds },
+  })
+    .select("user fullName avatar verificationStatus")
+    .lean();
+  const profilesByUser = new Map(
+    guideProfiles.map((profile) => [profile.user.toString(), profile]),
+  );
+  const tripsWithGuides = trips.map((trip) => {
+    const guideProfile = trip.guide
+      ? profilesByUser.get(trip.guide._id.toString())
+      : null;
+
+    return {
+      ...trip,
+      guide: trip.guide
+        ? {
+            id: trip.guide._id,
+            email: trip.guide.email,
+            status: trip.guide.status,
+            fullName: guideProfile?.fullName || "",
+            avatar: guideProfile?.avatar || "",
+            verified: guideProfile?.verificationStatus === "approved",
+          }
+        : null,
+    };
+  });
+
   res.status(200).json({
     success: true,
-    count: trips.length,
-    data: trips,
+    count: tripsWithGuides.length,
+    data: tripsWithGuides,
   });
 });
 
@@ -90,7 +121,7 @@ export const getTripById = asyncHandler(async (req, res) => {
   }
 
   const trip = await Trip.findById(req.params.id)
-    .populate("guide", "fullName avatar verificationStatus")
+    .populate("guide", "email status")
     .lean();
 
   if (!trip) {
@@ -98,9 +129,13 @@ export const getTripById = asyncHandler(async (req, res) => {
     throw new Error("Trip not found");
   }
 
-  const guideProfile = await GuideProfile.findOne({ user: trip.guide._id })
-    .select("rating reviewsCount about yearsExperience languages specialties")
-    .lean();
+  const guideProfile = trip.guide
+    ? await GuideProfile.findOne({ user: trip.guide._id })
+        .select(
+          "fullName avatar verificationStatus rating reviewsCount about yearsExperience languages specialties",
+        )
+        .lean()
+    : null;
 
   const tripResponse = {
     id: trip._id,
@@ -128,14 +163,14 @@ export const getTripById = asyncHandler(async (req, res) => {
         })
       : "N/A",
     guide: {
-      id: trip.guide._id,
-      name: trip.guide.fullName,
-      avatar: trip.guide.avatar,
+      id: trip.guide?._id || null,
+      name: guideProfile?.fullName || "Local Guide",
+      avatar: guideProfile?.avatar || "",
       badge: `${guideProfile?.yearsExperience || 0}+ years experience`,
       rating: guideProfile?.rating || 0,
       reviewsCount: guideProfile?.reviewsCount || 0,
       about: guideProfile?.about || "No bio available",
-      verified: trip.guide.verificationStatus === "approved",
+      verified: guideProfile?.verificationStatus === "approved",
     },
   };
 

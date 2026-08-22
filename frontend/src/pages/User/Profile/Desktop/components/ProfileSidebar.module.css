@@ -2,6 +2,7 @@
 .summaryCard, .navCard { background: var(--color-surface); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-md); border: 1px solid var(--color-border-soft); }
 .summaryCard { padding: var(--space-5); }
 .avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--color-primary-dark); color: var(--color-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: 800; margin-bottom: var(--space-3); }
+.summaryCard img.avatar { object-fit: cover; border: 2px solid var(--color-secondary-border-strong); }
 .summaryCard h2 { color: var(--color-primary-dark); font-size: var(--font-size-lg); font-weight: 800; line-height: 1.35; margin-bottom: var(--space-1); overflow-wrap: anywhere; }
 .summaryCard p { color: var(--color-text-muted); font-size: var(--font-size-sm); line-height: 1.5; word-break: break-word; }
 .navCard { padding: var(--space-2); }

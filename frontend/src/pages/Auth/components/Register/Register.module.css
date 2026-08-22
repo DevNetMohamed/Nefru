@@ -189,6 +189,22 @@
   display: none;
 }
 
+.documentTypeSelect {
+  width: 100%;
+  min-height: 32px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.documentTypeSelect:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 1px;
+}
+
 .passportIcon {
   color: var(--color-primary);
   display: flex;
@@ -778,4 +794,51 @@
     font-size: 10px;
     margin-top: 10px;
   }
+}
+
+.googleWrap {
+  width: 100%;
+  margin: 2px 0 8px;
+}
+
+.authDivider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 7px 0 9px;
+  color: #7b8190;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.authDivider::before,
+.authDivider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: rgba(15, 45, 78, 0.14);
+}
+
+.roleHint {
+  margin: -2px 0 8px;
+  color: var(--color-text-muted);
+  font-size: 10px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.loginLinkButton {
+  border: 0;
+  background: transparent;
+  color: var(--color-secondary);
+  font: inherit;
+  font-weight: 700;
+  padding: 0;
+  cursor: pointer;
+}
+
+.loginLinkButton:hover {
+  text-decoration: underline;
 }

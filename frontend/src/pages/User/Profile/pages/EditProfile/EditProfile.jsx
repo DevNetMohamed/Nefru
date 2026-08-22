@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FiEdit2, FiSave, FiUser } from "react-icons/fi";
 
-import { apiRequest } from "../../../../../services/api";
+import { apiRequest, resolveMediaUrl } from "../../../../../services/api";
 import { updateProfile } from "../../../../../store/slices/authSlice";
 import styles from "../ProfilePageShared.module.css";
 
@@ -30,13 +30,14 @@ export default function EditProfile() {
 
   const fileInputRef = useRef(null);
 
-  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || "");
+  const [avatarPreview, setAvatarPreview] = useState(profile?.avatar || "");
+  const [avatarFile, setAvatarFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
 
   const initialFormData = useMemo(
     () => ({
-      fullName: user?.fullName || "",
+      fullName: profile?.fullName || "",
       email: user?.email || "",
       phoneNumber: profile?.phoneNumber || "",
       dateOfBirth: formatDateForInput(profile?.dateOfBirth),
@@ -49,11 +50,6 @@ export default function EditProfile() {
 
   const [formData, setFormData] = useState(initialFormData);
 
-  useEffect(() => {
-    setFormData(initialFormData);
-    setAvatarPreview(user?.avatar || "");
-  }, [initialFormData, user?.avatar]);
-
   const handleChoosePhoto = () => {
     fileInputRef.current?.click();
   };
@@ -63,16 +59,8 @@ export default function EditProfile() {
 
     if (!file || !file.type.startsWith("image/")) return;
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      setAvatarPreview(reader.result);
-    };
-
-    reader.readAsDataURL(file);
-
-    // TODO: Upload avatar later using FormData + Cloudinary.
-    // Current behavior is preview only.
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
   };
 
   const handleChange = (event) => {
@@ -103,10 +91,21 @@ export default function EditProfile() {
         }),
       });
 
+      let nextResponse = response;
+
+      if (avatarFile) {
+        const avatarFormData = new FormData();
+        avatarFormData.append("avatar", avatarFile);
+        nextResponse = await apiRequest("/users/profile/avatar", {
+          method: "POST",
+          body: avatarFormData,
+        });
+      }
+
       dispatch(
         updateProfile({
-          user: response.data.user,
-          profile: response.data.profile,
+          user: nextResponse.data.user,
+          profile: nextResponse.data.profile,
         })
       );
 
@@ -131,7 +130,10 @@ export default function EditProfile() {
         <div className={styles.profilePhotoBlock}>
           <div className={styles.profilePhotoPreview}>
             {avatarPreview ? (
-              <img src={avatarPreview} alt={formData.fullName || "Traveler"} />
+              <img
+                src={resolveMediaUrl(avatarPreview)}
+                alt={formData.fullName || "Traveler"}
+              />
             ) : (
               <span>{getInitials(formData.fullName)}</span>
             )}
@@ -224,6 +226,21 @@ export default function EditProfile() {
               onChange={handleChange}
               placeholder="Enter your nationality"
             />
+          </label>
+
+          <label className={styles.fieldBox}>
+            <span>Preferred Language</span>
+            <select
+              name="preferredLanguage"
+              value={formData.preferredLanguage}
+              onChange={handleChange}
+            >
+              <option value="en">English</option>
+              <option value="ar">Arabic</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="es">Spanish</option>
+            </select>
           </label>
         </div>
 

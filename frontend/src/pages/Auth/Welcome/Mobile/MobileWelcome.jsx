@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./MobileWelcome.module.css";
 import travelerCardImg from "../../../../assets/images/auth/welcome-traveler.jpg";
 import guideCardImg from "../../../../assets/images/auth/welcome-guide.jpg";
-import logoImg from "../../../../assets/logo.png";
+import logoImg from "../../../../assets/images/logo.png";
 import { HiOutlineUser } from "react-icons/hi";
 import { CiLocationOn } from "react-icons/ci";
 import { IoIosArrowForward } from "react-icons/io";
@@ -17,7 +17,7 @@ export default function MobileWelcome() {
   };
 
   const handleCreateAccount = () => {
-    navigate(`/auth/register?role=${selectedRole || "tourist"}`);
+    navigate(`/auth/register?role=${selectedRole}`);
   };
 
   const handleLogin = () => {

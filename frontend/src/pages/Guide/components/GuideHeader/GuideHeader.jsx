@@ -6,6 +6,7 @@ import {
   Home,
   LogOut,
   MapPinned,
+  ShieldCheck,
   User,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -13,8 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import logo from "../../../../assets/images/logo.png";
-import fallbackAvatar from "../../../../assets/images/guiders/guide1.webp";
-import { logout } from "../../../../store/slices/authSlice";
+import { resolveMediaUrl } from "../../../../services/api";
+import { logoutUser } from "../../../../store/slices/authSlice";
 import NotificationPopover from "../../../User/Notifications/components/NotificationPopover";
 import styles from "./GuideHeader.module.css";
 
@@ -29,6 +30,7 @@ const resolveGuideNotificationLink = (notification) => {
 
 const profileMenuItems = [
   { path: "/guide/profile", label: "Guide Profile", icon: User },
+  { path: "/guide/verification", label: "Verification", icon: ShieldCheck },
   { path: "/guide/dashboard", label: "Dashboard", icon: Home },
   { path: "/guide", label: "My Tours", icon: MapPinned },
   { path: "/guide/calendar", label: "Calendar", icon: CalendarDays },
@@ -37,11 +39,24 @@ const profileMenuItems = [
 const mobileBackFallbacks = {
   "/guide/profile": "/guide/dashboard",
   "/guide/notifications": "/guide/dashboard",
+  "/guide/verification": "/guide/profile",
+  "/guide/application-received": "/guide/verification",
 };
+
+function getInitials(fullName = "Guide") {
+  return fullName
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
 
 export default function GuideHeader() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [failedAvatar, setFailedAvatar] = useState("");
   const actionsRef = useRef(null);
 
   const navigate = useNavigate();
@@ -54,16 +69,11 @@ export default function GuideHeader() {
   );
 
   const unreadCount = notifications.filter((item) => !item.isRead).length;
-  const fullName = user?.fullName || "Ahmed Farouk";
-  const email = user?.email || "guide@nefru.com";
-  const avatar = user?.avatar || profile?.profileImage || fallbackAvatar;
+  const fullName = profile?.fullName || profile?.name || "not entered";
+  const email = user?.email || "Not added yet";
+  const avatar = profile?.avatar || profile?.profileImage || "";
   const backFallback = mobileBackFallbacks[location.pathname];
   const showMobileBack = Boolean(backFallback);
-
-  useEffect(() => {
-    setShowNotifications(false);
-    setShowProfile(false);
-  }, [location.pathname]);
 
   useEffect(() => {
     if (!showNotifications && !showProfile) return undefined;
@@ -121,7 +131,7 @@ export default function GuideHeader() {
 
   const handleLogout = () => {
     setShowProfile(false);
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate("/auth/login", { replace: true });
   };
 
@@ -211,7 +221,17 @@ export default function GuideHeader() {
                   onClick={() => navigateFromMenu("/guide/profile")}
                 >
                   <span className={styles.avatarWrapper}>
-                    <img src={avatar} alt={`${fullName} profile`} />
+                    {avatar && failedAvatar !== avatar ? (
+                      <img
+                        src={resolveMediaUrl(avatar)}
+                        alt={`${fullName} profile`}
+                        onError={() => setFailedAvatar(avatar)}
+                      />
+                    ) : (
+                      <span className={styles.avatarFallback} aria-hidden="true">
+                        {getInitials(fullName)}
+                      </span>
+                    )}
                   </span>
 
                   <span className={styles.profileHeaderText}>

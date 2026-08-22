@@ -19,7 +19,7 @@ const headerConfig = {
     backTo: "/user/profile",
   },
   "/user/profile/change-password": {
-    title: "Change Password",
+    title: "Sign-in & Security",
     backTo: "/user/profile",
   },
   "/user/profile/bookings": {

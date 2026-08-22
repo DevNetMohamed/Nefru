@@ -18,21 +18,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import logo from "../../../../../assets/images/logo.png";
 import profileImage from "../../../../../assets/images/user/user1.png";
-import { logout } from "../../../../../store/slices/authSlice";
+import { logoutUser } from "../../../../../store/slices/authSlice";
 import NotificationPopover from "../../../Notifications/components/NotificationPopover";
+import { resolveMediaUrl } from "../../../../../services/api";
 
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  if (typeof img !== "string") return fallback;
+  const source = /^(https?:|data:|blob:)/i.test(img) || img.startsWith("/")
+    ? img
+    : `/uploads/${img}`;
+  return resolveMediaUrl(source);
 };
 
 const profileMenuItems = [
@@ -58,7 +54,7 @@ const profileMenuItems = [
   },
   {
     path: "/user/profile/change-password",
-    label: "Change Password",
+    label: "Sign-in & Security",
     icon: FiLock,
   },
   {
@@ -77,7 +73,7 @@ function DesktopNavbar() {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.auth || {});
+  const { user, profile } = useSelector((state) => state.auth || {});
   const notifications = useSelector(
     (state) => state.notifications?.notifications || []
   );
@@ -86,9 +82,9 @@ function DesktopNavbar() {
     (notification) => !notification.isRead
   ).length;
 
-  const fullName = user?.fullName || "Not Logged In";
+  const fullName = profile?.fullName || "Not Logged In";
   const email = user?.email || "Not Logged In";
-  const avatar = getImgSrc(user?.profileImage || user?.avatar, profileImage);
+  const avatar = getImgSrc(profile?.avatar || profile?.profileImage, profileImage);
 
   const scrollToSection = (e, sectionId) => {
     e.preventDefault();
@@ -135,7 +131,7 @@ function DesktopNavbar() {
 
   const handleLogout = () => {
     setShowProfile(false);
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate("/auth/login", { replace: true });
   };
 

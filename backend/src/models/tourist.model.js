@@ -20,9 +20,14 @@ const touristProfileSchema = new mongoose.Schema(
     //   maxlength: 15,
     //   required:true,
     // },
-    fullName:{
-      type:String,
-      required:true
+    fullName: {
+      type: String,
+      required: true,
+    },
+    avatar: {
+      type: String,
+      trim: true,
+      default: "",
     },
     phoneNumber: {
       type: String,
@@ -31,8 +36,8 @@ const touristProfileSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female"],
-      // default: "other",
+      enum: ["male", "female", "other"],
+      default: "other",
     },
     nationality: {
       type: String,
@@ -43,10 +48,12 @@ const touristProfileSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-    language: {
+    preferredLanguage: {
       type: String,
+      trim: true,
+      maxlength: 20,
       default: "en",
-    }
+    },
   },
   { timestamps: true },
 );

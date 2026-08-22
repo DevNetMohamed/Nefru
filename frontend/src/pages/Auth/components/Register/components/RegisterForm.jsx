@@ -1,88 +1,57 @@
-import { useMemo, useRef, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import Logo_Light from "../../../../../assets/images/Logo_Light.png";
+import { useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+import LogoLight from "../../../../../assets/images/Logo_Light.png";
 import Icons from "../../../../../assets/icons";
 import { Input } from "../../../../../shared/components/Inputs/Inputs";
 import { Button } from "../../../../../shared/components/Button/Button";
-import styles from "../Register.module.css";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../../../../store/slices/authSlice";
 import { apiRequest } from "../../../../../services/api";
+import GoogleAuthButton from "../../GoogleAuthButton/GoogleAuthButton";
+import styles from "../Register.module.css";
+
+const LOCAL_REGISTER_SCHEMA = Yup.object({
+  fullName: Yup.string()
+    .trim()
+    .min(3, "Full name must be at least 3 characters.")
+    .required("Full name is required."),
+  email: Yup.string()
+    .email("Please enter a valid email address.")
+    .required("Email is required."),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters.")
+    .required("Password is required."),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords do not match.")
+    .required("Confirm password is required."),
+  terms: Yup.boolean()
+    .oneOf([true], "You must agree to the terms.")
+    .required("You must agree to the terms."),
+});
 
 function RegisterForm() {
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const dispatch = useDispatch();
-
-  const [apiError, setApiError] = useState("");
-
-  const fileInputRef = useRef(null);
-
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [apiError, setApiError] = useState("");
+  const [roleError, setRoleError] = useState("");
 
   const roleFromUrl = searchParams.get("role")?.toLowerCase();
-  const initialRole =
-    roleFromUrl === "guide" || roleFromUrl === "tourist"
-      ? roleFromUrl
-      : "tourist";
-
+  const initialRole = useMemo(
+    () =>
+      roleFromUrl === "guide" || roleFromUrl === "tourist"
+        ? roleFromUrl
+        : null,
+    [roleFromUrl],
+  );
   const [role, setRole] = useState(initialRole);
-  const roleLabel = role === "guide" ? "Guide" : "Traveler";
 
-  const validationSchema = useMemo(() => {
-    return Yup.object({
-      fullName: Yup.string()
-        .trim()
-        .min(3, "Full name must be at least 3 characters.")
-        .required("Full name is required."),
-
-      email: Yup.string()
-        .email("Please enter a valid email address.")
-        .required("Email is required."),
-
-      password: Yup.string()
-        .min(8, "Password must be at least 8 characters.")
-        .required("Password is required."),
-
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password")], "Passwords do not match.")
-        .required("Confirm password is required."),
-
-      document:
-        role === "guide"
-          ? Yup.mixed().required("Verification document is required.")
-          : Yup.mixed().nullable(),
-
-      terms: Yup.boolean()
-        .oneOf([true], "You must agree to the terms.")
-        .required("You must agree to the terms."),
-    });
-  }, [role]);
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files[0];
-
-    if (!file) return;
-
-    setUploadedFile(file);
-    formik.setFieldValue("document", file);
-    formik.setFieldTouched("document", true);
-  };
-
-  const handleFileInput = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    setUploadedFile(file);
-    formik.setFieldValue("document", file);
-    formik.setFieldTouched("document", true);
+  const chooseRole = (nextRole) => {
+    setRole(nextRole);
+    setRoleError("");
+    const next = new URLSearchParams(searchParams);
+    next.set("role", nextRole);
+    setSearchParams(next, { replace: true });
   };
 
   const formik = useFormik({
@@ -91,14 +60,18 @@ function RegisterForm() {
       email: "",
       password: "",
       confirmPassword: "",
-      document: null,
       terms: false,
     },
-
-    validationSchema,
-
+    validationSchema: LOCAL_REGISTER_SCHEMA,
     onSubmit: async (values, { setSubmitting }) => {
       setApiError("");
+      setRoleError("");
+
+      if (!role) {
+        setRoleError("Choose Traveler or Tour Guide before creating your account.");
+        setSubmitting(false);
+        return;
+      }
 
       try {
         const response = await apiRequest("/auth/register", {
@@ -112,19 +85,15 @@ function RegisterForm() {
           }),
         });
 
-        if (role === "guide") {
-          navigate("/auth/application-received");
+        if (response?.data?.requiresEmailVerification) {
+          navigate(
+            `/auth/check-email?email=${encodeURIComponent(values.email)}&role=${role}`,
+            { replace: true },
+          );
           return;
         }
 
-        dispatch(
-          loginSuccess({
-            token: response.token,
-            user: response.data.user,
-          }),
-        );
-
-        navigate("/user/home");
+        throw new Error("Registration returned an unexpected response");
       } catch (error) {
         setApiError(error.message || "Registration failed. Please try again.");
       } finally {
@@ -140,52 +109,65 @@ function RegisterForm() {
           <div className={styles.registerCard}>
             <div className={styles.StepTwoContainer}>
               <div className={styles.content}>
-                <img
-                  className={styles.logo}
-                  src={Logo_Light}
-                  alt="Nefru logo"
-                />
+                <img className={styles.logo} src={LogoLight} alt="Nefru logo" />
+                <h1 className={styles.title}>Create your Nefru account</h1>
                 <p className={`${styles.subtitle} fs-5`}>
-                  Signing up as a <strong>{roleLabel}</strong>
+                  Choose how you’ll use Nefru, then continue with Google or email.
                 </p>
               </div>
             </div>
 
-            <form className={styles.form} onSubmit={formik.handleSubmit}>
-              {/* <div
-                className={styles.roleToggle}
-                aria-label="Choose account type"
+            <div
+              className={styles.roleToggle}
+              aria-label="Choose account type"
+              role="radiogroup"
+            >
+              <button
+                type="button"
+                className={`${styles.roleOption} ${
+                  role === "tourist" ? styles.roleOptionActive : ""
+                }`}
+                onClick={() => chooseRole("tourist")}
+                aria-pressed={role === "tourist"}
               >
-                <button
-                  type="button"
-                  className={`${styles.roleOption} ${
-                    role === "tourist" ? styles.roleOptionActive : ""
-                  }`}
-                  onClick={() => {
-                    setRole("tourist");
-                    setUploadedFile(null);
-                    formik.setFieldValue("document", null);
-                    formik.setFieldTouched("document", false);
-                  }}
-                  aria-pressed={role === "tourist"}
-                >
-                  <Icons.User />
-                  <span>Traveler</span>
-                </button>
+                <Icons.User />
+                <span>Traveler</span>
+              </button>
 
-                <button
-                  type="button"
-                  className={`${styles.roleOption} ${
-                    role === "guide" ? styles.roleOptionActive : ""
-                  }`}
-                  onClick={() => setRole("guide")}
-                  aria-pressed={role === "guide"}
-                >
-                  <Icons.User />
-                  <span>Guide</span>
-                </button>
-              </div> */}
+              <button
+                type="button"
+                className={`${styles.roleOption} ${
+                  role === "guide" ? styles.roleOptionActive : ""
+                }`}
+                onClick={() => chooseRole("guide")}
+                aria-pressed={role === "guide"}
+              >
+                <Icons.User />
+                <span>Tour Guide</span>
+              </button>
+            </div>
 
+            {!role && (
+              <p className={styles.roleHint}>
+                You can also continue with Google first; if no role is selected,
+                we’ll ask you once after Google verifies your account.
+              </p>
+            )}
+            {roleError && <p className={styles.errorMsg}>{roleError}</p>}
+
+            <div className={styles.googleWrap}>
+              <GoogleAuthButton
+                role={role}
+                text="continue_with"
+                onError={setApiError}
+              />
+            </div>
+
+            <div className={styles.authDivider}>
+              <span>or continue with email</span>
+            </div>
+
+            <form className={styles.form} onSubmit={formik.handleSubmit}>
               <div className={styles.field}>
                 <Input
                   id="fullName"
@@ -197,9 +179,7 @@ function RegisterForm() {
                   onBlur={() => formik.setFieldTouched("fullName", true)}
                 />
                 {formik.touched.fullName && formik.errors.fullName && (
-                  <span className={styles.errorMsg}>
-                    {formik.errors.fullName}
-                  </span>
+                  <span className={styles.errorMsg}>{formik.errors.fullName}</span>
                 )}
               </div>
 
@@ -225,16 +205,14 @@ function RegisterForm() {
                   id="password"
                   title="Password"
                   type="password"
-                  placeholder="Create a password"
+                  placeholder="At least 8 characters"
                   icon={<Icons.Lock />}
                   value={formik.values.password}
                   setValue={(value) => formik.setFieldValue("password", value)}
                   onBlur={() => formik.setFieldTouched("password", true)}
                 />
                 {formik.touched.password && formik.errors.password && (
-                  <span className={styles.errorMsg}>
-                    {formik.errors.password}
-                  </span>
+                  <span className={styles.errorMsg}>{formik.errors.password}</span>
                 )}
               </div>
 
@@ -243,7 +221,7 @@ function RegisterForm() {
                   id="confirmPassword"
                   title="Confirm password"
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder="Re-enter your password"
                   icon={<Icons.Lock />}
                   value={formik.values.confirmPassword}
                   setValue={(value) =>
@@ -251,7 +229,6 @@ function RegisterForm() {
                   }
                   onBlur={() => formik.setFieldTouched("confirmPassword", true)}
                 />
-
                 {formik.touched.confirmPassword &&
                   formik.errors.confirmPassword && (
                     <span className={styles.errorMsg}>
@@ -260,86 +237,20 @@ function RegisterForm() {
                   )}
               </div>
 
-              {role === "guide" ? (
-                <>
-                  <label className={styles.label}>Document Verification</label>
-
-                  <div className={styles.field}>
-                    <div
-                      className={`${styles.uploadZone} ${
-                        isDragging ? styles.uploadZoneDragging : ""
-                      } ${formik.touched.document && formik.errors.document ? styles.uploadZoneError : ""}`}
-                      role="button"
-                      tabIndex={0}
-                      aria-label="Upload ID or Passport"
-                      onClick={() => fileInputRef.current?.click()}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" && fileInputRef.current?.click()
-                      }
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        setIsDragging(true);
-                      }}
-                      onDragLeave={() => setIsDragging(false)}
-                      onDrop={handleDrop}
-                    >
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*,.pdf"
-                        className={styles.hiddenInput}
-                        onChange={handleFileInput}
-                        aria-hidden="true"
-                      />
-                      <div className={styles.passportIcon}>
-                        <Icons.Passport />
-                      </div>
-                      <div className={styles.uploadText}>
-                        <span className={styles.uploadTitle}>
-                          {uploadedFile
-                            ? uploadedFile.name
-                            : "Upload ID or Passport"}
-                        </span>
-                        <span className={styles.uploadSub}>
-                          {uploadedFile
-                            ? "Click to replace"
-                            : "Drag & drop or browse"}
-                        </span>
-                      </div>
-                    </div>
-                    {formik.touched.document && formik.errors.document && (
-                      <span className={styles.errorMsg}>
-                        {formik.errors.document}
-                      </span>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <> </>
-              )}
-
               <div className={styles.termsRow}>
                 <input
                   type="checkbox"
                   id="agreeTerms"
                   className={styles.checkbox}
                   checked={formik.values.terms}
-                  onChange={(e) => {
-                    formik.setFieldValue("terms", e.target.checked);
+                  onChange={(event) => {
+                    formik.setFieldValue("terms", event.target.checked);
                     formik.setFieldTouched("terms", true);
                   }}
-                  onBlur={() => formik.setFieldTouched("terms", true)}
                 />
                 <label htmlFor="agreeTerms" className={styles.termsText}>
-                  I agree to the{" "}
-                  <a href="/terms" className={styles.termsLink}>
-                    Terms of Service
-                  </a>{" "}
-                  and{" "}
-                  <a href="/privacy" className={styles.termsLink}>
-                    Privacy Policy
-                  </a>
-                  .
+                  I agree to the <a href="/terms" className={styles.termsLink}>Terms of Service</a>{" "}
+                  and <a href="/privacy" className={styles.termsLink}>Privacy Policy</a>.
                 </label>
               </div>
 
@@ -347,28 +258,26 @@ function RegisterForm() {
                 <span className={styles.errorMsg}>{formik.errors.terms}</span>
               )}
 
-              <div>
-                {apiError && <p className={styles.errorMsg}>{apiError}</p>}
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={formik.isSubmitting}
-                >
-                  {formik.isSubmitting
-                    ? "Creating account..."
-                    : "Create Account"}
-                </Button>
+              {apiError && <p className={styles.errorMsg}>{apiError}</p>}
 
-                <p className={styles.loginRow}>
-                  Already have an account?{" "}
-                  <span
-                    className={styles.loginLink}
-                    onClick={() => navigate("/auth/login")}
-                  >
-                    Log In
-                  </span>
-                </p>
-              </div>
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? "Creating account..." : "Create Account"}
+              </Button>
+
+              <p className={styles.loginRow}>
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  className={styles.loginLinkButton}
+                  onClick={() => navigate("/auth/login")}
+                >
+                  Log In
+                </button>
+              </p>
             </form>
           </div>
         </main>
