@@ -31,6 +31,14 @@ export const env = {
   jwtSecret,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
 
+
+  // Email Configurations
+  mailerHost: process.env.MAILER_HOST || "smtp.gmail.com",
+  mailerPort: Number(process.env.MAILER_PORT) || 465,
+  mailerEmail: process.env.MAILER_EMAIL || "yousefismail51@gmail.com",
+  mailerPassword: process.env.MAILER_PASSWORD || "ncat nzbt zmug gksb",
+
+  //Example Users
   emailAdmin: process.env.EMAIL_ADMIN || "superadmin@nefru.com",
   passwordAdmin: process.env.PASSWORD_ADMIN || "superpassword",
 
