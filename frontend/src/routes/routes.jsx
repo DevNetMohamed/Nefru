@@ -4,7 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 // لما نخلص المشروع شيل الcomment اللي تحت
 // ولف الRouterProvider بالProtectedRoute وحدد الallowedRoles حسب كل route
 // عشان يسهل  الشغل علينا
-// import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 import AuthLayout from "../shared/AuthLayout/AuthLayout";
 import MasterLayout from "../shared/MasterLayout/MasterLayout";
@@ -181,33 +181,16 @@ export const router = createBrowserRouter([
 
     // not protected yet, we will protect after we finish the project
     element: <Admin />,
+    // element: <ProtectedRoute allowedRoles={["admin"]} />,
 
     children: [
-      { index: true , element:<Navigate to="/admin/overview" replace/>},
+      { path: "*" ,index:true, element:<Navigate to="/admin/overview" replace/>},
       { path: "overview", element: <DashboardStatus /> },
       { path: "accounts", element: <Accounts /> },
       { path: "cms", element: <CMS /> },
       { path: "analytics", element: <Analytics /> },
       { path: "booking", element: <Booking /> },
     ],
-    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
-
-    //protected route for admin, we will protect after we finish the project
-    // لما نخلص المشروع شيل الcomment اللي تحت
-    // element: <ProtectedRoute allowedRoles={["admin"]} />,
-    // children: [
-    //   {
-    //     element: <Admin />,
-    //     children: [
-    //       { path: "overview", element: <DashboardStatus /> },
-    //       { path: "accounts", element: <Accounts /> },
-    //       { path: "cms", element: <CMS /> },
-    //       { path: "analytics", element: <Analytics /> },
-    //       { path: "booking", element: <Booking /> },
-    //     ],
-    //   },
-    // ],
-    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
   },
   {
     path: "*",

@@ -11,11 +11,13 @@ import {
     guideActivation,
     getAllTours,
     getTourById,
-    tourAction
+    tourAction,
+    getAccountsStatus
 } from "../controllers/Admin/Admin.controller.js"
 
 // Dashboard
 router.get("/dashboard",getDashboard)
+router.get("/accounts",getAccountsStatus)
 // router.get("/analytics",getAnalytics)
 // router.get("/activity",getActivity)
 
