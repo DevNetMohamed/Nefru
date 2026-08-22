@@ -93,7 +93,7 @@ export const router = createBrowserRouter([
         path: "trips",
         children: [
           { index: true, element: <Trips /> },
-          { path: "info", element: <Info /> },
+          { path: "info/:id", element: <Info /> },
           { path: "book", element: <Book /> },
           { path: "book/status", element: <Status /> },
           { path: "guide", element: <Guide /> },
