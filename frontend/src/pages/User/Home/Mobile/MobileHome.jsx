@@ -18,6 +18,12 @@ import {
   Sparkles,
   Calendar,
   Award,
+  Ticket,
+  Car,
+  Lightbulb,
+  X,
+  ArrowRight,
+  Info,
 } from "lucide-react";
 import logo from "@/assets/images/logo.png";
 
@@ -40,27 +46,83 @@ import guide3 from "@/assets/images/guiders/guide4.webp";
 const defaultFeaturedExplores = [
   {
     id: 1,
-    title: "Beyond the Sphinx",
-    badge: "Must Visit",
-    image: sphinxImg,
+    title: "Historical Sites: Pyramids & Sphinx",
+    shortTitle: "Giza Pyramids & Sphinx",
+    badge: "Must Visit #1",
+    image: pyramidsImg,
+    location: "Giza Plateau",
+    description:
+      "The last surviving Wonder of the ancient world, built over 4,500 years ago during the 4th Dynasty.",
+    tickets: "EGP 540 (Foreigner) / EGP 270 (Student) | EGP 900 (Inside Khufu)",
+    hours: "07:00 AM - 05:00 PM (Daily)",
+    howToGetThere: "Metro Line 2 to Giza, then 15 min Uber/taxi to Main Gate.",
+    tip: "Arrive at 07:30 AM before heat and tour buses arrive.",
+    highlights: [
+      "Great Pyramid of Khufu interior",
+      "Sphinx Enclosure & Valley Temple",
+      "Panoramic Viewpoint",
+    ],
+    searchCity: "Giza",
   },
   {
     id: 2,
-    title: "Luxor Ancient Temples",
-    badge: "Ancient Wonders",
-    image: luxorImg,
+    title: "Grand Egyptian Museum (GEM)",
+    shortTitle: "Grand Egyptian Museum",
+    badge: "World's Largest",
+    image: museumImg,
+    location: "Pyramids Road, Giza",
+    description:
+      "Spanning 500,000 square meters housing the complete 5,000+ piece Tutankhamun collection.",
+    tickets: "EGP 1,200 (Foreigner Adult) / EGP 600 (Student)",
+    hours: "09:00 AM - 06:00 PM (Sat - Thu) | 09:00 AM - 09:00 PM (Fri)",
+    howToGetThere: "Direct 25 min Uber/taxi from Downtown Cairo to GEM Plaza.",
+    tip: "Book ticket time slots online 3 days ahead in high season.",
+    highlights: [
+      "Complete Tutankhamun treasure",
+      "Ramses II Colossus Atrium",
+      "Grand Staircase",
+    ],
+    searchCity: "Giza",
   },
   {
     id: 3,
-    title: "Grand Egyptian Museum",
-    badge: "Cultural Marvel",
-    image: museumImg,
+    title: "Historic Old Cairo & Citadel",
+    shortTitle: "Old Cairo & Citadel",
+    badge: "UNESCO Heritage",
+    image: oldCairoImg,
+    location: "Islamic & Coptic Cairo",
+    description:
+      "Centuries of medieval Islamic and Coptic heritage, Ottoman domes, and the hilltop fortress built by Saladin.",
+    tickets: "Citadel: EGP 450 (Foreigner) / EGP 230 (Student) | Churches: Free",
+    hours: "08:00 AM - 04:30 PM (Daily)",
+    howToGetThere: "Metro Line 1 to 'Mar Girgis' station for Coptic Cairo.",
+    tip: "Dress modestly covering shoulders and knees when visiting historical churches and mosques.",
+    highlights: [
+      "The Hanging Church",
+      "Muhammad Ali Alabaster Mosque",
+      "Khan El-Khalili Souk",
+    ],
+    searchCity: "Cairo",
   },
   {
     id: 4,
-    title: "Old Cairo & Khan Bazaar",
-    badge: "Historic Walk",
-    image: oldCairoImg,
+    title: "Luxor & Karnak Temples",
+    shortTitle: "Luxor Ancient Temples",
+    badge: "Ancient Wonders",
+    image: luxorImg,
+    location: "East Bank, Luxor",
+    description:
+      "The world's greatest open-air museum featuring 134 colossal columns in the Great Hypostyle Hall.",
+    tickets: "Karnak: EGP 450 (Foreigner) / EGP 230 (Student) | Luxor Temple: EGP 400",
+    hours: "06:00 AM - 05:30 PM (Daily)",
+    howToGetThere: "Walkable or 5-min carriage/taxi from East Bank hotels.",
+    tip: "Visit Karnak at sunrise (06:30 AM) and Luxor Temple at night for spectacular illumination.",
+    highlights: [
+      "Hypostyle Hall 134 columns",
+      "Avenue of Sphinxes",
+      "Valley of the Kings",
+    ],
+    searchCity: "Luxor",
   },
 ];
 
@@ -203,6 +265,7 @@ const MobileHome = () => {
 
   const [openSearch, setOpenSearch] = useState(false);
   const [savedIds, setSavedIds] = useState(new Set());
+  const [activeGuideModal, setActiveGuideModal] = useState(null);
   const [bestChoiceTours, setBestChoiceTours] = useState(defaultBestChoiceTours);
   const [availableTodayTours, setAvailableTodayTours] = useState(defaultAvailableToday);
   const [guidesList, setGuidesList] = useState(localGuides);
@@ -357,24 +420,29 @@ const MobileHome = () => {
         </div>
       </div>
 
-      {/* 5. Featured Explores Carousel */}
+      {/* 5. Discover Egypt / Destination Guides Carousel */}
       <div className="py-3">
         <div className="px-4 mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
-            Featured Explores
-          </h2>
+          <div>
+            <span className="text-[10px] font-extrabold text-[#003D5B] uppercase tracking-wider block">
+              Places & Guides
+            </span>
+            <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
+              Discover Egypt
+            </h2>
+          </div>
           <button
-            onClick={() => navigate("/user/discover")}
+            onClick={() => navigate("/user/discover-egypt")}
             className="text-xs font-bold text-[#003D5B] flex items-center gap-0.5 hover:underline"
           >
-            See All <ChevronRight className="w-3.5 h-3.5" />
+            View All Guides <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
         <div className="flex gap-4 overflow-x-auto px-4 pb-2 no-scrollbar">
           {defaultFeaturedExplores.map((item) => (
             <div
               key={item.id}
-              onClick={() => navigate("/user/discover")}
+              onClick={() => setActiveGuideModal(item)}
               className="relative w-64 h-40 rounded-2xl overflow-hidden shrink-0 shadow-xs group cursor-pointer border border-gray-100"
             >
               <img
@@ -382,14 +450,17 @@ const MobileHome = () => {
                 alt={item.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-gray-900 px-3 py-1 rounded-full text-[11px] font-bold shadow-xs">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+              <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md text-gray-900 px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-xs">
                 {item.badge}
               </div>
               <div className="absolute bottom-3 left-3 right-3 text-white">
                 <h3 className="font-extrabold text-sm leading-snug drop-shadow-xs">
-                  {item.title}
+                  {item.shortTitle || item.title}
                 </h3>
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 mt-0.5">
+                  Explore Guide →
+                </span>
               </div>
             </div>
           ))}
@@ -403,7 +474,7 @@ const MobileHome = () => {
             Best Choice Tours
           </h2>
           <button
-            onClick={() => navigate("/user/discover")}
+            onClick={() => navigate("/user/recommended-trips")}
             className="text-xs font-bold text-[#003D5B] flex items-center gap-0.5 hover:underline"
           >
             View All <ChevronRight className="w-3.5 h-3.5" />
@@ -415,7 +486,7 @@ const MobileHome = () => {
             return (
               <div
                 key={trip.id}
-                onClick={() => navigate("/user/discover")}
+                onClick={() => navigate("/user/recommended-trips")}
                 className="w-64 bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden shrink-0 flex flex-col cursor-pointer hover:shadow-md transition-all"
               >
                 <div className="relative w-full h-36">
@@ -487,7 +558,7 @@ const MobileHome = () => {
             </h2>
           </div>
           <button
-            onClick={() => navigate("/user/discover")}
+            onClick={() => navigate("/user/available-today")}
             className="text-xs font-bold text-[#003D5B] hover:underline"
           >
             Book Today
@@ -498,7 +569,7 @@ const MobileHome = () => {
           {availableTodayTours.map((trip) => (
             <div
               key={trip.id}
-              onClick={() => navigate("/user/discover")}
+              onClick={() => navigate("/user/available-today")}
               className="w-64 bg-amber-50/50 rounded-2xl border border-amber-200/60 p-3 shrink-0 flex gap-3 items-center cursor-pointer hover:bg-amber-100/50 transition-colors"
             >
               <img
@@ -627,6 +698,134 @@ const MobileHome = () => {
 
       {/* 11. Search Modal */}
       <SearchModal open={openSearch} onOpenChange={setOpenSearch} />
+
+      {/* 11.5 Destination Guide Modal */}
+      {activeGuideModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+          onClick={() => setActiveGuideModal(null)}
+        >
+          <div
+            className="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl relative flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative w-full h-48 sm:h-56 shrink-0">
+              <img
+                src={activeGuideModal.image}
+                alt={activeGuideModal.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+              <button
+                onClick={() => setActiveGuideModal(null)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-800 shadow-md font-bold"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <div className="absolute top-3 left-3 bg-[#003D5B] text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                {activeGuideModal.badge}
+              </div>
+              <div className="absolute bottom-3 left-3 right-3 text-white">
+                <h2 className="text-lg font-extrabold leading-tight">
+                  {activeGuideModal.title}
+                </h2>
+                <div className="flex items-center gap-1 text-amber-300 text-xs font-semibold mt-1">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>{activeGuideModal.location}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 flex flex-col gap-3.5 pb-6">
+              <p className="text-xs text-gray-600 leading-relaxed">
+                {activeGuideModal.description}
+              </p>
+
+              {/* Info Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#003D5B] mb-1">
+                    <Ticket className="w-3.5 h-3.5" />
+                    <span>2026 Ticket Prices</span>
+                  </div>
+                  <p className="text-[11px] text-gray-700 leading-snug font-medium">
+                    {activeGuideModal.tickets}
+                  </p>
+                </div>
+
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#003D5B] mb-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Opening Hours</span>
+                  </div>
+                  <p className="text-[11px] text-gray-700 leading-snug font-medium">
+                    {activeGuideModal.hours}
+                  </p>
+                </div>
+
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-2.5 sm:col-span-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#003D5B] mb-1">
+                    <Car className="w-3.5 h-3.5" />
+                    <span>How to Get There</span>
+                  </div>
+                  <p className="text-[11px] text-gray-700 leading-snug font-medium">
+                    {activeGuideModal.howToGetThere}
+                  </p>
+                </div>
+
+                <div className="bg-amber-50/60 border border-amber-200/70 rounded-xl p-2.5 sm:col-span-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 mb-1">
+                    <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Egyptologist Insider Tip</span>
+                  </div>
+                  <p className="text-[11px] text-amber-900 leading-snug font-medium">
+                    {activeGuideModal.tip}
+                  </p>
+                </div>
+              </div>
+
+              {/* Highlights */}
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#003D5B] mb-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Must-See Highlights</span>
+                </div>
+                <ul className="list-disc pl-4 text-[11px] text-gray-700 space-y-0.5 font-medium">
+                  {activeGuideModal.highlights.map((h, i) => (
+                    <li key={i}>{h}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex flex-col gap-2 pt-2">
+                <button
+                  onClick={() => {
+                    const city = activeGuideModal.searchCity;
+                    setActiveGuideModal(null);
+                    navigate(`/user/recommended-trips?search=${encodeURIComponent(city)}`);
+                  }}
+                  className="w-full py-2.5 px-4 bg-[#003D5B] hover:bg-[#002c42] text-white font-bold text-xs rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <span>Find Guided Tours to this Place</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveGuideModal(null);
+                    navigate("/user/discover-egypt");
+                  }}
+                  className="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-[#003D5B] font-bold text-xs rounded-xl transition-colors text-center"
+                >
+                  View All Destination Guides
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 12. Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex justify-around items-center py-2 px-3 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
