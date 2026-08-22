@@ -161,6 +161,20 @@ export const router = createBrowserRouter([
   },
   {
     path: "admin",
+<<<<<<< HEAD
+
+    // not protected yet, we will protect after we finish the project
+    element: <Admin />,
+    // element: <ProtectedRoute allowedRoles={["admin"]} />,
+
+    children: [
+      { path: "*" ,index:true, element:<Navigate to="/admin/overview" replace/>},
+      { path: "overview", element: <DashboardStatus /> },
+      { path: "accounts", element: <Accounts /> },
+      { path: "cms", element: <CMS /> },
+      { path: "analytics", element: <Analytics /> },
+      { path: "booking", element: <Booking /> },
+=======
     element: <ProtectedRoute allowedRoles={["admin"]} />,
     children: [
       {
@@ -174,6 +188,7 @@ export const router = createBrowserRouter([
           { path: "booking", element: <Booking /> },
         ],
       },
+>>>>>>> 876106d4a5a2ebc2e5dbf16864c90247d47ed8b1
     ],
   },
   {

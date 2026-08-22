@@ -7,7 +7,7 @@ import Icons from '../../../../assets/icons'
 import Form, {FormInput, FormSelect} from '../../components/Form/Form'
 import { Card , LineChart } from '../../components/Status/Status'
 
-import {getAccount} from '../../api'
+// import {getAccount} from '../../api'
 
 export default function Booking(){
     const [accountTypes, setAccountTypes] = useState([])

@@ -11,14 +11,17 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const DoughnutChart = ({dataSet=[]}) => {
   // Chart data
+  const labels = dataSet?.labels || [];
+  const values = dataSet?.values || [];
+
   const data = {
     // labels: ['Approved', 'Pending', 'Rejected'],
-    labels: dataSet.labels,
+    labels: labels,
     datasets: [
       {
         label: '# of Votes',
         // data: [12, 19, 3],
-        data: dataSet.values,
+        data: values || [],
         backgroundColor: [
           '#4E924D',
           '#CF9633',
@@ -49,7 +52,7 @@ export const DoughnutChart = ({dataSet=[]}) => {
     <div className={styles.container}>
       <Doughnut data={data} options={options} />
       <div>
-        {dataSet.values.map((item,index)=>(
+        {values?.map((item,index)=>(
           <p key={index} style={{color:"#797979",fontSize:"14px"}}>{item}</p>
         ))}
       </div>

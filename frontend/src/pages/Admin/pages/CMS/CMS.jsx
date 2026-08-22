@@ -5,7 +5,7 @@ import {Input }from '../../../../shared/components/inputs/inputs'
 import {useState, useCallback, useEffect} from 'react'
 import Icons from '../../../../assets/icons'
 
-import {getTrips} from '../../api'
+// import {getTrips} from '../../api'
 
 export default function CMS(){
     // const users = [
