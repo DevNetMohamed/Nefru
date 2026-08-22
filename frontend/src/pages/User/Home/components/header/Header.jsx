@@ -2,7 +2,7 @@ import styles from './Header.module.css'
 import {Button} from '../../../../../shared/components/Button/Button'
 import { MdOutlineLocationOn , MdSearch } from "react-icons/md";
 import { FaRegBell } from "react-icons/fa";
-import { Input } from '../../../../../shared/components/Inputs/Inputs'
+import { Input } from '../../../../../shared/components/inputs/inputs'
 import {useNavigate} from 'react-router-dom'
 export default function 
 Header(){

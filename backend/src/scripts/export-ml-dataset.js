@@ -77,7 +77,7 @@ async function exportDataset() {
     await fs.mkdir(outputDir, { recursive: true });
 
     const [tourists, profiles, trips, bookings, reviews, interactions] = await Promise.all([
-      User.find({ role: "tourist" }).select("_id isActive createdAt").lean(),
+      User.find({ role: "tourist" }).select("_id status createdAt").lean(),
       TouristProfile.find().lean(),
       Trip.find().select("_id guide title description location price duration category status groupSize rating reviewsCount createdAt").lean(),
       Booking.find().lean(),
@@ -95,7 +95,7 @@ async function exportDataset() {
         preferred_language: profile?.preferredLanguage || "unknown",
         gender: profile?.gender || "unknown",
         age_group: ageGroup(profile?.dateOfBirth),
-        is_active: tourist.isActive,
+        is_active: tourist.status === "active",
         joined_at: tourist.createdAt?.toISOString() || "",
       };
     });
