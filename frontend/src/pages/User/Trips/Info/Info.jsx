@@ -73,7 +73,7 @@ function Info() {
         <section className={styles.bookingBar}>
           <div className={styles.priceBox}>
             <div className={styles.priceLine}>
-              <span className={styles.price}>{tour.price }</span>
+              <span className={styles.price}>${tour.price }</span>
               <span className={styles.perPerson}>/ person</span>
             </div>
 

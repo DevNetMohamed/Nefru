@@ -60,7 +60,6 @@ import GuideVerification from "../pages/Guide/GuideVerification/GuideVerificatio
 
 import { Navigate } from "react-router-dom";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -93,10 +92,15 @@ export const router = createBrowserRouter([
         path: "trips",
         children: [
           { index: true, element: <Trips /> },
-          { path: "info/:id", element: <Info /> },
-          { path: "book", element: <Book /> },
-          { path: "book/status", element: <Status /> },
-          { path: "guide", element: <Guide /> },
+          {
+            path: ":id",
+            children: [
+              {index:true, element: <Info />},
+              { path: "book", element: <Book /> },
+              { path: "book/status", element: <Status /> },
+              { path: "guide", element: <Guide /> },
+            ],
+          },
         ],
       },
       { path: "saved", element: <Saved /> },
@@ -114,7 +118,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "settings", element: <Settings /> },
-      {path: "notifications", element: <NotificationsPage />},
+      { path: "notifications", element: <NotificationsPage /> },
     ],
 
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT
@@ -152,32 +156,32 @@ export const router = createBrowserRouter([
 
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT
   },
- 
- {
-  path: "guide",
-  children: [
-    // Shared guide shell. ToursManagement stays untouched inside the Outlet,
-    // so its own header/navigation can still be compared with the new shell.
-    {
-      element: <GuidePortalLayout />,
-      children: [
-        { index: true, element: <ToursManagement /> },
-        { path: "dashboard", element: <GuideDashboard /> },
-        { path: "calendar", element: <GuideCalendar /> },
-        { path: "profile", element: <GuideAccountProfile /> },
-        { path: "notifications", element: <GuideNotifications /> },
-        { path: "verification", element: <GuideVerification /> },
-      ],
-    },
 
-    // Existing create-trip flow — left completely unchanged and outside
-    // GuidePortalLayout to avoid adding another global header/navigation.
-    { path: "createtour", element: <CreateTour /> },
-    { path: "schedule", element: <Schedule /> },
-    { path: "tourmedia", element: <TourMedia /> },
-    { path: "tourapprove", element: <TourApprove /> },
-  ],
-},
+  {
+    path: "guide",
+    children: [
+      // Shared guide shell. ToursManagement stays untouched inside the Outlet,
+      // so its own header/navigation can still be compared with the new shell.
+      {
+        element: <GuidePortalLayout />,
+        children: [
+          { index: true, element: <ToursManagement /> },
+          { path: "dashboard", element: <GuideDashboard /> },
+          { path: "calendar", element: <GuideCalendar /> },
+          { path: "profile", element: <GuideAccountProfile /> },
+          { path: "notifications", element: <GuideNotifications /> },
+          { path: "verification", element: <GuideVerification /> },
+        ],
+      },
+
+      // Existing create-trip flow — left completely unchanged and outside
+      // GuidePortalLayout to avoid adding another global header/navigation.
+      { path: "createtour", element: <CreateTour /> },
+      { path: "schedule", element: <Schedule /> },
+      { path: "tourmedia", element: <TourMedia /> },
+      { path: "tourapprove", element: <TourApprove /> },
+    ],
+  },
   {
     path: "admin",
 
@@ -185,7 +189,7 @@ export const router = createBrowserRouter([
     element: <Admin />,
 
     children: [
-      { index: true , element:<Navigate to="/admin/overview" replace/>},
+      { index: true, element: <Navigate to="/admin/overview" replace /> },
       { path: "overview", element: <DashboardStatus /> },
       { path: "accounts", element: <Accounts /> },
       { path: "cms", element: <CMS /> },
