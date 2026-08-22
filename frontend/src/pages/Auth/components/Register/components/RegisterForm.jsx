@@ -2,7 +2,11 @@ import { useMemo, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Logo_Light from "../../../../../assets/images/Logo_Light.png";
 import Icons from "../../../../../assets/icons";
+<<<<<<< HEAD
 import { Input } from "../../../../../shared/components/Inputs/Inputs";
+=======
+import { Input } from "../../../../../shared/components/inputs/inputs";
+>>>>>>> parent of 00a7b75 (Auth Refactor with Nodemailer)
 import { Button } from "../../../../../shared/components/Button/Button";
 import styles from "../Register.module.css";
 import { useFormik } from "formik";
