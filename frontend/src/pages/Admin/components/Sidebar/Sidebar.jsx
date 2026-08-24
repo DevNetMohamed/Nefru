@@ -4,12 +4,7 @@ import {useNavigate} from 'react-router-dom'
 import {useState, useEffect} from 'react'
 import Icons from '../../../../assets/icons'
 import Logo from '../../../../assets/logo.png'
-import { useLocation } from "react-router-dom";
-
-
 export default function SideBar() {
-  const location = useLocation();
-
   const Pages = [
     {label:"Dashboard",value:"overview",icon:Icons.Layout},
     {label:"Accounts",value:"accounts",icon:Icons.Users},
@@ -17,7 +12,7 @@ export default function SideBar() {
     {label:"Analytics",value:"analytics",icon:Icons.Analytics},
     {label:"Booking",value:"booking",icon:Icons.Book},
   ]
-  const [active, setActive] = useState()
+  const [active, setActive] = useState("Overview")
   const navigate = useNavigate()
   function handleSelect(page=""){
     navigate(page.toLowerCase())
@@ -25,11 +20,7 @@ export default function SideBar() {
   }
 
   useEffect(() => {
-      const currentRoute = location.pathname.split('/').at(-1)
-      Pages.map((item)=>(
-        item.value === currentRoute? setActive(item.value):null
-      ))
-      console.log(active)
+      setActive(Pages[0].value)
   },[]);
 
   return (
@@ -45,7 +36,10 @@ export default function SideBar() {
         className={active === page.value?styles.buttonActive:styles.buttonNormal}
         key={index} 
         onClick={()=>handleSelect(page.value)}>
+          {/* <page.icon /> */}
           <page.icon />
+          
+          {/* <Icon>{page.icon}</Icon> */}
           {page.label}
         </Button>
       ))}

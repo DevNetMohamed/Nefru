@@ -36,8 +36,8 @@ const touristProfileSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female"],
-      // default: "other",
+      enum: ["male", "female", "other"],
+      default: "other",
     },
     nationality: {
       type: String,
@@ -50,6 +50,8 @@ const touristProfileSchema = new mongoose.Schema(
     },
     preferredLanguage: {
       type: String,
+      trim: true,
+      maxlength: 20,
       default: "en",
     },
   },

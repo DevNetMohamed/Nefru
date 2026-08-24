@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../Checkout.module.css";
 import { FiUser, FiCalendar, FiLock, FiShield, FiCheckCircle, FiArrowRight } from "react-icons/fi";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { apiRequest } from "../../../services/api";
 
 /**
  * 📍 الشاشة الثالثة: بيانات البطاقة (Card Details & Platinum Card Preview)
@@ -29,32 +30,18 @@ export default function CardDetailsStep({ bookingData, onSuccess, onError }) {
 
     try {
       // 1. طلب إنشاء نية الدفع من الـ Backend الخاص بنا
-      const response = await fetch("http://localhost:5000/api/payments/create-intent", {
+      const data = await apiRequest("/payments/create-intent", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        },
         body: JSON.stringify({
           bookingId: bookingData?.bookingId || "demo_booking_123",
         }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "حدث خطأ أثناء التواصل مع سيرفر الدفع");
-      }
-
       // إذا كنا في وضع التطوير المحلي بدون مفتاح لايف حقيقي لـ Stripe
       if (data.isDevMock || !stripe || !elements) {
         // تأكيد الحجز مباشرة في الـ Backend
-        await fetch("http://localhost:5000/api/payments/confirm", {
+        await apiRequest("/payments/confirm", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
           body: JSON.stringify({
             bookingId: bookingData?.bookingId || "demo_booking_123",
             paymentMethod: "card",
