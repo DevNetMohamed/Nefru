@@ -1,4 +1,5 @@
 import styles from "./TopTrips.module.css";
+import { useNavigate } from "react-router-dom";
 import TourCard from "../../../../../../components/ui/TourCard/TourCard";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
@@ -43,6 +44,8 @@ const tours = [
 ];
 
 const TopTrips = () => {
+  const navigate = useNavigate();
+
   return (
     <section className={styles.section}>
       <div className={styles.header}>
@@ -53,7 +56,7 @@ const TopTrips = () => {
           </p>
         </div>
 
-        <button>View All Tours</button>
+        <button onClick={() => navigate("/user/recommended-trips")}>View All Tours</button>
       </div>
 
       <div className={styles.grid}>

@@ -37,6 +37,9 @@ import Settings from "../pages/User/Settings/Settings";
 import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
 import Discover from "../pages/User/Discover/Discover";
 import NearbyMap from "../pages/User/NearbyMap/NearbyMap";
+import RecommendedTrips from "../pages/User/RecommendedTrips/RecommendedTrips";
+import AvailableTodayPage from "../pages/User/AvailableToday/AvailableTodayPage";
+import DiscoverEgyptPage from "../pages/User/DiscoverEgypt/DiscoverEgyptPage";
 
 // Admin
 import Admin from "../pages/Admin/Admin";
@@ -94,12 +97,22 @@ export const router = createBrowserRouter([
       { path: "guideprofile", element: <GuideProfile /> },
       { path: "discover", element: <Discover /> },
       { path: "nearby", element: <NearbyMap /> },
+      { path: "recommended-trips", element: <RecommendedTrips /> },
+      { path: "all-recommended-trips", element: <RecommendedTrips /> },
+      { path: "available-today", element: <AvailableTodayPage /> },
+      { path: "tours-available-today", element: <AvailableTodayPage /> },
+      { path: "discover-egypt", element: <DiscoverEgyptPage /> },
+      { path: "explore-egypt", element: <DiscoverEgyptPage /> },
+
       {
         path: "trips",
         children: [
           { index: true, element: <Trips /> },
           { path: "info", element: <Info /> },
-          { path: "guide", element: <Guide /> },
+          { path: "info/:id", element: <Info /> },
+          { path: "book", element: <Book /> },
+          // { path: "book/status", element: <Status /> },
+          // { path: "guide", element: <Guide /> },
           {
             element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
             children: [

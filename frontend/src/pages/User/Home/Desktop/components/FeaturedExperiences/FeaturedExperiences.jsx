@@ -1,4 +1,5 @@
 import styles from "./FeaturedExperiences.module.css";
+import { useNavigate } from "react-router-dom";
 
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
@@ -27,6 +28,8 @@ const featuredTours = [
 ];
 
 const FeaturedExperiences = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="popular-tours" className={styles.section}>
       <div className={styles.header}>
@@ -37,7 +40,7 @@ const FeaturedExperiences = () => {
           </p>
         </div>
 
-        <button>View All</button>
+        <button onClick={() => navigate("/user/recommended-trips")}>View All</button>
       </div>
 
       <div className={styles.grid}>
