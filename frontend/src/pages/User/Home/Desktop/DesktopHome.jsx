@@ -48,7 +48,7 @@ const DesktopHome = () => {
 
   return (
     <div className="relative min-h-screen">
-      <video
+      {/* <video
         autoPlay
         loop
         muted
@@ -56,11 +56,11 @@ const DesktopHome = () => {
         className="fixed top-0 left-0 w-full h-full object-cover -z-10 opacity-25 blur-[3px]">
       
         <source src={backgroundVideo} type="video/mp4" />
-      </video>
+      </video> */}
 
       <div className="relative z-10">
 
-        <DesktopNavbar />
+        {/* <DesktopNavbar /> */}
 
         {loading ? (
           <HeroSearchSkeleton />

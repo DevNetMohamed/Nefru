@@ -465,16 +465,16 @@ export default function RecommendedTrips() {
 
   return (
     <div className={styles.container}>
-      <DesktopNavbar />
+      {/* <DesktopNavbar /> */}
 
       {/* MAIN CONTENT AREA */}
       <main className={styles.main}>
         {/* FILTERS CARD */}
         <div className={styles.filterCard}>
-          <div className={styles.searchRow}>
-            <div className={styles.dropdowns}>
+          {/* <div className={styles.searchRow}>
+            <div className={styles.dropdowns}> */}
               {/* City Filter */}
-              <div className={styles.selectWrapper}>
+              {/* <div className={styles.selectWrapper}>
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
@@ -488,10 +488,10 @@ export default function RecommendedTrips() {
                   ))}
                 </select>
                 <ChevronDown size={16} className={styles.selectIcon} />
-              </div>
+              </div> */}
 
               {/* Duration Filter */}
-              <div className={styles.selectWrapper}>
+              {/* <div className={styles.selectWrapper}>
                 <select
                   value={selectedDuration}
                   onChange={(e) => setSelectedDuration(e.target.value)}
@@ -505,10 +505,10 @@ export default function RecommendedTrips() {
                   ))}
                 </select>
                 <ChevronDown size={16} className={styles.selectIcon} />
-              </div>
+              </div> */}
 
               {/* Sort By */}
-              <div className={styles.selectWrapper}>
+              {/* <div className={styles.selectWrapper}>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -522,9 +522,9 @@ export default function RecommendedTrips() {
                   ))}
                 </select>
                 <ChevronDown size={16} className={styles.selectIcon} />
-              </div>
-            </div>
-          </div>
+              </div> */}
+            {/* </div>
+          </div> */}
 
           {/* Category Tabs */}
           <div className={styles.categoryPills}>
@@ -572,7 +572,7 @@ export default function RecommendedTrips() {
                   className={styles.card}
                   onClick={() => {
                     if (hasMongoId) {
-                      navigate(`/user/trips/info/${tripId}`);
+                      navigate(`/user/trips/${tripId}`);
                     } else navigate("/user/discover-egypt");
                   }}
                   style={{ cursor: "pointer" }}
@@ -667,10 +667,7 @@ export default function RecommendedTrips() {
                       <button
                         className={styles.actionButton}
                         onClick={(e) => {
-                          e.stopPropagation();
-                          if (hasMongoId) {
-                            navigate(`/user/trips/info/${tripId}`);
-                          } else navigate("/user/discover-egypt");
+                          navigate(`/user/trips/${tripId}`);
                         }}
                       >
                         <span>View Details</span>

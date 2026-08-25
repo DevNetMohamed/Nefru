@@ -40,7 +40,7 @@ const FeaturedExperiences = () => {
           </p>
         </div>
 
-        <button onClick={() => navigate("/user/recommended-trips")}>View All</button>
+        <button onClick={() => navigate("/user/trips")}>View All</button>
       </div>
 
       <div className={styles.grid}>

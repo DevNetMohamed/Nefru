@@ -76,7 +76,7 @@ function RecommendedTours({ trips }) {
           </p>
         </div>
 
-        <button onClick={() => navigate("/user/recommended-trips")}>
+        <button onClick={() => navigate("/user/trips")}>
           View all tours
         </button>
       </div>

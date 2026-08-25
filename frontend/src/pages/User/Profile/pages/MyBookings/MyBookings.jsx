@@ -93,7 +93,7 @@ export default function MyBookings() {
                   <strong>${Number(booking.totalPrice).toFixed(2)}</strong><small>Total price · USD</small>
                   {booking.status === "pending_payment" && <button type="button" className={styles.primaryButton} onClick={() => navigate(`/user/bookings/${booking.id}/payment`)}>Continue payment</button>}
                   {["pending_payment", "confirmed"].includes(booking.status) && <button type="button" className={styles.dangerButton} onClick={() => cancel(booking)}>Cancel booking</button>}
-                  <button type="button" className={styles.outlineButton} onClick={() => navigate(`/user/trips/info/${booking.tripId}`)}>View trip</button>
+                  <button type="button" className={styles.outlineButton} onClick={() => navigate(`/user/trips/${booking.tripId}`)}>View trip</button>
                 </div>
               </article>
             ))}
