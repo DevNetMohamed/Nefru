@@ -1,0 +1,35 @@
+.section{
+    /* border:1px solid red; */
+    height:fit-content;
+}
+.profile{
+    background-repeat:no-repeat;
+    background-size: contain;
+    background-size: auto;
+    background-size: 100% 100%;
+    background-size: 300px 200px;
+    aspect-ratio: 16 / 11;
+    background: url("../../../../assets/images/guiders/guide4.webp") center / cover no-repeat;
+    padding:15px;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+.nav{
+    /* border:1px solid red; */
+    display:flex;
+    justify-content:space-between;
+}
+.navIcon{
+    font-size:25px;
+    border-radius:50%;
+    padding:5px;
+    height:35px;
+    width:35px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.164);
+    border-radius:50%;
+}

@@ -577,9 +577,7 @@ export default function AvailableTodayPage() {
                   key={tour._id}
                   className={styles.card}
                   onClick={() => {
-                    navigate("/user/trips/book", {
-                      state: { tour, trip: tour },
-                    });
+                    navigate(`/user/trips/${tour._id}`);
                   }}
                   style={{ cursor: "pointer" }}
                 >
@@ -682,10 +680,8 @@ export default function AvailableTodayPage() {
                       <button
                         className={styles.actionButton}
                         onClick={(e) => {
-                          e.stopPropagation();
-                          navigate("/user/trips/book", {
-                            state: { tour, trip: tour },
-                          });
+                          // e.stopPropagation();
+                          navigate(`/user/trips/${tour._id}`);
                         }}
                       >
                         <span>Book Now</span>

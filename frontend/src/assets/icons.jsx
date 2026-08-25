@@ -3,6 +3,7 @@ import { HiOutlineUser, HiOutlineHeart } from "react-icons/hi";
 import { MdEventRepeat, MdOutlineCardTravel } from "react-icons/md";
 import {
   AiOutlineArrowRight,
+  AiOutlineArrowLeft,
   AiOutlineGoogle,
   AiFillFacebook,
 } from "react-icons/ai";
@@ -47,6 +48,7 @@ const Icons = {
   Notification:GoBell,
   Saved: HiOutlineHeart,
   ArrowRight: AiOutlineArrowRight,
+  ArrowLeft: AiOutlineArrowLeft,
   arrowDown:IoMdArrowDropdown,
   arrowUp:IoMdArrowDropup,
   Google: AiOutlineGoogle,
