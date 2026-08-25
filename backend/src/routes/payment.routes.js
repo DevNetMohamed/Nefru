@@ -1,20 +1,24 @@
 import { Router } from "express";
+
 import {
   createPaymentIntent,
-  confirmPayment,
-  handleStripeWebhook,
+  createSetupIntent,
+  deletePaymentMethod,
+  listPaymentMethods,
+  payWithSavedCard,
+  setDefaultPaymentMethod,
+  verifyPayment,
 } from "../controllers/payment.controller.js";
-import { protect } from "../middlewares/authMiddleware.js";
+import { authorizeRoles, protect } from "../middlewares/authMiddleware.js";
 
 const paymentRouter = Router();
-
-// 1. إنشاء نية الدفع من Stripe (مجهّز بـ Client Secret)
-paymentRouter.post("/create-intent", protect, createPaymentIntent);
-
-// 2. تأكيد العملية بعد النجاح في الفلاونت إند
-paymentRouter.post("/confirm", protect, confirmPayment);
-
-// 3. مسار Webhook للاستقبال التلقائي من Stripe
-paymentRouter.post("/webhook", handleStripeWebhook);
+paymentRouter.use(protect, authorizeRoles("tourist"));
+paymentRouter.post("/create-intent", createPaymentIntent);
+paymentRouter.post("/pay-with-saved-card", payWithSavedCard);
+paymentRouter.post("/verify", verifyPayment);
+paymentRouter.get("/methods", listPaymentMethods);
+paymentRouter.post("/methods/setup-intent", createSetupIntent);
+paymentRouter.patch("/methods/:paymentMethodId/default", setDefaultPaymentMethod);
+paymentRouter.delete("/methods/:paymentMethodId", deletePaymentMethod);
 
 export default paymentRouter;

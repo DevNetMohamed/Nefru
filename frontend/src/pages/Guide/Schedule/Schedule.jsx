@@ -62,6 +62,7 @@ function getDefaultSlot() {
     id: `${Date.now()}-${Math.random()}`,
     startTime: "09:00",
     endTime: "13:00",
+    capacity: 12,
   };
 }
 
@@ -93,7 +94,51 @@ function normalizeSlot(slot) {
     id: slot.id ?? `${Date.now()}-${Math.random()}`,
     startTime: normalizeTimeString(slot.startTime || "09:00"),
     endTime: normalizeTimeString(slot.endTime || "13:00"),
+    capacity: Math.max(1, Number(slot.capacity ?? slot.maxGuests ?? slot.availableSpots ?? 12) || 12),
   };
+}
+
+function dateKeyFromSavedDate(savedDate, monthDate = new Date()) {
+  if (typeof savedDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(savedDate)) {
+    return savedDate;
+  }
+  if (typeof savedDate === "number") {
+    return getDateKey(new Date(monthDate.getFullYear(), monthDate.getMonth(), savedDate));
+  }
+  return null;
+}
+
+function normalizeSavedSchedule(schedule = {}, monthDate = new Date()) {
+  const dates = (schedule.dates || [])
+    .map((date) => dateKeyFromSavedDate(date, monthDate))
+    .filter(Boolean);
+  const uniqueDates = [...new Set(dates)];
+  const incomingSlotsByDate = schedule.slotsByDate || {};
+  const nextSlotsByDate = {};
+
+  uniqueDates.forEach((dateKey) => {
+    if (Array.isArray(incomingSlotsByDate[dateKey])) {
+      nextSlotsByDate[dateKey] = incomingSlotsByDate[dateKey].map(normalizeSlot);
+    }
+  });
+
+  if (Object.keys(nextSlotsByDate).length === 0 && Array.isArray(schedule.slots)) {
+    schedule.slots.forEach((slot) => {
+      const slotDate = slot.date || slot.dateKey;
+      if (slotDate && uniqueDates.includes(slotDate)) {
+        nextSlotsByDate[slotDate] = [
+          ...(nextSlotsByDate[slotDate] || []),
+          normalizeSlot(slot),
+        ];
+      }
+    });
+  }
+
+  uniqueDates.forEach((dateKey) => {
+    if (!nextSlotsByDate[dateKey]?.length) nextSlotsByDate[dateKey] = [getDefaultSlot()];
+  });
+
+  return { dates: uniqueDates, slotsByDate: nextSlotsByDate };
 }
 
 function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
@@ -105,56 +150,6 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
   const scheduleSlotsByDate =
     scheduleData?.slotsByDate ?? scheduleData?.schedule?.slotsByDate;
   const scheduleSlots = scheduleData?.slots ?? scheduleData?.schedule?.slots;
-
-  function dateKeyFromSavedDate(savedDate, monthDate = new Date()) {
-    if (typeof savedDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(savedDate)) {
-      return savedDate;
-    }
-
-    if (typeof savedDate === "number") {
-      return getDateKey(new Date(monthDate.getFullYear(), monthDate.getMonth(), savedDate));
-    }
-
-    return null;
-  }
-
-  function normalizeSavedSchedule(schedule = {}, monthDate = new Date()) {
-    const dates = (schedule.dates || [])
-      .map((date) => dateKeyFromSavedDate(date, monthDate))
-      .filter(Boolean);
-    const uniqueDates = [...new Set(dates)];
-    const incomingSlotsByDate = schedule.slotsByDate || {};
-    const nextSlotsByDate = {};
-
-    uniqueDates.forEach((dateKey) => {
-      if (Array.isArray(incomingSlotsByDate[dateKey])) {
-        nextSlotsByDate[dateKey] = incomingSlotsByDate[dateKey].map(normalizeSlot);
-      }
-    });
-
-    if (Object.keys(nextSlotsByDate).length === 0 && Array.isArray(schedule.slots)) {
-      schedule.slots.forEach((slot) => {
-        const slotDate = slot.date || slot.dateKey;
-        if (slotDate && uniqueDates.includes(slotDate)) {
-          nextSlotsByDate[slotDate] = [
-            ...(nextSlotsByDate[slotDate] || []),
-            normalizeSlot(slot),
-          ];
-        }
-      });
-    }
-
-    uniqueDates.forEach((dateKey) => {
-      if (!nextSlotsByDate[dateKey]?.length) {
-        nextSlotsByDate[dateKey] = [getDefaultSlot()];
-      }
-    });
-
-    return {
-      dates: uniqueDates,
-      slotsByDate: nextSlotsByDate,
-    };
-  }
 
   const initialSchedule = normalizeSavedSchedule({
     dates: scheduleDates || [],
@@ -182,7 +177,7 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
       try {
         const response = await apiRequest(`/trips/${tripId}`);
         const schedule = response?.data?.schedule || { dates: [], slots: [] };
-        const savedSchedule = normalizeSavedSchedule(schedule, monthCursor);
+        const savedSchedule = normalizeSavedSchedule(schedule);
 
         setSelectedDateKeys(savedSchedule.dates);
         setSlotsByDate(savedSchedule.slotsByDate);
@@ -236,11 +231,7 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
       return;
     }
 
-    const newSlot = {
-      id: `${Date.now()}-${Math.random()}`,
-      startTime: "09:00",
-      endTime: "13:00",
-    };
+    const newSlot = getDefaultSlot();
 
     setSlotsByDate((prev) => ({
       ...prev,
@@ -469,6 +460,19 @@ function Schedule({ scheduleData, onBack, onNext, onAddSlot, onClearDates }) {
                             value={slot.endTime}
                             onChange={(event) =>
                               updateSlot(dateKey, slot.id, "endTime", event.target.value)
+                            }
+                          />
+                        </label>
+
+                        <label>
+                          Guest Capacity
+                          <input
+                            type="number"
+                            min="1"
+                            max="100"
+                            value={slot.capacity}
+                            onChange={(event) =>
+                              updateSlot(dateKey, slot.id, "capacity", Math.max(1, Number(event.target.value) || 1))
                             }
                           />
                         </label>

@@ -1,7 +1,9 @@
 import { Trip } from "../models/trip.model.js";
 import { GuideProfile } from "../models/guide.model.js";
+import { Booking } from "../models/booking.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import mongoose from "mongoose";
+import { normalizeTripSchedule } from "../utils/tripSchedule.js";
 
 const ALLOWED_STATUSES = ["draft", "reviewing", "active"];
 
@@ -14,6 +16,7 @@ function getTripSummary(trip) {
     location: trip.location,
     coordinates: trip.coordinates,
     price: trip.price,
+    currency: "USD",
     duration: trip.duration,
     image: trip.image,
     category: trip.category,
@@ -29,7 +32,7 @@ function getTripSummary(trip) {
     highlights: trip.highlights || [],
     reviews: trip.reviews || [],
     gallery: trip.gallery || [],
-    schedule: trip.schedule || { dates: [], slots: [] },
+    schedule: normalizeTripSchedule(trip.schedule, trip.groupSize || 1),
     createdAt: trip.createdAt,
     updatedAt: trip.updatedAt,
   };
@@ -49,7 +52,7 @@ function canManageTrip(user, trip) {
 export const getAllTrips = asyncHandler(async (req, res) => {
   const { search, category, location } = req.query;
 
-  const query = {};
+  const query = { status: "active" };
 
   if (search) {
     query.$or = [
@@ -89,6 +92,8 @@ export const getAllTrips = asyncHandler(async (req, res) => {
 
     return {
       ...trip,
+      currency: "USD",
+      schedule: normalizeTripSchedule(trip.schedule, trip.groupSize || 1),
       guide: trip.guide
         ? {
             id: trip.guide._id,
@@ -145,12 +150,13 @@ export const getTripById = asyncHandler(async (req, res) => {
     location: trip.location,
     coordinates: trip.coordinates,
     price: trip.price,
+    currency: "USD",
     duration: trip.duration,
     image: trip.image,
     category: trip.category,
     status: trip.status || "draft",
     groupSize: trip.groupSize || 12,
-    schedule: trip.schedule || { dates: [], slots: [] },
+    schedule: normalizeTripSchedule(trip.schedule, trip.groupSize || 1),
     gallery: trip.gallery || [],
     rating: trip.rating || guideProfile?.rating || 0,
     reviewsCount: trip.reviewsCount || 0,
@@ -212,25 +218,28 @@ export const createTrip = asyncHandler(async (req, res) => {
     !location ||
     !price ||
     !duration ||
-    !category ||
-    !coordinates ||
-    coordinates.lat === undefined ||
-    coordinates.lng === undefined;
+    !category;
 
   if (invalid) {
     res.status(400);
     throw new Error(
-      "Please provide title, description, location, price, duration, category and coordinates"
+      "Please provide title, description, location, price, duration and category"
     );
   }
+
+  const resolvedCoordinates =
+    Number.isFinite(Number(coordinates?.lat)) && Number.isFinite(Number(coordinates?.lng))
+      ? { lat: Number(coordinates.lat), lng: Number(coordinates.lng) }
+      : { lat: 30.0444, lng: 31.2357 };
 
   const trip = await Trip.create({
     title,
     description,
     longDescription: longDescription || description,
     location,
-    coordinates,
+    coordinates: resolvedCoordinates,
     price,
+    currency: "USD",
     duration,
     image: image || "",
     category,
@@ -320,6 +329,39 @@ export const updateMyTrip = asyncHandler(async (req, res) => {
     "gallery",
     "highlights",
   ];
+
+  if (req.body.schedule !== undefined) {
+    const nextSchedule = normalizeTripSchedule(req.body.schedule, req.body.groupSize || trip.groupSize || 1);
+    const reservations = await Booking.aggregate([
+      {
+        $match: {
+          trip: trip._id,
+          $or: [
+            { status: "confirmed" },
+            { status: "pending_payment", holdExpiresAt: { $gt: new Date() } },
+          ],
+        },
+      },
+      { $group: { _id: "$occurrenceKey", reserved: { $sum: 1 } } },
+    ]);
+    const nextSlots = new Map(nextSchedule.slots.map((slot) => [slot.occurrenceKey, slot]));
+    for (const reservation of reservations) {
+      const nextSlot = nextSlots.get(reservation._id);
+      if (!nextSlot) {
+        res.status(409);
+        throw new Error(
+          "A time slot with active bookings cannot be removed. Cancel it from Booking Management first.",
+        );
+      }
+      if (nextSlot.capacity < reservation.reserved) {
+        res.status(409);
+        throw new Error(
+          `Capacity cannot be lower than ${reservation.reserved} reserved place(s).`,
+        );
+      }
+    }
+    req.body.schedule = nextSchedule;
+  }
 
   allowedFields.forEach((field) => {
     if (req.body[field] !== undefined) {

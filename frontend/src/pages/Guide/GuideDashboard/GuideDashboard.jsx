@@ -242,10 +242,10 @@ export default function GuideDashboard() {
                 </div>
 
                 <div className={styles.nextTourActions}>
-                  <button type="button" className={styles.primaryButton}>
+                  <button type="button" className={styles.primaryButton} onClick={() => navigate("/guide/bookings")}>
                     View Details <ChevronRight size={18} />
                   </button>
-                  <button type="button" className={styles.secondaryButton}>
+                  <button type="button" className={styles.secondaryButton} onClick={() => navigate("/guide/bookings")}>
                     <UsersRound size={18} /> Guest List
                   </button>
                 </div>
@@ -274,7 +274,7 @@ export default function GuideDashboard() {
           <section className={`${styles.card} ${styles.toursCard}`}>
             <div className={styles.sectionHeader}>
               <h2>Upcoming Booked Tours</h2>
-              <SectionAction onClick={() => navigate("/guide")}>View all</SectionAction>
+              <SectionAction onClick={() => navigate("/guide/bookings")}>View all</SectionAction>
             </div>
 
             <div className={styles.tourList}>
@@ -312,7 +312,7 @@ export default function GuideDashboard() {
                   >
                     {trip.status}
                   </span>
-                  <button type="button" className={styles.rowAction} aria-label={`View ${trip.title}`}>
+                  <button type="button" className={styles.rowAction} aria-label={`View ${trip.title}`} onClick={() => navigate("/guide/bookings")}>
                     <ChevronRight size={19} />
                   </button>
                 </article>

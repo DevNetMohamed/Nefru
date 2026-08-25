@@ -1,4 +1,3 @@
-import Style from "./Trips.module.css";
 import { Link } from "react-router-dom";
 
 const Trips = () => {
@@ -10,7 +9,6 @@ const Trips = () => {
       <Link to="/user/saved">saved</Link>
       <Link to="/user/profile">profile</Link>
       <Link to="/user/trips/info">info</Link>
-      <Link to="/user/trips/book">book</Link>
     </>
   );
 };

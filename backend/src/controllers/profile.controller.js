@@ -3,9 +3,15 @@ import { TouristProfile } from "../models/tourist.model.js";
 import { User } from "../models/user.model.js";
 
 function serializeUser(user) {
+  const providers = user.authProviders?.length ? user.authProviders : ["local"];
+
   return {
     id: user._id,
     email: user.email,
+    emailVerified: Boolean(user.emailVerified),
+    authProviders: providers,
+    hasPassword: providers.includes("local"),
+    googleLinked: providers.includes("google"),
     role: user.role,
     status: user.status,
     profileId: user.profileId,
@@ -15,15 +21,30 @@ function serializeUser(user) {
 }
 
 async function findProfile(user) {
+  let profile = null;
+
   if (user.role === "guide") {
-    return GuideProfile.findOne({ user: user._id }).select("+rejectionReason");
+    profile = await GuideProfile.findOne({ user: user._id }).select(
+      "+rejectionReason",
+    );
   }
 
   if (user.role === "tourist") {
-    return TouristProfile.findOne({ user: user._id });
+    profile = await TouristProfile.findOne({ user: user._id });
   }
 
-  return null;
+  if (profile || !["guide", "tourist"].includes(user.role)) return profile;
+
+  const ProfileModel = user.role === "guide" ? GuideProfile : TouristProfile;
+  profile = await ProfileModel.create({
+    user: user._id,
+    fullName: String(user.email || "Nefru member").split("@")[0],
+  });
+  user.profileId = profile._id;
+  user.roleProfile = user.role === "guide" ? "GuideProfile" : "TouristProfile";
+  await user.save({ validateBeforeSave: false });
+
+  return profile;
 }
 
 export const getMyProfile = async (req, res, next) => {
@@ -39,6 +60,45 @@ export const getMyProfile = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
+      data: {
+        user: serializeUser(user),
+        profile,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const uploadMyAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Choose an image to upload",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user || user.status !== "active" || user.role === "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "This account does not have an editable profile",
+      });
+    }
+
+    const ProfileModel =
+      user.role === "guide" ? GuideProfile : TouristProfile;
+    await findProfile(user);
+    const profile = await ProfileModel.findOneAndUpdate(
+      { user: user._id },
+      { $set: { avatar: `/uploads/${req.file.filename}` } },
+      { new: true, runValidators: true },
+    ).select(user.role === "guide" ? "+rejectionReason" : "");
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile photo updated successfully",
       data: {
         user: serializeUser(user),
         profile,

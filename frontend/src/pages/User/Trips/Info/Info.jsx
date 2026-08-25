@@ -1,14 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,
   FaStar,
   FaLocationDot,
   FaClock,
-  FaCircleCheck,
-  FaUsers,
-  FaCarSide,
-  FaUtensils,
-  FaUserTie,
   FaChevronRight,
 } from "react-icons/fa6";
 import { FiShare2, FiBookmark } from "react-icons/fi";
@@ -16,27 +10,37 @@ import styles from "./Info.module.css";
 import { useEffect, useState, useCallback } from "react";
 
 import { getTourById } from "../../api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { resolveMediaUrl } from "../../../../services/api";
+import { useSavedTrips } from "../../../../context/useSavedTrips";
 
 function Info() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [tour, seTrip] = useState({})
+  const { savedIds, toggleSaved } = useSavedTrips();
+  const [tour, seTrip] = useState({});
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const loadTrip = useCallback(async () => {
     try {
       const data = await getTourById(id);
       if (!data.error) seTrip(data.data);
+      else setError(data.error);
     } catch (err) {
       if (err.name === "AbortError") return;
       setError(err.message || "Failed to load tour");
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }, [id]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    loadTrip();
-    return () => controller.abort();
+    const timer = window.setTimeout(loadTrip, 0);
+    return () => window.clearTimeout(timer);
   }, [loadTrip]);
+
+  if (loading) return <div className={styles.page}><main className={styles.content}>Loading trip...</main></div>;
+  if (error) return <div className={styles.page}><main className={styles.content}>{error}</main></div>;
 
   return (
     <div className={styles.page}>
@@ -55,8 +59,13 @@ function Info() {
           <button type="button" className={styles.iconButton}>
             <FiShare2 />
           </button>
-          <button type="button" className={styles.iconButton}>
-            <FiBookmark />
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label={savedIds.has(String(id)) ? "Remove from saved trips" : "Save trip"}
+            onClick={() => toggleSaved(id)}
+          >
+            <FiBookmark fill={savedIds.has(String(id)) ? "currentColor" : "none"} />
           </button>
         </div>
       </header>
@@ -64,7 +73,7 @@ function Info() {
       <main className={styles.content}>
         <section className={styles.hero}>
           <img
-            src={tour.image || "/"}
+            src={resolveMediaUrl(tour.image) || "/"}
             alt={tour.title || "Trip"}
             className={styles.heroImage}
           />
@@ -82,7 +91,12 @@ function Info() {
             </p>
           </div>
 
-          <button type="button" className={styles.reserveButton} onClick={()=>navigate(`/user/trips/${tour.id}/book`)}>
+          <button
+            type="button"
+            className={styles.reserveButton}
+            onClick={() => navigate(`/user/trips/${id}/book`)}
+            disabled={tour.status !== "active"}
+          >
             Book
           </button>
         </section>
@@ -157,7 +171,7 @@ function Info() {
 
           <div className={styles.guideCard}>
             <img
-              src={tour.guide?.avatar}
+              src={resolveMediaUrl(tour.guide?.avatar)}
               alt={tour.guide?.name}
               className={styles.guideAvatar}
             />

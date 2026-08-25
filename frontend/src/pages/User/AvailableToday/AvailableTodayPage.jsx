@@ -27,6 +27,7 @@ import MobilePageHeader from "../../../shared/components/MobilePageHeader/Mobile
 import styles from "./AvailableTodayPage.module.css";
 import DesktopNavbar from "../Home/components/DesktopNavbar/DesktopNavbar";
 import Footer from "../Home/Desktop/components/Footer/Footer";
+import { useSavedTrips } from "../../../context/useSavedTrips";
 
 // Image assets
 import pyramidsImg from "../../../assets/images/explore/pyramids.jpg";
@@ -297,7 +298,7 @@ export default function AvailableTodayPage() {
 
   const [tours, setTours] = useState(DEFAULT_AVAILABLE_TODAY);
   const [loading, setLoading] = useState(true);
-  const [savedTours, setSavedTours] = useState(new Set());
+  const { savedIds, toggleSaved } = useSavedTrips();
 
   // Filter states initialized from URL
   const [searchQuery, setSearchQuery] = useState(
@@ -393,17 +394,10 @@ export default function AvailableTodayPage() {
     setSearchParams(params, { replace: true });
   }, [searchQuery, selectedTime, selectedCategory, selectedCity, sortBy, setSearchParams]);
 
-  const toggleSave = (id, e) => {
+  const toggleSave = async (id, e) => {
     e.stopPropagation();
-    setSavedTours((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+    if (!/^[a-f0-9]{24}$/i.test(String(id || ""))) return;
+    await toggleSaved(id);
   };
 
   const resetFilters = () => {
@@ -568,7 +562,7 @@ export default function AvailableTodayPage() {
         {filteredTours.length > 0 ? (
           <div className={styles.grid}>
             {filteredTours.map((tour) => {
-              const isSaved = savedTours.has(tour._id);
+              const isSaved = savedIds.has(String(tour._id));
               const tourId = tour._id;
               const hasMongoId = tourId && tourId.length === 24;
 
@@ -605,6 +599,7 @@ export default function AvailableTodayPage() {
                       className={styles.favoriteButton}
                       onClick={(e) => toggleSave(tour._id, e)}
                       aria-label="Save trip"
+                      disabled={!hasMongoId}
                     >
                       <Heart
                         size={18}
@@ -684,7 +679,7 @@ export default function AvailableTodayPage() {
                           navigate(`/user/trips/${tour._id}`);
                         }}
                       >
-                        <span>Book Now</span>
+                        <span>{hasMongoId ? "Book Now" : "Preview only"}</span>
                         <ArrowRight size={16} />
                       </button>
                     </div>

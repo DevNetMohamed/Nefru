@@ -28,6 +28,7 @@ import {
 import logo from "@/assets/images/logo.png";
 
 import SearchModal from "@/components/Search/SearchModal";
+import { useSavedTrips } from "@/context/useSavedTrips";
 
 // Local high quality assets matching Egypt destinations
 import luxorImg from "@/assets/images/hero/luxor.jpeg";
@@ -264,7 +265,7 @@ const MobileHome = () => {
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const [openSearch, setOpenSearch] = useState(false);
-  const [savedIds, setSavedIds] = useState(new Set());
+  const { savedIds, toggleSaved } = useSavedTrips();
   const [activeGuideModal, setActiveGuideModal] = useState(null);
   const [bestChoiceTours, setBestChoiceTours] = useState(defaultBestChoiceTours);
   const [availableTodayTours, setAvailableTodayTours] = useState(defaultAvailableToday);
@@ -332,17 +333,10 @@ const MobileHome = () => {
     fetchHomeData();
   }, []);
 
-  const toggleSave = (id, e) => {
+  const toggleSave = async (id, e) => {
     e.stopPropagation();
-    setSavedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+    if (!/^[a-f0-9]{24}$/i.test(String(id || ""))) return;
+    await toggleSaved(id);
   };
 
   return (

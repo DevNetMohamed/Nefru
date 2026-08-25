@@ -12,6 +12,7 @@ import {
 } from "react-icons/fi";
 
 import styles from "./ProfileOverview.module.css";
+import { resolveMediaUrl } from "../../../../../services/api";
 
 function formatDate(date, fallback = "Not added yet") {
   if (!date) return fallback;
@@ -40,6 +41,12 @@ function formatGender(gender) {
   return gender.charAt(0).toUpperCase() + gender.slice(1);
 }
 
+function formatLanguage(language) {
+  return ({ en: "English", ar: "Arabic", fr: "French", de: "German", es: "Spanish" })[
+    language
+  ] || language || "Not added yet";
+}
+
 export default function ProfileOverview() {
   const { user, profile } = useSelector((state) => state.auth);
 
@@ -57,6 +64,7 @@ export default function ProfileOverview() {
         profile?.verificationStatus ||
         (user?.role === "guide" ? "draft" : "Not required"),
       avatar: profile?.avatar || "",
+      preferredLanguage: profile?.preferredLanguage || "Not added yet",
     }),
     [user, profile]
   );
@@ -78,7 +86,7 @@ export default function ProfileOverview() {
       <section className={styles.profileHero}>
         {profileData.avatar ? (
           <img
-            src={profileData.avatar}
+            src={resolveMediaUrl(profileData.avatar)}
             alt={profileData.fullName}
             className={styles.photo}
           />
@@ -139,6 +147,11 @@ export default function ProfileOverview() {
           <div className={styles.fieldBox}>
             <span>Nationality</span>
             <strong>{profileData.nationality}</strong>
+          </div>
+
+          <div className={styles.fieldBox}>
+            <span>Preferred Language</span>
+            <strong>{formatLanguage(profileData.preferredLanguage)}</strong>
           </div>
         </div>
       </section>

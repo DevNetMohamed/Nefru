@@ -1,32 +1,35 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+import { DEV_AUTH_BYPASS } from "../config/devAccess";
 
 function getHomePathByRole(role) {
   if (role === "admin") return "/admin/overview";
-
-  // مؤقتًا guide و tourist رايحين نفس user home
-  // بعدين لما نعمل guide dashboard نغيرها
-  if (role === "guide") return "/user/home";
-  if (role === "tourist") return "/user/home";
-
+  if (role === "guide") return "/guide/dashboard";
   return "/user/home";
 }
 
 export default function ProtectedRoute({ allowedRoles }) {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const location = useLocation();
+  const { initialized, isAuthenticated, user } = useSelector(
+    (state) => state.auth,
+  );
+
+  // TEMPORARY DEVELOPMENT BYPASS:
+  // Protected pages are accessible without login or role checks during development.
+  // Set VITE_DEV_AUTH_BYPASS=false to restore the real guards locally.
+  // Production builds always enforce the authentication logic below.
+  if (DEV_AUTH_BYPASS) return <Outlet />;
+
+  if (!initialized) return null;
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to={`/auth/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
 
-  const role = user?.role;
+  const role = user.role;
 
-  if (allowedRoles && !role) {
-    // If allowedRoles provided but role is missing, redirect to login as a safe fallback
-    return <Navigate to="/auth/login" replace />;
-  }
-
-  if (allowedRoles && role && !allowedRoles.includes(role)) {
+  if (allowedRoles && !allowedRoles.includes(role)) {
     return <Navigate to={getHomePathByRole(role)} replace />;
   }
 

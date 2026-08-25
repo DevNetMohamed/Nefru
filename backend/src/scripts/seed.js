@@ -4,15 +4,20 @@ import { env } from "../config/env.js";
 import { User } from "../models/user.model.js";
 import { Trip } from "../models/trip.model.js";
 import { Booking } from "../models/booking.model.js";
+import { BookingSeat } from "../models/bookingSeat.model.js";
 import { TouristProfile } from "../models/tourist.model.js";
 import { GuideProfile } from "../models/guide.model.js";
 import { GuideVerification } from "../models/guideVerification.model.js";
 import { Notification } from "../models/notification.model.js";
 import { Review } from "../models/review.model.js";
 import { Interaction } from "../models/interaction.model.js";
+import {
+  normalizeTripSchedule,
+  occurrenceDateTime,
+} from "../utils/tripSchedule.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const PLATFORM_FEE_RATE = 0.12;
+const PLATFORM_FEE_RATE = 0;
 const SEED_EMAIL_SUFFIX = "@nefru.com";
 
 function dateAt(daysFromNow, hour = 9, minute = 0) {
@@ -121,7 +126,7 @@ const guideSeedData = [
     fullName: "Youssef Farouk",
     email: `youssefguide${SEED_EMAIL_SUFFIX}`,
     verificationStatus: "approved",
-    status: "suspended" ,
+    status: "deactivated",
     avatar: "https://i.pravatar.cc/300?img=11",
     title: "Alexandria Local GuideProfile",
     headline: "Mediterranean history and coastal city walks",
@@ -274,7 +279,7 @@ const tripSeedData = [
     longDescription:
       "A structured early-morning experience with clear meeting instructions, historical context, photo stops, and no forced shopping detours.",
     location: "Giza",
-    price: 1200,
+    price: 45,
     duration: "4 hours",
     image: "trips/pyramids.webp",
     category: "History",
@@ -300,7 +305,7 @@ const tripSeedData = [
     longDescription:
       "A walking trip through historic Cairo focused on architecture, local stories, safe navigation, and transparent pricing.",
     location: "Cairo",
-    price: 700,
+    price: 30,
     duration: "3 hours",
     image: "trips/historic-cairo.jpg",
     category: "History",
@@ -327,7 +332,7 @@ const tripSeedData = [
     longDescription:
       "A full-day coastal experience with organized stops, Mediterranean views, and stories from ancient and modern Alexandria.",
     location: "Alexandria",
-    price: 1500,
+    price: 60,
     duration: "Full Day",
     image: "trips/alexandria.jpg",
     category: "Culture",
@@ -354,7 +359,7 @@ const tripSeedData = [
     longDescription:
       "Visit selected East and West Bank landmarks with an Upper Egypt specialist, with time for questions and practical breaks.",
     location: "Luxor",
-    price: 1900,
+    price: 75,
     duration: "Full Day",
     image: "trips/Luxor.jpg",
     category: "History",
@@ -380,7 +385,7 @@ const tripSeedData = [
     longDescription:
       "A calm small-group Nile sailing experience with a clear meeting point, bottled water, and sunset photo opportunities.",
     location: "Cairo",
-    price: 500,
+    price: 25,
     duration: "2 hours",
     image: "trips/alexandria.jpg",
     category: "Culture",
@@ -406,7 +411,7 @@ const tripSeedData = [
     longDescription:
       "An evening food walk covering selected trusted vendors, food stories, and options for common dietary preferences.",
     location: "Cairo",
-    price: 850,
+    price: 35,
     duration: "3 hours",
     image: "trips/historic-cairo.jpg",
     category: "Food",
@@ -432,7 +437,7 @@ const tripSeedData = [
     longDescription:
       "A desert experience currently waiting for admin review. It is useful for testing reviewing-state behavior and hidden public listings.",
     location: "Siwa",
-    price: 2200,
+    price: 90,
     duration: "6 hours",
     image: "trips/pyramids.webp",
     category: "Adventure",
@@ -455,7 +460,7 @@ const tripSeedData = [
     longDescription:
       "A new cultural itinerary submitted for admin review, with an organized route between Old Cairo and Fustat.",
     location: "Cairo",
-    price: 1100,
+    price: 45,
     duration: "5 hours",
     image: "trips/historic-cairo.jpg",
     category: "Culture",
@@ -477,7 +482,7 @@ const tripSeedData = [
     longDescription:
       "A partially completed draft used to test continue-editing and incomplete schedule scenarios.",
     location: "Aswan",
-    price: 2600,
+    price: 100,
     duration: "Full Day",
     image: "trips/Luxor.jpg",
     category: "History",
@@ -494,7 +499,7 @@ const tripSeedData = [
     longDescription:
       "A draft trip owned by an inactive guide, useful for admin visibility and access-control testing.",
     location: "Cairo",
-    price: 950,
+    price: 40,
     duration: "3 hours",
     image: "trips/historic-cairo.jpg",
     category: "Culture",
@@ -687,6 +692,12 @@ async function removeOldSeedData() {
         { trip: { $in: oldTripIds } },
       ],
     }),
+    BookingSeat.deleteMany({
+      $or: [
+        { tourist: { $in: oldUserIds } },
+        { trip: { $in: oldTripIds } },
+      ],
+    }),
     Booking.deleteMany({
       $or: [
         { tourist: { $in: oldUserIds } },
@@ -711,6 +722,7 @@ async function createUsersAndProfiles() {
     password: env.passwordAdmin,
     role: "admin",
     status: "active",
+    emailVerified: true,
   });
 
   const guideUsers = await User.create(
@@ -718,7 +730,8 @@ async function createUsersAndProfiles() {
       email: guide.email,
       password: env.passwordGuide,
       role: "guide",
-      status: guide.isActive ? "active" : "suspended",
+      emailVerified: true,
+      status: guide.isActive ? "active" : "deactivated",
       roleProfile: "GuideProfile",
     })),
   );
@@ -755,7 +768,8 @@ async function createUsersAndProfiles() {
       email: tourist.email,
       password: env.passwordTourist,
       role: "tourist",
-      status: tourist.isActive ? "active" : "suspended",
+      emailVerified: true,
+      status: tourist.isActive ? "active" : "deactivated",
       roleProfile: "TouristProfile",
     })),
   );
@@ -832,7 +846,7 @@ async function createBookings(trips, guideUsers, touristUsers) {
         dayOffset,
         hour,
         minute,
-        numberOfGuests,
+        ,
         status,
         paymentStatus,
         specialRequests,
@@ -842,7 +856,7 @@ async function createBookings(trips, guideUsers, touristUsers) {
       index,
     ) => {
       const trip = trips[tripIndex];
-      const totalPrice = trip.price * numberOfGuests;
+      const totalPrice = trip.price;
       const earnsRevenue =
         paymentStatus === "paid" && !["cancelled", "refunded"].includes(status);
       const platformFee = earnsRevenue
@@ -851,7 +865,19 @@ async function createBookings(trips, guideUsers, touristUsers) {
       const guideEarnings = earnsRevenue
         ? roundMoney(totalPrice - platformFee)
         : 0;
-      const date = dateAt(dayOffset, hour, minute);
+      const provisionalDate = dateAt(dayOffset, hour, minute);
+      const slotDate = provisionalDate.toISOString().slice(0, 10);
+      const startTime = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+      const occurrence = normalizeTripSchedule(trip.schedule, trip.groupSize || 1)
+        .slots.find((slot) => slot.date === slotDate && slot.startTime === startTime);
+      const date = occurrence
+        ? occurrenceDateTime(occurrence.date, occurrence.startTime)
+        : provisionalDate;
+      const endAt = occurrence
+        ? occurrenceDateTime(occurrence.date, occurrence.endTime)
+        : new Date(date.getTime() + 4 * 60 * 60 * 1000);
+      const occurrenceKey = occurrence?.occurrenceKey
+        || `${slotDate}::seed-${String(hour).padStart(2, "0")}${String(minute).padStart(2, "0")}`;
       const isPastFinal = ["completed", "no_show", "refunded"].includes(status);
       const isCancelled = ["cancelled", "refunded"].includes(status);
 
@@ -859,25 +885,23 @@ async function createBookings(trips, guideUsers, touristUsers) {
         trip: trip._id,
         tourist: touristUsers[touristIndex]._id,
         guide: guideUsers[tripSeedData[tripIndex].guideIndex]._id,
+        occurrenceKey,
+        slotDate,
         date,
-        timeSlot: date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        numberOfGuests,
+        endAt,
+        timeSlot: occurrence
+          ? `${occurrence.startTime} - ${occurrence.endTime}`
+          : startTime,
+        numberOfGuests: 1,
         pricePerPerson: trip.price,
         totalPrice,
         platformFee,
         guideEarnings,
-        currency: "EGP",
+        currency: "USD",
         status,
         paymentStatus,
-        paymentMethod:
-          paymentStatus === "unpaid"
-            ? "none"
-            : index % 3 === 0
-              ? "wallet"
-              : "card",
+        holdExpiresAt: status === "pending_payment" ? new Date(Date.now() + 15 * 60 * 1000) : null,
+        paymentMethod: paymentStatus === "unpaid" ? "none" : "card",
         paymentReference:
           paymentStatus === "unpaid"
             ? ""
@@ -895,7 +919,27 @@ async function createBookings(trips, guideUsers, touristUsers) {
     },
   );
 
-  return Booking.create(bookingDocs);
+  const created = await Booking.create(bookingDocs);
+  const seatCounters = new Map();
+  const seats = created
+    .filter((booking) => ["pending_payment", "confirmed"].includes(booking.status))
+    .map((booking) => {
+      const key = `${booking.trip}:${booking.occurrenceKey}`;
+      const seatNumber = (seatCounters.get(key) || 0) + 1;
+      seatCounters.set(key, seatNumber);
+      return {
+        booking: booking._id,
+        trip: booking.trip,
+        tourist: booking.tourist,
+        occurrenceKey: booking.occurrenceKey,
+        seatNumber,
+        expiresAt: booking.status === "pending_payment"
+          ? new Date(booking.holdExpiresAt.getTime() + 60 * 1000)
+          : null,
+      };
+    });
+  if (seats.length) await BookingSeat.create(seats);
+  return created;
 }
 
 async function createReviews(
@@ -913,8 +957,6 @@ async function createReviews(
     const touristIndex = bookingSeedData[review.bookingIndex][0];
 
     const date = dateAt(dayOffset, hour, minute);
-    console.log(Date(bookings[review.bookingIndex]));
-    // console.log(date.getTime())
     return {
       booking: booking._id,
       trip: booking.trip,
@@ -1017,12 +1059,12 @@ async function createNotifications({
           user: booking.guide,
           type: "booking",
           title: "New confirmed booking",
-          message: `${tourist.fullName} booked ${booking.numberOfGuests} guest(s) for ${trip.title}.`,
+          message: `${tourist.fullName} booked one place for ${trip.title}.`,
           isRead: index % 4 === 0,
-          link: `/guide/bookings/${booking._id}`,
+          link: "/guide/bookings",
           entityType: "booking",
           entityId: booking._id,
-          metadata: { numberOfGuests: booking.numberOfGuests },
+          metadata: { places: 1 },
           createdAt: booking.createdAt,
         },
       );
@@ -1033,7 +1075,7 @@ async function createNotifications({
         user: booking.tourist,
         type: "payment",
         title: "Payment completed",
-        message: `Your payment of ${booking.totalPrice} EGP for ${trip.title} was completed.`,
+        message: `Your payment of $${booking.totalPrice} USD for ${trip.title} was completed.`,
         isRead: index % 2 === 0,
         link: "/user/profile/payments",
         entityType: "payment",

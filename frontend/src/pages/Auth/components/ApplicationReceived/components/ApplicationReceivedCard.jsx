@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   FiArrowLeft,
@@ -6,21 +7,22 @@ import {
   FiCheckCircle,
   FiClock,
   FiHelpCircle,
-  FiLogIn,
   FiMail,
+  FiUserCheck,
 } from "react-icons/fi";
 
 import styles from "../ApplicationReceived.module.css";
 import LogoLight from "../../../../../assets/images/Logo_Light.png";
 
 const reviewSteps = [
-  "Our team reviews your documents and guide details.",
-  "You will receive an email once the review is complete.",
-  "If approved, you can log in and start creating tours.",
+  "Our team reviews your identity document and guide details.",
+  "You can keep browsing Nefru while your application is pending.",
+  "We’ll email you when your application is approved or if changes are needed.",
 ];
 
 export default function ApplicationReceivedCard() {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return (
     <div className={styles.card} aria-labelledby="application-title">
@@ -39,8 +41,8 @@ export default function ApplicationReceivedCard() {
       </h2>
 
       <p className={`${styles.subtitle} fs-5`}>
-        Your guide application and supporting documents have been submitted
-        successfully and are now under review.
+        Your guide verification documents were submitted successfully. Your
+        account stays signed in while our team reviews the application.
       </p>
 
       <div className={styles.reviewCard}>
@@ -64,8 +66,8 @@ export default function ApplicationReceivedCard() {
       <div className={styles.noteBox}>
         <FiMail />
         <p>
-          Keep an eye on your email. We may contact you if we need extra
-          information.
+          Creating or publishing tours stays locked until approval, but you can
+          browse Nefru and update your guide profile meanwhile.
         </p>
       </div>
 
@@ -73,19 +75,27 @@ export default function ApplicationReceivedCard() {
         <button
           type="button"
           className={styles.secondaryButton}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/user/home")}
         >
           <FiArrowLeft />
-          Back Home
+          Explore Nefru
         </button>
 
         <button
           type="button"
           className={styles.primaryButton}
-          onClick={() => navigate("/auth/login")}
+          onClick={() =>
+            navigate(
+              isAuthenticated && user?.role === "guide"
+                ? "/guide/dashboard"
+                : "/auth/login",
+            )
+          }
         >
-          <FiLogIn />
-          Log in
+          <FiUserCheck />
+          {isAuthenticated && user?.role === "guide"
+            ? "Guide Dashboard"
+            : "Log in"}
         </button>
       </div>
 

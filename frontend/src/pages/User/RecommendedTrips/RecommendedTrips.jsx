@@ -26,6 +26,7 @@ import MobilePageHeader from "../../../shared/components/MobilePageHeader/Mobile
 import styles from "./RecommendedTrips.module.css";
 import DesktopNavbar from "../Home/components/DesktopNavbar/DesktopNavbar";
 import Footer from "../Home/Desktop/components/Footer/Footer";
+import { useSavedTrips } from "../../../context/useSavedTrips";
 
 // Fallback image assets
 import pyramidsImg from "../../../assets/images/explore/pyramids.jpg";
@@ -272,7 +273,7 @@ export default function RecommendedTrips() {
 
   const [trips, setTrips] = useState(DEFAULT_RECOMMENDED_TRIPS);
   const [loading, setLoading] = useState(true);
-  const [savedTrips, setSavedTrips] = useState(new Set());
+  const { savedIds, toggleSaved } = useSavedTrips();
 
   // Filter states initialized from URL if available
   const [searchQuery, setSearchQuery] = useState(
@@ -387,17 +388,10 @@ export default function RecommendedTrips() {
   }, [searchQuery, selectedCategory, selectedCity, selectedDuration, sortBy, setSearchParams]);
 
   // Toggle favorite
-  const toggleSave = (id, e) => {
+  const toggleSave = async (id, e) => {
     e.stopPropagation();
-    setSavedTrips((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+    if (!/^[a-f0-9]{24}$/i.test(String(id || ""))) return;
+    await toggleSaved(id);
   };
 
   // Reset all filters
@@ -568,7 +562,7 @@ export default function RecommendedTrips() {
         {filteredTrips.length > 0 ? (
           <div className={styles.grid}>
             {filteredTrips.map((trip) => {
-              const isSaved = savedTrips.has(trip._id);
+              const isSaved = savedIds.has(String(trip._id));
               const tripId = trip._id;
               const hasMongoId = tripId && tripId.length === 24;
 
@@ -577,7 +571,9 @@ export default function RecommendedTrips() {
                   key={trip._id}
                   className={styles.card}
                   onClick={() => {
-                    navigate(`/user/trips/${tripId}`);
+                    if (hasMongoId) {
+                      navigate(`/user/trips/${tripId}`);
+                    } else navigate("/user/discover-egypt");
                   }}
                   style={{ cursor: "pointer" }}
                 >
@@ -597,6 +593,7 @@ export default function RecommendedTrips() {
                       className={styles.favoriteButton}
                       onClick={(e) => toggleSave(trip._id, e)}
                       aria-label="Save trip"
+                      disabled={!hasMongoId}
                     >
                       <Heart
                         size={18}
@@ -670,14 +667,7 @@ export default function RecommendedTrips() {
                       <button
                         className={styles.actionButton}
                         onClick={(e) => {
-                          e.stopPropagation();
-                          if (hasMongoId) {
-                            navigate(`/user/trips/${tripId}`);
-                          } else {
-                            navigate("/user/trips/book", {
-                              state: { tour: trip, trip },
-                            });
-                          }
+                          navigate(`/user/trips/${tripId}`);
                         }}
                       >
                         <span>View Details</span>

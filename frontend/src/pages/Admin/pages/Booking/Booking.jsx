@@ -1,13 +1,13 @@
 import styles from './Booking.module.css'
 import Table,{AccountItem} from '../../components/Table/Table'
 import {Button }from '../../../../shared/components/Button/Button'
-import {Input }from '../../../../shared/components/Inputs/Inputs'
+import {Input }from '../../../../shared/components/inputs/inputs'
 import {useCallback, useEffect, useState} from 'react'
 import Icons from '../../../../assets/icons'
 import Form, {FormInput, FormSelect} from '../../components/Form/Form'
 import { Card , LineChart } from '../../components/Status/Status'
 
-// import {getAccount} from '../../api'
+import {getAccount} from '../../api'
 
 export default function Booking(){
     const [accountTypes, setAccountTypes] = useState([])

@@ -101,6 +101,33 @@ const guideProfileSchema = new mongoose.Schema(
       maxlength: 100,
       default: "",
     },
+    phoneNumber: {
+      type: String,
+      trim: true,
+      maxlength: 30,
+      default: "",
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      default: "other",
+    },
+    nationality: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      default: "",
+    },
+    dateOfBirth: {
+      type: Date,
+      default: null,
+    },
+    preferredLanguage: {
+      type: String,
+      trim: true,
+      maxlength: 20,
+      default: "en",
+    },
     about: {
       type: String,
       trim: true,
