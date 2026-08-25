@@ -1,7 +1,7 @@
 import styles from "./RecommendedTours.module.css";
 import { Heart, MapPin, Clock, Star } from "lucide-react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSavedTrips } from "../../../context/useSavedTrips";
 
 // Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img) => {
@@ -33,7 +33,9 @@ function RecommendedTourCard({
   category,
 }) {
   const navigate = useNavigate();
-  const [isSaved, setIsSaved] = useState(false);
+  const { savedIds, toggleSaved } = useSavedTrips();
+  const isSaved = savedIds.has(String(_id));
+  const canSave = /^[a-f0-9]{24}$/i.test(String(_id || ""));
 
   return (
     <div className={styles.card}>
@@ -46,11 +48,12 @@ function RecommendedTourCard({
 
         <button
           className={styles.favoriteBtn}
-          onClick={(e) => {
+          onClick={async (e) => {
             e.stopPropagation();
-            setIsSaved(!isSaved);
+            if (canSave) await toggleSaved(_id);
           }}
           aria-label="Save trip"
+          disabled={!canSave}
         >
           <Heart
             size={16}
@@ -99,7 +102,7 @@ function RecommendedTourCard({
             From <strong>${price || 45}</strong>
           </span>
 
-          <button onClick={() => navigate("/user/discover")}>
+          <button onClick={() => navigate(canSave ? `/user/trips/info/${_id}` : "/user/discover")}>
             View Trip
           </button>
         </div>

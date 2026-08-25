@@ -13,9 +13,11 @@ import {
   FaWifi,
 } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiRequest } from "../../../services/api";
+import { API_BASE_URL, apiRequest } from "../../../services/api";
 
-const API_ORIGIN = "http://localhost:5000";
+const API_ORIGIN = API_BASE_URL.startsWith("http")
+  ? new URL(API_BASE_URL).origin
+  : window.location.origin;
 
 function getImageSrc(image) {
   if (!image) return "";
@@ -154,11 +156,9 @@ function TourMedia({ mediaData = {}, tourId, onBack }) {
       let uploadData = { data: { coverImage: "", galleryImages: [] } };
 
       if (coverPhoto || newGalleryEntries.length > 0) {
-        const uploadResponse = await fetch(`${API_ORIGIN}/api/trips/${tripId}/upload-media`, {
+        const uploadResponse = await fetch(`${API_BASE_URL}/trips/${tripId}/upload-media`, {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-          },
+          credentials: "include",
           body: formData,
         });
 

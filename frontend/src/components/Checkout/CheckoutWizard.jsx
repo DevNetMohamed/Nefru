@@ -1,117 +1,78 @@
-import React, { useState } from "react";
-import styles from "./Checkout.module.css";
-import { FiArrowLeft, FiMoreVertical } from "react-icons/fi";
-import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { useEffect, useMemo, useState } from "react";
+import { FiArrowLeft } from "react-icons/fi";
 
-// استدعاء مكونات الخطوات الأربع
+import styles from "./Checkout.module.css";
 import BookingSummaryStep from "./Steps/BookingSummaryStep";
-import PaymentMethodStep from "./Steps/PaymentMethodStep";
 import CardDetailsStep from "./Steps/CardDetailsStep";
+import PaymentMethodStep from "./Steps/PaymentMethodStep";
 import PaymentSuccessStep from "./Steps/PaymentSuccessStep";
 
-// تهيئة كبسولة Stripe للـ React (سنستخدم المفتاح العام المصرح به)
-const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_mock_publishable_key"
-);
+const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "";
+const stripePromise = publishableKey ? loadStripe(publishableKey) : Promise.resolve(null);
 
-/**
- * 🚀 المكون الرئيسي لمسار الدفع المكتمل (Checkout Wizard)
- * يقود عملية الانتقال بين الخطوات الأربع (1. الملخص -> 2. وسيلة الدفع -> 3. البيانات والبطاقة البلاتينية -> 4. النجاح)
- */
 export default function CheckoutWizard({ initialData }) {
-  // رقم الخطوة الحالية (من 1 إلى 4)
-  const [currentStep, setCurrentStep] = useState(1);
-
-  // حفظ بيانات الحجز ووسيلة الدفع المختارة
+  const [currentStep, setCurrentStep] = useState(
+    ["confirmed", "completed"].includes(initialData.status) ? 4 : 1,
+  );
+  const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [bookingState, setBookingState] = useState({
-    bookingId: initialData?.bookingId || "NF-8829-Luxor",
-    title: initialData?.title || "Giza Pyramids Private Trip",
-    date: initialData?.date || "Oct 24, 2023",
-    time: initialData?.time || "09:00 AM",
-    adults: initialData?.adults || 2,
-    baseRate: initialData?.baseRate || 2400.0,
-    guideFee: initialData?.guideFee || 450.0,
-    transportFee: initialData?.transportFee || 300.0,
-    totalAmount: initialData?.totalAmount || 3150.0,
-    currency: initialData?.currency || "EGP",
-    currencySymbol: initialData?.currencySymbol || "ج.م",
-    paymentMethod: "card",
+    ...initialData,
+    bookingId: initialData.bookingId || initialData.id,
+    totalAmount: Number(initialData.totalPrice || initialData.price || 0),
+    currency: "USD",
+    paymentMethodId: "new_card",
   });
 
-  // التحكم بالرجوع للخطوة السابقة
-  const handleBack = () => {
-    if (currentStep > 1 && currentStep < 4) {
-      setCurrentStep((prev) => prev - 1);
-    } else {
-      window.history.back();
-    }
-  };
+  useEffect(() => {
+    const update = () => {
+      const expiresAt = new Date(initialData.holdExpiresAt).getTime();
+      setRemainingSeconds(Number.isFinite(expiresAt) ? Math.max(0, Math.floor((expiresAt - Date.now()) / 1000)) : 0);
+    };
+    update();
+    const timer = window.setInterval(update, 1000);
+    return () => window.clearInterval(timer);
+  }, [initialData.holdExpiresAt]);
 
-  // نسبة اكتمال شريط التقدم
-  const progressPercent = (currentStep / 4) * 100;
+  const countdown = useMemo(() => {
+    const minutes = Math.floor(remainingSeconds / 60);
+    return `${minutes}:${String(remainingSeconds % 60).padStart(2, "0")}`;
+  }, [remainingSeconds]);
+
+  const handleBack = () => {
+    if (currentStep > 1 && currentStep < 4) setCurrentStep((step) => step - 1);
+    else window.history.back();
+  };
 
   return (
     <div className={styles.checkoutWrapper}>
       <div className={styles.checkoutCard}>
-        {/* 1. الهيدر العلوي */}
         <div className={styles.header}>
-          <button className={styles.backBtn} onClick={handleBack} aria-label="Back">
-            <FiArrowLeft />
-          </button>
-          
-          <h2 className={styles.headerTitle}>
-            {currentStep === 4 ? "نجاح" : "Nefru"}
-          </h2>
-
-          <div style={{ width: 36, textAlign: "right" }}>
-            {currentStep === 3 && <FiMoreVertical style={{ color: "#64748b" }} />}
-          </div>
+          <button className={styles.backBtn} onClick={handleBack} aria-label="Back"><FiArrowLeft /></button>
+          <h2 className={styles.headerTitle}>{currentStep === 4 ? "Confirmed" : `Secure checkout · ${countdown}`}</h2>
+          <div style={{ width: 36 }} />
         </div>
-
-        {/* 2. شريط التقدم بين الخطوات */}
-        <div className={styles.progressBar}>
-          <div
-            className={styles.progressFill}
-            style={{ width: `${progressPercent}%` }}
-          ></div>
-        </div>
-
-        {/* 3. عرض الخطوة الحالية داخل كبسولة Stripe Elements */}
+        <div className={styles.progressBar}><div className={styles.progressFill} style={{ width: `${(currentStep / 4) * 100}%` }} /></div>
         <Elements stripe={stripePromise}>
-          {currentStep === 1 && (
-            <BookingSummaryStep
-              bookingData={bookingState}
-              onNext={() => setCurrentStep(2)}
-            />
-          )}
-
+          {currentStep === 1 && <BookingSummaryStep bookingData={bookingState} onNext={() => setCurrentStep(2)} expired={remainingSeconds <= 0} />}
           {currentStep === 2 && (
             <PaymentMethodStep
               bookingData={bookingState}
-              onNext={(selectedMethod) => {
-                setBookingState((prev) => ({ ...prev, paymentMethod: selectedMethod }));
+              onNext={(paymentMethodId) => {
+                setBookingState((current) => ({ ...current, paymentMethodId }));
                 setCurrentStep(3);
               }}
             />
           )}
-
           {currentStep === 3 && (
             <CardDetailsStep
               bookingData={bookingState}
-              onSuccess={(result) => {
-                setBookingState((prev) => ({
-                  ...prev,
-                  bookingId: result?.bookingId || prev.bookingId,
-                }));
-                setCurrentStep(4);
-              }}
+              stripeConfigured={Boolean(publishableKey)}
+              onSuccess={() => setCurrentStep(4)}
             />
           )}
-
-          {currentStep === 4 && (
-            <PaymentSuccessStep bookingData={bookingState} />
-          )}
+          {currentStep === 4 && <PaymentSuccessStep bookingData={bookingState} />}
         </Elements>
       </div>
     </div>

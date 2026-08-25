@@ -1,28 +1,23 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
 import CheckoutWizard from "../../../../../../components/Checkout/CheckoutWizard";
-import { useLocation } from "react-router-dom";
+import { apiRequest } from "../../../../../../services/api";
 
-/**
- * 📍 صفحة إتمام الحجز والدفع (Status / Checkout Page)
- * تم دمج شاشات بوابة الدفع الأربعة للربط المباشر بطلب المستخدم
- */
-const Status = () => {
-  const location = useLocation();
+export default function Status() {
+  const { bookingId } = useParams();
+  const [booking, setBooking] = useState(null);
+  const [error, setError] = useState("");
 
-  // الحصول على بيانات الرحلة المرسلة إن وجدت من صفحة الحجز
-  const passedBookingData = location.state || {
-    bookingId: "NF-8829-Luxor",
-    title: "Giza Pyramids Private Trip",
-    date: "Oct 24, 2023",
-    time: "09:00 AM",
-    adults: 2,
-    baseRate: 240.0,
-    guideFee: 45.0,
-    transportFee: 30.0,
-    totalAmount: 315.0,
-  };
+  useEffect(() => {
+    let active = true;
+    apiRequest(`/bookings/${bookingId}`)
+      .then((response) => active && setBooking(response?.data?.booking))
+      .catch((requestError) => active && setError(requestError.message));
+    return () => { active = false; };
+  }, [bookingId]);
 
-  return <CheckoutWizard initialData={passedBookingData} />;
-};
-
-export default Status;
+  if (error) return <main style={{ minHeight: "70vh", display: "grid", placeItems: "center" }}>{error}</main>;
+  if (!booking) return <main style={{ minHeight: "70vh", display: "grid", placeItems: "center" }}>Loading secure checkout...</main>;
+  return <CheckoutWizard initialData={booking} />;
+}

@@ -74,6 +74,7 @@ const tripSchema = new mongoose.Schema(
 
 
     price: { type: Number, required: true },
+    currency: { type: String, enum: ["USD"], default: "USD" },
     duration: { type: String, required: true }, // e.g., "3 hours", "Full Day"
     image: { type: String, default: "" },
     guide: {

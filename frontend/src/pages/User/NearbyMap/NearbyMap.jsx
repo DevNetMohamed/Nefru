@@ -29,6 +29,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import axios from "axios";
+import { useSavedTrips } from "../../../context/useSavedTrips";
 
 import logo from "@/assets/images/logo.png";
 import profileImage from "@/assets/images/user/user1.png";
@@ -412,7 +413,7 @@ export default function NearbyMap() {
   const [travelMode, setTravelMode] = useState("walking"); // "walking" | "driving"
   const [routeData, setRouteData] = useState(null);
   const [sortBy, setSortBy] = useState("recommended"); // "recommended" | "price-asc" | "price-desc" | "duration" | "rating"
-  const [savedTourIds, setSavedTourIds] = useState(new Set());
+  const { savedIds: savedTourIds, toggleSaved } = useSavedTrips();
   const [currentLocationName, setCurrentLocationName] = useState("Giza, Egypt");
   const [isSheetExpanded, setIsSheetExpanded] = useState(false);
   const touchStartY = useRef(0);
@@ -654,17 +655,10 @@ export default function NearbyMap() {
   };
 
   // Toggle favorite saved
-  const toggleSave = (id, e) => {
+  const toggleSave = async (id, e) => {
     e.stopPropagation();
-    setSavedTourIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+    if (!/^[a-f0-9]{24}$/i.test(String(id || ""))) return;
+    await toggleSaved(id);
   };
 
   // Recenter button click
@@ -1235,7 +1229,13 @@ export default function NearbyMap() {
                           ${tour.price}
                         </span>
                         <button
-                          onClick={() => navigate("/user/trips/book", { state: { tour, trip: tour } })}
+                          onClick={() => {
+                            if (/^[a-f0-9]{24}$/i.test(String(tour.id || ""))) {
+                              navigate(`/user/trips/${tour.id}/book`);
+                            } else {
+                              navigate("/user/available-today");
+                            }
+                          }}
                           className="text-[11px] font-extrabold text-white bg-[#003D5B] hover:bg-[#002b40] px-3 py-1.5 rounded-lg shadow-xs transition-colors shrink-0 whitespace-nowrap"
                         >
                           Book Now →

@@ -1,183 +1,147 @@
-import Style from "./Book.module.css";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import DateComponent from "./components/Date/Date";
-import { Button } from "../../../../shared/components/Button/Button";
-import Icons from "../../../../assets/icons";
-import { useState, useMemo } from "react";
-import Counter from "./components/Counter/Counter";
-import { MdOutlineVerified } from "react-icons/md";
-import { IoArrowBack } from "react-icons/io5";
-import { IoMdShare } from "react-icons/io";
+import { useEffect, useMemo, useState } from "react";
+import { FiArrowLeft, FiCalendar, FiClock, FiLock, FiMapPin, FiUser } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
 
-const SEED_TRIP_PRICES = {
-  "Historic Cairo Walking Trip": 700,
-  "Pyramids Sunrise & Sphinx Experience": 1200,
-  "Alexandria Coastal & Heritage Trip": 1500,
-  "Luxor East & West Banks": 1900,
-  "Nile Sunset Felucca": 500,
-  "Cairo Street Food Evening": 850,
-  "Siwa Desert Safari & Sunset": 2200,
-  "Coptic Cairo & Civilization Museum": 1100,
-  "Abu Simbel Day Trip": 2600,
-};
+import { apiRequest, resolveMediaUrl } from "../../../../services/api";
+import styles from "./Book.module.css";
 
-const Book = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const trip = location.state?.trip || location.state?.tour;
-  const tripTitle = trip?.title || "Historic Cairo Walking Trip";
-
-  // Derive realistic unit price and currency from seed data or passed state
-  const unitPrice = useMemo(() => {
-    if (trip?.price) {
-      const parsed = typeof trip.price === "number" ? trip.price : parseFloat(String(trip.price).replace(/[^0-9.]/g, ""));
-      if (!isNaN(parsed) && parsed > 0) return parsed;
-    }
-    return SEED_TRIP_PRICES[tripTitle] || 700;
-  }, [trip, tripTitle]);
-
-  const isEGP = unitPrice >= 100 || trip?.currency === "EGP" || !String(trip?.price || "").includes("$");
-  const currencySymbol = isEGP ? "ج.م" : "$";
-
-  const [activeSlot, setActiveSlot] = useState(trip?.timeSlot || "Morning");
-  const [travelers, setTravelers] = useState(1);
-  const [selectedDate, setSelectedDate] = useState(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow;
+function formatDate(dateKey) {
+  return new Date(`${dateKey}T00:00:00`).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
   });
+}
 
-  const totalPrice = unitPrice * travelers;
+export default function Book() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedOccurrence, setSelectedOccurrence] = useState("");
+  const [specialRequest, setSpecialRequest] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const formattedDate = useMemo(() => {
-    return selectedDate.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  }, [selectedDate]);
+  useEffect(() => {
+    let active = true;
+    apiRequest(`/bookings/trips/${id}/availability`)
+      .then((response) => {
+        if (!active) return;
+        const next = response?.data;
+        setData(next);
+        const firstDate = next?.schedule?.dates?.[0] || "";
+        setSelectedDate(firstDate);
+        setSelectedOccurrence(next?.schedule?.slotsByDate?.[firstDate]?.find((slot) => slot.bookable)?.occurrenceKey || "");
+      })
+      .catch((requestError) => active && setError(requestError.message))
+      .finally(() => active && setLoading(false));
+    return () => { active = false; };
+  }, [id]);
 
-  const TIME_SLOTS = [
-    { label: "Morning", Icon: Icons.sun },
-    { label: "Afternoon", Icon: Icons.afternoon },
-    { label: "Evening", Icon: Icons.event },
-  ];
+  const slots = useMemo(
+    () => data?.schedule?.slotsByDate?.[selectedDate] || [],
+    [data, selectedDate],
+  );
 
-  const bookingPayload = {
-    bookingId: `NF-${Math.floor(1000 + Math.random() * 9000)}-${tripTitle.slice(0, 5)}`,
-    title: tripTitle,
-    date: formattedDate,
-    time: activeSlot === "Morning" ? "09:30 AM" : activeSlot === "Afternoon" ? "02:00 PM" : "06:00 PM",
-    adults: travelers,
-    baseRate: unitPrice * travelers,
-    guideFee: Math.round(unitPrice * travelers * 0.1),
-    transportFee: Math.round(unitPrice * travelers * 0.05),
-    totalAmount: totalPrice,
-    currency: currencySymbol,
+  const selectDate = (date) => {
+    setSelectedDate(date);
+    setSelectedOccurrence(data?.schedule?.slotsByDate?.[date]?.find((slot) => slot.bookable)?.occurrenceKey || "");
   };
 
+  const createBooking = async () => {
+    if (!selectedOccurrence) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      const response = await apiRequest("/bookings", {
+        method: "POST",
+        body: JSON.stringify({ tripId: id, occurrenceKey: selectedOccurrence, specialRequest }),
+      });
+      navigate(`/user/bookings/${response.data.booking.id}/payment`);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) return <main className={styles.statePage}>Loading available dates...</main>;
+  if (!data) return <main className={styles.statePage}>{error || "Trip availability is unavailable."}</main>;
+
+  const trip = data.trip;
+
   return (
-    <>
-      {/* Header */}
-      <div className="container d-flex justify-content-between align-items-center py-3">
-        <div>
-          <button
-            onClick={() => navigate(-1)}
-            className={`${Style.backButton} border-0 bg-transparent cursor-pointer`}
-            aria-label="Go back"
-          >
-            <IoArrowBack />
-          </button>
-        </div>
-        <div className="fw-bold fs-6 text-truncate px-2">{tripTitle}</div>
-        <div className={`${Style.backButton}`}>
-          <IoMdShare />
-        </div>
-      </div>
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <button type="button" onClick={() => navigate(-1)} aria-label="Back"><FiArrowLeft /></button>
+        <div><span>Book your place</span><h1>{trip.title}</h1></div>
+      </header>
 
-      {/* Schedule */}
-      <DateComponent
-        selected={selectedDate}
-        onChange={(d) => setSelectedDate(d)}
-      />
-
-      <div className="container">
-        <div className="py-2 fw-semibold">Select Time Slot</div>
-        <div className={Style.slotsRow}>
-          {TIME_SLOTS.map((slot, index) => {
-            const SlotIcon = slot.Icon;
-            const isSelected = slot.label === activeSlot;
-
-            return (
-              <div key={index} className={Style.timeSlot}>
-                <Button
-                  className={`${Style.timeSlot}`}
-                  type={isSelected ? "primary" : "normal"}
-                  onClick={() => setActiveSlot(slot.label)}
-                >
-                  {SlotIcon && <SlotIcon />}
-                  {slot.label}
-                </Button>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div
-        className={`container d-flex justify-content-between align-items-center bg-body-tertiary p-3 rounded-3 mt-3`}
-      >
-        <div className="col-md-6">
-          <h5 className="mb-1 fw-bold">Travelers</h5>
-          <span className="text-muted small">
-            {isEGP ? `${unitPrice.toFixed(2)} ${currencySymbol}` : `${currencySymbol}${unitPrice}`} per person
-          </span>
-        </div>
-
-        <div className="col-md-6 d-flex justify-content-end">
-          <Counter
-            initialValue={1}
-            min={1}
-            max={12}
-            onChange={(val) => setTravelers(val)}
-          />
-        </div>
-      </div>
-
-      <div className="container mt-3">
-        <div className="bg-body-tertiary p-4 rounded-4 shadow-sm border border-light-subtle">
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div className={styles.layout}>
+        <section className={styles.bookingPanel}>
+          <div className={styles.tripSummary}>
+            <img src={resolveMediaUrl(trip.image)} alt={trip.title} />
             <div>
-              <p className="text-muted mb-1 small fw-medium">
-                {formattedDate} • {activeSlot}
-              </p>
-              <span className="text-uppercase small text-secondary fw-semibold">
-                Total Price ({travelers} {travelers === 1 ? "Traveler" : "Travelers"})
-              </span>
-              <h2 className="fw-bolder mb-0 text-dark">
-                {isEGP ? `${totalPrice.toFixed(2)} ${currencySymbol}` : `${currencySymbol}${totalPrice.toFixed(2)}`}
-              </h2>
-            </div>
-
-            <div className="d-flex align-items-center gap-2 text-success px-3 py-2 bg-success-subtle rounded-3">
-              <MdOutlineVerified size={18} />
-              <span className="fw-semibold small">Best Price Guaranteed</span>
+              <h2>{trip.title}</h2>
+              <p>{trip.description}</p>
+              <div className={styles.meta}>
+                <span><FiMapPin /> {trip.location}</span>
+                <span><FiClock /> {trip.duration}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="container my-4 d-flex justify-content-end">
-        <Link
-          to="/user/trips/book/status"
-          state={bookingPayload}
-          style={{ textDecoration: "none" }}
-        >
-          <Button type="primary">Proceed to Payment</Button>
-        </Link>
+          <section className={styles.section}>
+            <div className={styles.sectionHeading}><FiCalendar /><div><h2>Select a date</h2><p>Only dates published by the guide are available.</p></div></div>
+            {data.schedule.dates.length ? (
+              <div className={styles.dateGrid}>
+                {data.schedule.dates.map((date) => (
+                  <button key={date} type="button" className={selectedDate === date ? styles.selected : ""} onClick={() => selectDate(date)}>
+                    {formatDate(date)}
+                  </button>
+                ))}
+              </div>
+            ) : <p className={styles.empty}>No future dates are available.</p>}
+          </section>
+
+          <section className={styles.section}>
+            <div className={styles.sectionHeading}><FiClock /><div><h2>Select a time</h2><p>One account reserves one place.</p></div></div>
+            <div className={styles.slotGrid}>
+              {slots.map((slot) => (
+                <button
+                  key={slot.occurrenceKey}
+                  type="button"
+                  disabled={!slot.bookable}
+                  className={selectedOccurrence === slot.occurrenceKey ? styles.selected : ""}
+                  onClick={() => setSelectedOccurrence(slot.occurrenceKey)}
+                >
+                  <strong>{slot.startTime} – {slot.endTime}</strong>
+                  <span>{slot.availableSpots} of {slot.capacity} places left</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <label className={styles.requestField}>
+            <span>Special request <small>(optional)</small></span>
+            <textarea value={specialRequest} maxLength={500} onChange={(event) => setSpecialRequest(event.target.value)} placeholder="Accessibility, meeting, or other useful information for your guide" />
+          </label>
+        </section>
+
+        <aside className={styles.pricePanel}>
+          <span className={styles.priceLabel}>Price for your place</span>
+          <strong className={styles.price}>${Number(trip.price).toFixed(2)} USD</strong>
+          <div className={styles.priceRow}><span>Traveler</span><span><FiUser /> Account holder</span></div>
+          <div className={styles.total}><span>Total</span><strong>${Number(trip.price).toFixed(2)}</strong></div>
+          <p className={styles.holdNote}><FiLock /> Your place will be held for {data.holdMinutes} minutes while you pay.</p>
+          {error && <p className={styles.error}>{error}</p>}
+          <button type="button" className={styles.continueButton} disabled={!selectedOccurrence || submitting} onClick={createBooking}>
+            {submitting ? "Holding your place..." : "Continue to payment"}
+          </button>
+        </aside>
       </div>
-    </>
+    </main>
   );
-};
-
-export default Book;
+}

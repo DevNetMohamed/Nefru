@@ -1,117 +1,60 @@
-import React, { useState } from "react";
-import styles from "../Checkout.module.css";
-import { FiCreditCard, FiArrowRight, FiLock } from "react-icons/fi";
+import { useEffect, useState } from "react";
 import { FaApplePay, FaGooglePay, FaPaypal } from "react-icons/fa";
+import { FiArrowRight, FiCreditCard, FiLock } from "react-icons/fi";
 
-/**
- * 📍 الشاشة الثانية: اختيار وسيلة الدفع (Select Payment Method)
- * تتيح للمستخدم تحديد طريقة الدفع المناسبة له (بطاقة بانكية، Apple Pay، Google Pay، أو PayPal)
- */
+import { apiRequest, resolveMediaUrl } from "../../../services/api";
+import styles from "../Checkout.module.css";
+
 export default function PaymentMethodStep({ bookingData, onNext }) {
-  // وسيلة الدفع المحددة حالياً
-  const [selectedMethod, setSelectedMethod] = useState("card");
+  const [selected, setSelected] = useState("new_card");
+  const [cards, setCards] = useState([]);
+  const [error, setError] = useState("");
 
-  const totalAmount = bookingData?.totalAmount || 3150.0;
-  const symbol = bookingData?.currencySymbol || "ج.م";
+  useEffect(() => {
+    apiRequest("/payments/methods")
+      .then((response) => {
+        const methods = response?.data?.methods || [];
+        setCards(methods);
+        const defaultCard = methods.find((card) => card.isDefault);
+        if (defaultCard) setSelected(defaultCard.id);
+      })
+      .catch((requestError) => setError(requestError.message));
+  }, []);
 
-  // قائمة وسائل الدفع المتاحة
   const methods = [
-    {
-      id: "card",
-      name: "Credit / Debit Card",
-      sub: "Visa, Mastercard, Amex",
-      icon: <FiCreditCard />,
-    },
-    {
-      id: "apple_pay",
-      name: "Apple Pay",
-      sub: "Fast & Secure Check-out",
-      icon: <FaApplePay style={{ fontSize: "1.6rem" }} />,
-    },
-    {
-      id: "google_pay",
-      name: "Google Pay",
-      sub: "Secure Google Wallet",
-      icon: <FaGooglePay style={{ fontSize: "1.6rem" }} />,
-    },
-    {
-      id: "paypal",
-      name: "PayPal",
-      sub: "Pay with your PayPal account",
-      icon: <FaPaypal style={{ color: "#003087" }} />,
-    },
+    ...cards.map((card) => ({ id: card.id, name: `${card.brand.toUpperCase()} ending ${card.last4}`, sub: `Expires ${card.expMonth}/${card.expYear}`, icon: <FiCreditCard /> })),
+    { id: "new_card", name: "Credit / Debit Card", sub: "Use a new card", icon: <FiCreditCard /> },
   ];
-
-  const handleProceed = () => {
-    onNext(selectedMethod);
-  };
+  const soon = [
+    { id: "apple", name: "Apple Pay", icon: <FaApplePay /> },
+    { id: "google", name: "Google Pay", icon: <FaGooglePay /> },
+    { id: "paypal", name: "PayPal", icon: <FaPaypal /> },
+  ];
 
   return (
     <div className={styles.content}>
-      {/* 1. عنوان المرحلة */}
-      <div className={styles.stepTitleContainer}>
-        <h3 className={styles.stepTitle}>طريقة الدفع</h3>
-        <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>
-          SELECT PAYMENT METHOD
-        </span>
-      </div>
-
-      {/* 2. ملخص سريع للرحلة */}
+      <div className={styles.stepTitleContainer}><h3 className={styles.stepTitle}>Payment method</h3></div>
       <div className={styles.miniSummary}>
-        <img
-          src="https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=150&q=80"
-          alt="Trip"
-          className={styles.miniThumb}
-        />
-        <div>
-          <h5 className={styles.miniTitle}>Private Giza Plateau Trip</h5>
-          <p className={styles.miniMeta}>2 Travelers • Oct 14, 2023</p>
-        </div>
-        <div className={styles.miniPrice}>{totalAmount.toFixed(2)} {symbol}</div>
+        <img src={resolveMediaUrl(bookingData.image)} alt={bookingData.title} className={styles.miniThumb} />
+        <div><h5 className={styles.miniTitle}>{bookingData.title}</h5><p className={styles.miniMeta}>One traveler · {bookingData.date}</p></div>
+        <div className={styles.miniPrice}>${bookingData.totalAmount.toFixed(2)}</div>
       </div>
-
-      {/* 3. قائمة خيارات الدفع */}
       <div className={styles.methodsList}>
-        {methods.map((method) => {
-          const isSelected = selectedMethod === method.id;
-          return (
-            <div
-              key={method.id}
-              className={`${styles.methodCard} ${
-                isSelected ? styles.methodCardSelected : ""
-              }`}
-              onClick={() => setSelectedMethod(method.id)}
-            >
-              <div className={styles.methodLeft}>
-                <div className={styles.methodIconBadge}>{method.icon}</div>
-                <div>
-                  <div className={styles.methodName}>{method.name}</div>
-                  <div className={styles.methodSub}>{method.sub}</div>
-                </div>
-              </div>
-
-              {/* دائرة تحديد الاختيار (Radio Button) */}
-              <div
-                className={`${styles.radioCircle} ${
-                  isSelected ? styles.radioCircleSelected : ""
-                }`}
-              >
-                {isSelected && <div className={styles.radioDot}></div>}
-              </div>
-            </div>
-          );
-        })}
+        {methods.map((method) => (
+          <button type="button" key={method.id} className={`${styles.methodCard} ${selected === method.id ? styles.methodCardSelected : ""}`} onClick={() => setSelected(method.id)}>
+            <span className={styles.methodLeft}><span className={styles.methodIconBadge}>{method.icon}</span><span><span className={styles.methodName}>{method.name}</span><span className={styles.methodSub}>{method.sub}</span></span></span>
+            <span className={`${styles.radioCircle} ${selected === method.id ? styles.radioCircleSelected : ""}`}>{selected === method.id && <span className={styles.radioDot} />}</span>
+          </button>
+        ))}
+        {soon.map((method) => (
+          <div key={method.id} className={styles.methodCard} aria-disabled="true" style={{ opacity: .55, cursor: "not-allowed" }}>
+            <span className={styles.methodLeft}><span className={styles.methodIconBadge}>{method.icon}</span><span><span className={styles.methodName}>{method.name}</span><span className={styles.methodSub}>Soon</span></span></span>
+          </div>
+        ))}
       </div>
-
-      {/* شريط تشفير آمن */}
-      <div className={styles.securityBanner} style={{ color: "#64748b", fontSize: "0.7rem" }}>
-        <FiLock /> 256-BIT SSL ENCRYPTED PAYMENT
-      </div>
-
-      {/* 4. زر المتابعة */}
-      <button className={styles.mainBtn} onClick={handleProceed}>
-        Pay Now <FiArrowRight />
-      </button>
+      {error && <div className={styles.cancellationNote}>{error}</div>}
+      <div className={styles.securityBanner}><FiLock /> Stripe-secured card payment</div>
+      <button className={styles.mainBtn} onClick={() => onNext(selected)}>Continue <FiArrowRight /></button>
     </div>
   );
 }

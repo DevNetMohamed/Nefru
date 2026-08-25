@@ -110,7 +110,11 @@ function AvailableToday({ tours }) {
 
               <button onClick={(e) => {
                 e.stopPropagation();
-                navigate("/user/trips/book", { state: { tour, trip: tour } });
+                if (/^[a-f0-9]{24}$/i.test(String(tour.id))) {
+                  navigate(`/user/trips/${tour.id}/book`);
+                } else {
+                  navigate("/user/available-today");
+                }
               }}>
                 Book Now
               </button>

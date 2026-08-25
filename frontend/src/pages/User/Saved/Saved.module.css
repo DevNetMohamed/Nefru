@@ -1,0 +1,21 @@
+.page { width: 100%; }
+.page header { margin-bottom: 24px; }
+.page h1 { color: var(--color-primary-dark); font-size: clamp(28px, 3vw, 42px); }
+.page header p { color: var(--color-text-muted); margin-top: 7px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { border: 1px solid var(--color-border-soft); border-radius: 18px; overflow: hidden; background: var(--color-surface); box-shadow: var(--shadow-sm); cursor: pointer; }
+.card > img { width: 100%; height: 190px; object-fit: cover; background: var(--color-media-placeholder); }
+.body { padding: 18px; }
+.category { color: var(--color-secondary-dark); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.body h2 { color: var(--color-primary-dark); font-size: 19px; margin: 6px 0 12px; }
+.meta { display: flex; flex-wrap: wrap; gap: 10px 16px; color: var(--color-text-muted); font-size: 12px; }
+.meta span { display: flex; align-items: center; gap: 5px; }
+.footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--color-border-soft); display: flex; align-items: center; justify-content: space-between; }
+.footer strong { color: var(--color-primary-dark); }
+.footer button { width: 38px; height: 38px; border: 0; border-radius: 10px; background: var(--color-danger-mute); color: var(--color-danger); display: grid; place-items: center; cursor: pointer; }
+.empty { min-height: 300px; border: 1px solid var(--color-border-soft); border-radius: 18px; background: var(--color-surface); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; color: var(--color-text-muted); padding: 28px; }
+.empty > svg { font-size: 40px; color: var(--color-secondary-dark); }
+.empty h2 { color: var(--color-primary-dark); }
+.empty button { margin-top: 8px; min-height: 44px; border: 0; border-radius: 11px; background: var(--color-primary-dark); color: var(--color-surface); padding: 0 18px; font-weight: 800; cursor: pointer; }
+.error { margin-bottom: 16px; padding: 12px; border-radius: 12px; background: var(--color-danger-mute); color: var(--color-danger); }
+@media (max-width: 760px) { .page header { display: none; } .grid { grid-template-columns: 1fr; } .card > img { height: 170px; } }

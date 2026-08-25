@@ -1,11 +1,11 @@
 import styles from './CMS.module.css'
 import Table,{TourItem} from '../../components/Table/Table'
 import {Button }from '../../../../shared/components/Button/Button'
-import {Input }from '../../../../shared/components/Inputs/Inputs'
+import {Input }from '../../../../shared/components/inputs/inputs'
 import {useState, useCallback, useEffect} from 'react'
 import Icons from '../../../../assets/icons'
 
-// import {getTrips} from '../../api'
+import {getTrips} from '../../api'
 
 export default function CMS(){
     // const users = [

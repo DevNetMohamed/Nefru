@@ -1,6 +1,7 @@
 import {
   CalendarDays,
   CircleHelp,
+  ClipboardList,
   Home,
   MapPinned,
   UserRound,
@@ -14,6 +15,7 @@ const navigationItems = [
   { label: "Dashboard", to: "/guide/dashboard", icon: Home },
   { label: "My Tours", to: "/guide", icon: MapPinned, end: true },
   { label: "Calendar", to: "/guide/calendar", icon: CalendarDays },
+  { label: "Bookings", to: "/guide/bookings", icon: ClipboardList },
   { label: "Profile", to: "/guide/profile", icon: UserRound },
 ];
 

@@ -8,16 +8,16 @@ import {
 
 export default function NotificationSync() {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       dispatch(fetchNotifications());
       return;
     }
 
     dispatch(clearNotifications());
-  }, [dispatch, token]);
+  }, [dispatch, isAuthenticated]);
 
   return null;
 }

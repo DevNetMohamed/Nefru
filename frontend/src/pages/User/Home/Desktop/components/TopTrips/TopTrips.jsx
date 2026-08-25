@@ -63,6 +63,7 @@ const TopTrips = () => {
         {tours.map((trip) => (
           <TourCard
             key={trip.id}
+            id={trip.id}
             image={trip.image}
             location={trip.location}
             nights={trip.nights}
