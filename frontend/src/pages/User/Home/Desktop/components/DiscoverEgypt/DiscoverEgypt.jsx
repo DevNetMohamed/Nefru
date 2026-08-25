@@ -245,7 +245,7 @@ function DiscoverEgypt() {
                   onClick={() => {
                     const searchCity = activeGuide.searchCity;
                     setActiveGuide(null);
-                    navigate(`/user/recommended-trips?search=${encodeURIComponent(searchCity)}`);
+                    navigate(`/user/trips?search=${encodeURIComponent(searchCity)}`);
                   }}
                 >
                   <span>Find Guided Tours to {activeGuide.title}</span>
@@ -270,4 +270,4 @@ function DiscoverEgypt() {
   );
 }
 
-export default DiscoverEgypt;
+export default DiscoverEgypt;

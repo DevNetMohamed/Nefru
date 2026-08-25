@@ -102,7 +102,7 @@ function RecommendedTourCard({
             From <strong>${price || 45}</strong>
           </span>
 
-          <button onClick={() => navigate(canSave ? `/user/trips/info/${_id}` : "/user/discover")}>
+          <button onClick={() => navigate(canSave ? `/user/trips/${_id}` : "/user/discover")}>
             View Trip
           </button>
         </div>

@@ -11,6 +11,7 @@ import {useState }from 'react'
 
 export default function Admin() {
   const [data,setData] = useState()
+
   return (
     <div className={styles.dashboard}>
       <div className={styles.sidebar}>

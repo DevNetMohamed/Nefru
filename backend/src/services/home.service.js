@@ -1,10 +1,10 @@
 import { GuideProfile } from "../models/guide.model.js";
 import { Trip } from "../models/trip.model.js";
 
-async function getPublicTrips(sort = null) {
+async function getPublicTrips(sort = null,limit=null) {
   let query = Trip.find({ status: "active" })
     .populate("guide", "email status")
-    .limit(18)
+    .limit(limit)
     .lean();
 
   if (sort) {
@@ -56,9 +56,9 @@ async function getPublicTrips(sort = null) {
 export const getHomeData = async () => {
   const [featuredTrips, availableToday, toursNearYou, trustedGuideCandidates] =
     await Promise.all([
-      getPublicTrips(),
-      getPublicTrips({ createdAt: -1 }),
-      getPublicTrips(),
+      getPublicTrips(limit= 4),
+      getPublicTrips({ createdAt: -1 }, limit=4),
+      getPublicTrips(limit=4),
       GuideProfile.find({ verificationStatus: "approved" })
         .populate({
           path: "user",

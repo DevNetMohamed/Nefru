@@ -16,7 +16,7 @@ const TourCard = ({
   const canOpen = /^[a-f0-9]{24}$/i.test(String(id || ""));
   const saved = savedIds.has(String(id));
   return (
-    <article className={styles.card} onClick={() => canOpen && navigate(`/user/trips/info/${id}`)}>
+    <article className={styles.card} onClick={() => canOpen && navigate(`/user/trips/${id}`)}>
       <div className={styles.imageWrapper}>
         <img src={image} alt={title} />
 

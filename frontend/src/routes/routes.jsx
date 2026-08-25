@@ -86,16 +86,16 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "home", element: <Home /> },
-      { path: "guideprofile", element: <GuideProfile /> },
+      // { path: "guideprofile", element: <GuideProfile /> },
       //Discover Routes
-      { path: "discover", element: <Discover /> },
+      // { path: "discover", element: <Discover /> },
       { path: "nearby", element: <NearbyMap /> },
-      { path: "recommended-trips", element: <RecommendedTrips /> },
-      { path: "all-recommended-trips", element: <RecommendedTrips /> },
-      { path: "available-today", element: <AvailableTodayPage /> },
-      { path: "tours-available-today", element: <AvailableTodayPage /> },
-      { path: "discover-egypt", element: <DiscoverEgyptPage /> },
-      { path: "explore-egypt", element: <DiscoverEgyptPage /> },
+      // { path: "recommended-trips", element: <RecommendedTrips /> },
+      // { path: "all-recommended-trips", element: <RecommendedTrips /> },
+      // { path: "available-today", element: <AvailableTodayPage /> },
+      // { path: "tours-available-today", element: <AvailableTodayPage /> },
+      // { path: "discover-egypt", element: <DiscoverEgyptPage /> },
+      // { path: "explore-egypt", element: <DiscoverEgyptPage /> },
 
       {
         path: "trips",
@@ -226,6 +226,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <NotFound />,
+    element: <Navigate to="/user" replace />,
   },
 ]);

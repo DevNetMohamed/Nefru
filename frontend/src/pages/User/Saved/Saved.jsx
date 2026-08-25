@@ -36,7 +36,7 @@ export default function Saved() {
       <header><div><h1>Saved Trips</h1><p>Your bookmarked Nefru experiences, available on every signed-in device.</p></div></header>
       {error && <p className={styles.error}>{error}</p>}
       {loading ? <div className={styles.empty}>Loading saved trips...</div> : trips.length === 0 ? (
-        <div className={styles.empty}><FiBookmark /><h2>No saved trips yet</h2><p>Use the bookmark button on an active trip to keep it here.</p><button onClick={() => navigate("/user/recommended-trips")}>Explore trips</button></div>
+        <div className={styles.empty}><FiBookmark /><h2>No saved trips yet</h2><p>Use the bookmark button on an active trip to keep it here.</p><button onClick={() => navigate("/user/trips")}>Explore trips</button></div>
       ) : (
         <div className={styles.grid}>
           {trips.map((trip) => (

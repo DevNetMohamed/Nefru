@@ -59,7 +59,7 @@ export default function Book() {
         method: "POST",
         body: JSON.stringify({ tripId: id, occurrenceKey: selectedOccurrence, specialRequest }),
       });
-      navigate(`/user/bookings/${response.data.booking.id}/payment`);
+      navigate(`/user/profile/bookings`);
     } catch (requestError) {
       setError(requestError.message);
     } finally {

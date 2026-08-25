@@ -22,12 +22,12 @@ const SearchModal = ({open, onOpenChange }) => {
 
   const handleSelectSearch = (term) => {
     onOpenChange?.(false);
-    navigate(`/user/discover?search=${encodeURIComponent(term)}`);
+    navigate(`/user/trips?search=${encodeURIComponent(term)}`);
   };
 
   const handleSelectDestination = (dest) => {
     onOpenChange?.(false);
-    navigate(`/user/discover?location=${encodeURIComponent(dest)}`);
+    navigate(`/user/trips?location=${encodeURIComponent(dest)}`);
   };
 
   return (
