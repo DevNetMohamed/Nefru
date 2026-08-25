@@ -54,6 +54,10 @@ const touristProfileSchema = new mongoose.Schema(
       maxlength: 20,
       default: "en",
     },
+    savedTrips: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Trip" }],
+      default: [],
+    },
   },
   { timestamps: true },
 );

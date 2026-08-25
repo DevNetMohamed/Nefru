@@ -4,7 +4,7 @@
 // import.meta.env.DEV guarantees that production builds never enable the bypass.
 export const DEV_AUTH_BYPASS =
   import.meta.env.DEV &&
-  String(import.meta.env.VITE_DEV_AUTH_BYPASS ?? "true").toLowerCase() !==
+  String(import.meta.env.VITE_DEV_AUTH_BYPASS ?? "false").toLowerCase() !==
     "false";
 
 export function getDevelopmentRole() {

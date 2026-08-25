@@ -9,6 +9,7 @@ import apiRouter from "./routes/index.js";
 import { notFound } from "./middlewares/notFound.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { csrfOriginGuard } from "./middlewares/csrfOriginGuard.js";
+import { handleStripeWebhook } from "./controllers/payment.controller.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -22,6 +23,11 @@ app.use(
   }),
 );
 app.use(morgan("dev"));
+app.post(
+  "/api/payments/webhook",
+  express.raw({ type: "application/json" }),
+  handleStripeWebhook,
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 app.use(csrfOriginGuard);

@@ -100,6 +100,12 @@ const userSchema = new mongoose.Schema(
       default: null,
       select: false,
     },
+    stripeCustomerId: {
+      type: String,
+      default: "",
+      select: false,
+      index: true,
+    },
   },
   { timestamps: true },
 );

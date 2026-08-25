@@ -18,7 +18,7 @@ const cookieSameSite = ["lax", "strict", "none"].includes(requestedSameSite)
   : "lax";
 const devAuthBypass =
   nodeEnv === "development" &&
-  String(process.env.DEV_AUTH_BYPASS || "true").toLowerCase() !== "false";
+  String(process.env.DEV_AUTH_BYPASS || "false").toLowerCase() !== "false";
 
 if (nodeEnv === "production" && !jwtSecret) {
   throw new Error("JWT_SECRET must be configured in production");
@@ -35,6 +35,8 @@ export const env = {
   cookieSameSite,
   googleClientId: process.env.GOOGLE_CLIENT_ID || "91221898814-uemk7pdvf01si76c33f6ksvrui17eitf.apps.googleusercontent.com",
   devAuthBypass,
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
+  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
 
   // Email Configurations
   mailerHost: process.env.MAILER_HOST || "smtp.gmail.com",

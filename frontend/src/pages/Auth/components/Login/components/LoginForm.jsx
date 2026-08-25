@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -23,6 +23,7 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 
 function LoginForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [rememberMe, setRememberMe] = useState(false);
   const [apiError, setApiError] = useState("");
@@ -56,7 +57,11 @@ function LoginForm() {
             profile,
           }),
         );
-        navigate(getPostAuthPath(user, profile), { replace: true });
+        const returnTo = new URLSearchParams(location.search).get("returnTo");
+        const safeReturnTo = user?.role === "tourist" && returnTo?.startsWith("/user/")
+          ? returnTo
+          : getPostAuthPath(user, profile);
+        navigate(safeReturnTo, { replace: true });
       } catch (error) {
         setNeedsVerification(error.code === "EMAIL_NOT_VERIFIED");
         setApiError(error.message || "Login failed. Please try again.");

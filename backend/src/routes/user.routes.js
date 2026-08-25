@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protect } from "../middlewares/authMiddleware.js";
+import { authorizeRoles, protect } from "../middlewares/authMiddleware.js";
 import { upload } from "../config/upload.js";
 import { validate } from "../middlewares/validate.js";
 import { updateTouristProfileSchema } from "../controllers/validation/userValidation.js";
@@ -9,6 +9,11 @@ import {
   uploadMyAvatar,
   updateMyProfile,
 } from "../controllers/profile.controller.js";
+import {
+  getSavedTrips,
+  saveTrip,
+  unsaveTrip,
+} from "../controllers/savedTrip.controller.js";
 
 const userRouter = Router();
 
@@ -27,5 +32,8 @@ userRouter.post(
 );
 
 userRouter.get("/me", protect, getMe);
+userRouter.get("/saved-trips", protect, authorizeRoles("tourist"), getSavedTrips);
+userRouter.post("/saved-trips/:tripId", protect, authorizeRoles("tourist"), saveTrip);
+userRouter.delete("/saved-trips/:tripId", protect, authorizeRoles("tourist"), unsaveTrip);
 
 export default userRouter;

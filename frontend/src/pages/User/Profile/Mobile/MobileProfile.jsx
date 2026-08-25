@@ -26,6 +26,10 @@ const headerConfig = {
     title: "My Bookings",
     backTo: "/user/profile",
   },
+  "/user/profile/saved": {
+    title: "Saved Trips",
+    backTo: "/user/profile",
+  },
   "/user/profile/payments": {
     title: "Payment Methods",
     backTo: "/user/profile",

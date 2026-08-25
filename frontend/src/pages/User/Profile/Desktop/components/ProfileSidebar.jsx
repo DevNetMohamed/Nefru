@@ -4,6 +4,7 @@ import {
   FiCalendar,
   FiCreditCard,
   FiHeadphones,
+  FiBookmark,
   FiLock,
   FiLogOut,
   FiStar,
@@ -16,6 +17,7 @@ import { resolveMediaUrl } from "../../../../../services/api";
 const menuItems = [
   { to: "/user/profile", label: "Profile Overview", icon: FiUser, end: true },
   { to: "/user/profile/bookings", label: "My Bookings", icon: FiCalendar },
+  { to: "/user/profile/saved", label: "Saved Trips", icon: FiBookmark },
   { to: "/user/profile/payments", label: "Payment Methods", icon: FiCreditCard },
   { to: "/user/profile/reviews", label: "Reviews Written", icon: FiStar },
   { to: "/user/profile/change-password", label: "Sign-in & Security", icon: FiLock },

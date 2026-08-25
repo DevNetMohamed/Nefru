@@ -5,6 +5,7 @@ import {
   FiCalendar,
   FiCreditCard,
   FiHeadphones,
+  FiBookmark,
   FiLock,
   FiLogOut,
   FiStar,
@@ -61,6 +62,12 @@ export default function MobileProfileOverview() {
             <strong>My Bookings</strong>
             <small>Upcoming trips</small>
           </span>
+          <b>›</b>
+        </Link>
+
+        <Link to="/user/profile/saved" className={styles.menuItem}>
+          <FiBookmark />
+          <span><strong>Saved Trips</strong><small>Your bookmarked experiences</small></span>
           <b>›</b>
         </Link>
 

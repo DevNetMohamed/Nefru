@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { DEV_AUTH_BYPASS } from "../config/devAccess";
@@ -10,6 +10,7 @@ function getHomePathByRole(role) {
 }
 
 export default function ProtectedRoute({ allowedRoles }) {
+  const location = useLocation();
   const { initialized, isAuthenticated, user } = useSelector(
     (state) => state.auth,
   );
@@ -23,7 +24,7 @@ export default function ProtectedRoute({ allowedRoles }) {
   if (!initialized) return null;
 
   if (!isAuthenticated || !user) {
-    return <Navigate to="/auth/login" replace />;
+    return <Navigate to={`/auth/login?returnTo=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
 
   const role = user.role;

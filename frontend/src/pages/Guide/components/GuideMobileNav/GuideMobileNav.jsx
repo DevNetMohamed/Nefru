@@ -1,4 +1,4 @@
-import { CalendarDays, Home, MapPinned, UserRound } from "lucide-react";
+import { CalendarDays, ClipboardList, Home, MapPinned, UserRound } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 import styles from "./GuideMobileNav.module.css";
@@ -7,6 +7,7 @@ const items = [
   { label: "Dashboard", to: "/guide/dashboard", icon: Home },
   { label: "My Tours", to: "/guide", icon: MapPinned, end: true },
   { label: "Calendar", to: "/guide/calendar", icon: CalendarDays },
+  { label: "Bookings", to: "/guide/bookings", icon: ClipboardList },
   { label: "Profile", to: "/guide/profile", icon: UserRound },
 ];
 

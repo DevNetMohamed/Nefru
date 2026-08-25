@@ -23,7 +23,6 @@ import Trips from "../pages/User/Trips/Trips";
 import Info from "../pages/User/Trips/Info/Info";
 import Book from "../pages/User/Trips/Book/Book";
 import Status from "../pages/User/Trips/Book/components/Status/Status";
-import Guide from "../pages/User/Trips/Guide/Guide";
 import Saved from "../pages/User/Saved/Saved";
 import Profile from "../pages/User/Profile/Profile";
 import ProfileOverview from "../pages/User/Profile/pages/ProfileOverview/ProfileOverview";
@@ -63,6 +62,7 @@ import GuideAccountProfile from "../pages/Guide/GuideAccountProfile/GuideAccount
 import GuideNotifications from "../pages/Guide/GuideNotifications/GuideNotifications";
 import GuideVerification from "../pages/Guide/GuideVerification/GuideVerification";
 import GuideApplicationReceived from "../pages/Guide/GuideApplicationReceived/GuideApplicationReceived";
+import GuideBookings from "../pages/Guide/GuideBookings/GuideBookings";
 
 export const router = createBrowserRouter([
   {
@@ -110,22 +110,19 @@ export const router = createBrowserRouter([
           { index: true, element: <Trips /> },
           { path: "info", element: <Info /> },
           { path: "info/:id", element: <Info /> },
-          { path: "book", element: <Book /> },
-          // { path: "book/status", element: <Status /> },
-          // { path: "guide", element: <Guide /> },
           {
-            element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
+            element: <ProtectedRoute allowedRoles={["tourist"]} />,
             children: [
-              { path: "book", element: <Book /> },
-              { path: "book/status", element: <Status /> },
+              { path: ":id/book", element: <Book /> },
             ],
           },
         ],
       },
       {
-        element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
+        element: <ProtectedRoute allowedRoles={["tourist"]} />,
         children: [
-          { path: "saved", element: <Saved /> },
+          { path: "saved", element: <Navigate to="/user/profile/saved" replace /> },
+          { path: "bookings/:bookingId/payment", element: <Status /> },
           {
             path: "profile",
             element: <Profile />,
@@ -134,6 +131,7 @@ export const router = createBrowserRouter([
               { path: "edit", element: <EditProfile /> },
               { path: "change-password", element: <ChangePassword /> },
               { path: "bookings", element: <MyBookings /> },
+              { path: "saved", element: <Saved /> },
               { path: "payments", element: <PaymentMethods /> },
               { path: "reviews", element: <ReviewsWritten /> },
               { path: "support", element: <HelpSupport /> },
@@ -155,6 +153,7 @@ export const router = createBrowserRouter([
           { index: true, element: <ToursManagement /> },
           { path: "dashboard", element: <GuideDashboard /> },
           { path: "calendar", element: <GuideCalendar /> },
+          { path: "bookings", element: <GuideBookings /> },
           { path: "profile", element: <GuideAccountProfile /> },
           { path: "notifications", element: <GuideNotifications /> },
           { path: "verification", element: <GuideVerification /> },

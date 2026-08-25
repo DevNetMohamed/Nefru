@@ -1,42 +1,42 @@
-.slotsRow {
-  display: flex;
-  gap: 8px;
-  scrollbar-width: none;
-  width: fit-content;
-  overflow: auto;
-  width: 100%;
-  padding-bottom: 10px;
-}
-.timeSlot {
-  width: 150px;
-  border-radius: 12px;
-}
-
-.traveleCount {
-  display: flex;
-  justify-content: space-between;
-  padding-left: 10px;
-  margin: 15px;
-}
-
-.counter {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.backButton {
-  width: 48px;
-  height: 48px;
-  border: none;
-  border-radius: 16px;
-  background: #f5f5f5;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: bold;
-  text-decoration: none;
-  color: #000;
-}
+.page { min-height: 100vh; background: var(--color-surface-soft); padding: 28px clamp(16px, 5vw, 72px) 64px; }
+.statePage { min-height: 70vh; display: grid; place-items: center; color: var(--color-text-muted); }
+.header { max-width: 1180px; margin: 0 auto 24px; display: flex; align-items: center; gap: 16px; }
+.header button { width: 46px; height: 46px; border: 1px solid var(--color-border-soft); border-radius: 14px; background: var(--color-surface); color: var(--color-primary-dark); display: grid; place-items: center; cursor: pointer; }
+.header span { color: var(--color-secondary-dark); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.header h1 { margin-top: 3px; color: var(--color-primary-dark); font-size: clamp(22px, 4vw, 32px); }
+.layout { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; }
+.bookingPanel, .pricePanel { background: var(--color-surface); border: 1px solid var(--color-border-soft); border-radius: 20px; box-shadow: var(--shadow-sm); }
+.bookingPanel { padding: 24px; }
+.tripSummary { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 20px; padding-bottom: 24px; border-bottom: 1px solid var(--color-border-soft); }
+.tripSummary img { width: 100%; height: 150px; object-fit: cover; border-radius: 16px; background: var(--color-media-placeholder); }
+.tripSummary h2 { color: var(--color-primary-dark); font-size: 22px; margin-bottom: 8px; }
+.tripSummary p { color: var(--color-text-muted); font-size: 14px; line-height: 1.65; }
+.meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; color: var(--color-primary); font-size: 13px; font-weight: 700; }
+.meta span, .priceRow span:last-child { display: inline-flex; align-items: center; gap: 6px; }
+.section { padding-top: 24px; }
+.sectionHeading { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.sectionHeading > svg { color: var(--color-secondary-dark); font-size: 21px; margin-top: 2px; }
+.sectionHeading h2 { color: var(--color-primary-dark); font-size: 18px; }
+.sectionHeading p { color: var(--color-text-muted); font-size: 13px; margin-top: 3px; }
+.dateGrid, .slotGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dateGrid button, .slotGrid button { min-height: 54px; border: 1px solid var(--color-border-strong); border-radius: 12px; background: var(--color-surface); color: var(--color-primary-dark); padding: 10px 12px; cursor: pointer; font: inherit; font-size: 13px; font-weight: 750; }
+.slotGrid button { min-height: 68px; text-align: left; display: flex; flex-direction: column; gap: 4px; }
+.slotGrid button span { color: var(--color-text-muted); font-size: 11px; font-weight: 600; }
+.dateGrid button.selected, .slotGrid button.selected { border-color: var(--color-primary); background: var(--color-primary-dark); color: var(--color-surface); box-shadow: var(--shadow-focus); }
+.slotGrid button.selected span { color: var(--color-secondary); }
+.dateGrid button:disabled, .slotGrid button:disabled { opacity: .45; cursor: not-allowed; }
+.empty { color: var(--color-text-muted); padding: 16px 0; }
+.requestField { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; color: var(--color-primary-dark); font-size: 14px; font-weight: 800; }
+.requestField small { color: var(--color-text-muted); font-weight: 500; }
+.requestField textarea { min-height: 105px; resize: vertical; border: 1px solid var(--color-border-strong); border-radius: 12px; padding: 12px 14px; font: inherit; color: var(--color-text); }
+.pricePanel { padding: 24px; position: sticky; top: 24px; }
+.priceLabel { color: var(--color-text-muted); font-size: 13px; font-weight: 700; }
+.price { display: block; margin: 6px 0 22px; color: var(--color-primary-dark); font-size: 30px; }
+.priceRow, .total { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; color: var(--color-text-muted); font-size: 13px; border-top: 1px solid var(--color-border-soft); }
+.total { margin-top: 4px; color: var(--color-primary-dark); font-size: 17px; font-weight: 800; }
+.holdNote { margin: 18px 0; padding: 12px; border-radius: 12px; background: var(--color-secondary-mute); color: var(--color-secondary-dark); display: flex; gap: 8px; font-size: 12px; line-height: 1.5; }
+.error { margin-bottom: 12px; padding: 10px 12px; border-radius: 10px; background: var(--color-danger-mute); color: var(--color-danger); font-size: 13px; }
+.continueButton { width: 100%; min-height: 52px; border: 0; border-radius: 12px; background: var(--color-primary-dark); color: var(--color-surface); font: inherit; font-weight: 800; cursor: pointer; }
+.continueButton:disabled { opacity: .5; cursor: not-allowed; }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .pricePanel { position: static; } }
+@media (max-width: 620px) { .page { padding-inline: 14px; } .bookingPanel { padding: 16px; } .tripSummary { grid-template-columns: 1fr; } .tripSummary img { height: 190px; } .dateGrid, .slotGrid { grid-template-columns: 1fr 1fr; } }

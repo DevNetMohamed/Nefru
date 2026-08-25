@@ -1,115 +1,100 @@
-# 💳 دليل استخدام وتجربة بوابة الدفع (Stripe Payment Gateway Guide)
+# Nefru booking and payment guide
 
-يقدم هذا الملف وثيقة شاملة وبسيطة توضح كل ما تم إنجازه في بوابة الدفع لمشروع **Nefru**، مع شرح رحلة المستخدم (User Journey)، كيفية الاختبار، وما يجب مشاركته مع باقي زملائك في الفريق ليعمل لديهم المشروع مباشرة دون مشاكل.
+## Current product rules
 
----
+- A signed-in tourist books one place for the account holder.
+- The guide publishes date/time slots and sets capacity for every slot.
+- A booking holds one place for 15 minutes while payment is pending.
+- The price shown and charged is the trip price in USD. There are no added fees.
+- Card payments and saved cards use Stripe. There is no mock-success fallback.
+- PayPal, Apple Pay, Google Pay, EGP, and EUR are displayed as `Soon`.
+- A tourist can cancel before the start time. Automatic refunds are not implemented yet.
+- The guide can cancel a future occurrence with a reason or mark an ended occurrence completed.
 
-## 📌 1. التغييرات والملفات التي تم إنشاؤها وتعديلها
+## Configure Stripe
 
-### 🟢 أولاً: الـ Backend (السيرفر)
-1. **[backend/.env](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/backend/.env):** إعداد متغيرات البيئة الأساسية مع مفاتيح Stripe.
-2. **[booking.model.js](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/backend/src/models/booking.model.js):** إضافة حقل `stripePaymentIntentId` للحفظ وتتبع عمليات الدفع.
-3. **[payment.controller.js](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/backend/src/controllers/payment.controller.js) [جديد]:** متحكم الدفع المالي المسؤول عن إنشاء نية الدفع (`createPaymentIntent`) وتأكيد المعاملة تلقائياً أو عبر الـ Webhook.
-4. **[payment.routes.js](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/backend/src/routes/payment.routes.js) [جديد]:** تسجيل مسارات `/api/payments/create-intent` و `/api/payments/confirm` و `/api/payments/webhook`.
-5. **[routes/index.js](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/backend/src/routes/index.js):** ربط مسارات الدفع بالسيرفر الرئيسي.
+Copy the example environment files and provide Stripe test credentials:
 
----
+`backend/.env`
 
-### 🔵 ثانياً: الـ Frontend (واجهة المستخدم)
-1. **تثبيت المكتبات:** تم تثبيت `@stripe/stripe-js` و `@stripe/react-stripe-js`.
-2. **[Checkout.module.css](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/components/Checkout/Checkout.module.css) [جديد]:** ملف الأنماط والتصميم الزجاجي الأنيق لشاشات الدفع بالكامل.
-3. **مكونات الشاشات الأربعة [جديدة]:**
-   - 📄 **[BookingSummaryStep.jsx](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/components/Checkout/Steps/BookingSummaryStep.jsx):** الشاشة الأولى (ملخص الحجز وتفاصيل التكلفة 3150.00 ج.م EGP).
-   - 💳 **[PaymentMethodStep.jsx](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/components/Checkout/Steps/PaymentMethodStep.jsx):** الشاشة الثانية (اختيار وسيلة الدفع: الفيزا، Apple Pay، Google Pay، PayPal).
-   - 🪪 **[CardDetailsStep.jsx](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/components/Checkout/Steps/CardDetailsStep.jsx):** الشاشة الثالثة (بيانات البطاقة + الكارت البلاتيني التفاعلي المضيء `NEFRU PLATINUM`).
-   - 🎉 **[PaymentSuccessStep.jsx](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/components/Checkout/Steps/PaymentSuccessStep.jsx):** الشاشة الرابعة (علامة التهنئة والتأكيد ورقم التذكرة `BOOKING ID`).
-4. **[CheckoutWizard.jsx](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/components/Checkout/CheckoutWizard.jsx) [جديد]:** المكون المنظم لشريط التقدم والتنقل بين الشاشات.
-5. **[Book.jsx](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/pages/User/Trips/Book/Book.jsx) & [Status.jsx](file:///c:/Users/Admin/Desktop/capstoneproject/Nefru/Nefru/frontend/src/pages/User/Trips/Book/components/Status/Status.jsx):** ربط زر `Proceed to Payment` وعرض شاشات الدفع التفاعلية عند الضغط عليه.
-
----
-
-## 🗺️ 2. شرح رحلة المستخدم (User Journey)
-
-يمر المستخدم بأربع خطوات سلسة بمجرد الضغط على زر `Proceed to Payment` في صفحة الحجز:
-
-```
-[صفحة تفاصيل الرحلة Book.jsx] 
-         ↓
-[الضغط على Proceed to Payment]
-         ↓
-[الشاشة 1: ملخص الحجز] ──(مراجعة التكلفة والجدول والتأكيد)──>
-         ↓
-[الشاشة 2: طريقة الدفع] ──(اختيار الفيزا / Apple Pay / PayPal)──>
-         ↓
-[الشاشة 3: بيانات البطاقة] ──(رؤية كارت البنك التفاعلي وإدخال البيانات)──>
-         ↓
-[الشاشة 4: نجاح العملية] ──(عرض التذكرة والتوجه لصفحة "حجوزاتي")
+```env
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+DEV_AUTH_BYPASS=false
 ```
 
----
+`frontend/.env`
 
-## 🧪 3. المطلوب منك لتتأكد إن كل حاجة شغال
+```env
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+VITE_DEV_AUTH_BYPASS=false
+```
 
-1. **تشغيل السيرفر والواجهة:**
-   - افتح الـ Terminal وشغّل المشروع بالكامل:
-     ```bash
-     npm run dev
-     ```
-     *(أو تشغيل الـ backend والـ frontend كلٍ على حدة)*.
+For local webhook testing, forward Stripe events to:
 
-2. **تجربة مشوار الدفع:**
-   - افتح المتصفح على الرابط: `http://localhost:5173/user/trips/book`
-   - اضغط على زر **`Proceed to Payment`**.
-   - ستظهر لك **الشاشة 1 (ملخص الحجز)**: اضغط على `Proceed to Payment $315.00`.
-   - ستظهر لك **الشاشة 2 (طريقة الدفع)**: اختر `Credit / Debit Card` واضغط `Pay Now`.
-   - ستظهر لك **الشاشة 3 (بيانات البطاقة)**:
-     - أكتب اسمك في حقل `Cardholder Name` واشهد تغير الاسم في الكارت البلاتيني العلوي فورياً!
-     - أكتب كارت اختبار Stripe الشهير: `4242 4242 4242 4242`.
-     - أكتب تاريخ الانتهاء و الـ CVV (أي تاريخ مستقبلي مثل `12/28` و `123`).
-     - اضغط على `Confirm and Pay`.
-   - ستظهر لك **الشاشة 4 (نجاح العملية 🎉)** مع رقم التذكرة والمبلغ وتفاصيل الرحلة.
+```text
+http://localhost:5000/api/payments/webhook
+```
 
----
+Never commit real Stripe keys or webhook secrets.
 
-## 🔑 4. هل محتاج تضيف أي حاجة؟
+## Tourist flow
 
-- **في مرحلة التطوير الحالية (Development & Testing):**
-  - **لا محتاج تضيف حاجة!** الكود مجهز بـ **Mock Dev Mode** يستجيب تلقائياً وينقل المستخدم لشاشة النجاح حتى إن لم تقم بإدخال مفاتيح Stripe بعد.
+1. Open an active trip at `/user/trips/info/:tripId`.
+2. Select `Book`. If logged out, log in and Nefru returns to the same trip.
+3. Select a future date/time with an available place.
+4. Continue to `/user/bookings/:bookingId/payment` before the 15-minute hold expires.
+5. Pay with a new or saved Stripe card.
+6. The confirmed booking appears under Profile > My Bookings > Upcoming.
 
-- **عند إطلاق المشروع أونلاين (Production Launch):**
-  - ستحتاج فقط لإنشاء حساب مجاني على موقع [Stripe.com](https://stripe.com) ونسخ المفاتيح الحقيقية وإضافتها في الملفات:
-    - في `backend/.env`:
-      ```env
-      STRIPE_SECRET_KEY=sk_test_51...
-      STRIPE_WEBHOOK_SECRET=whsec_...
-      ```
-    - في `frontend/.env`:
-      ```env
-      VITE_STRIPE_PUBLISHABLE_KEY=pk_test_51...
-      ```
+Pending holds also appear in Upcoming with `Continue payment`. Expired holds are hidden and their places become available again.
 
----
+## Guide flow
 
-## 👥 5. ما المطلوب منك ليعمل الكود عند جميع زملائك في المشروع؟
+- Set capacity per slot in the tour schedule editor.
+- Open `/guide/bookings` for occurrence-level booking management.
+- The guest list shows traveler, payment state, request, and USD price.
+- Canceling an occurrence removes it from availability and cancels its active bookings.
+- Completing an occurrence is allowed only after its end time.
 
-لكي يعمل الكود عند جميع زملائك في الفريق عند سحب الكود (`git pull`) بدون أي مشاكل:
+## Booking states
 
-1. **تحديث المكتبات (Dependencies):**
-   اخبر زملائك بعد سحب الكود بتشغيل الأمر التالي لتركيب مكتبة Stripe في السيرفر والواجهة:
-   ```bash
-   npm run install-all
-   ```
-   *أو يدوياً:*
-   ```bash
-   cd backend && npm install
-   cd ../frontend && npm install
-   ```
+- `pending_payment`: place is temporarily held.
+- `confirmed`: paid and shown as Upcoming.
+- `completed`: marked completed by the guide.
+- `cancelled`: cancelled before the trip started.
+- `expired`: 15-minute payment window elapsed; hidden from the tourist list.
 
-2. **ملف الإعدادات `.env`:**
-   تأكد أن ملف `backend/.env` موجود لدى زملائك (أو انسخ المحتوى إلى `.env.example`).
+## Main API routes
 
-3. **التأكد من رفع الملفات الجديدة على Git:**
-   قم بعمل `git add .` ثم `git commit` و `git push` لرفع كافة التغييرات على الـ Repository الخاص بالفريق.
+```text
+GET    /api/bookings/trips/:tripId/availability
+POST   /api/bookings
+GET    /api/bookings/:bookingId
+GET    /api/bookings/me
+PATCH  /api/bookings/:bookingId/cancel
+GET    /api/bookings/guide/me
+PATCH  /api/bookings/guide/occurrences/cancel
+PATCH  /api/bookings/guide/occurrences/complete
 
----
-✨ **المشروع جاهز ومكتمل 100% وبأعلى معايير الجودة والأمان!**
+POST   /api/payments/create-intent
+POST   /api/payments/pay-with-saved-card
+POST   /api/payments/verify
+GET    /api/payments/methods
+POST   /api/payments/methods/setup-intent
+PATCH  /api/payments/methods/:paymentMethodId/default
+DELETE /api/payments/methods/:paymentMethodId
+
+GET    /api/users/saved-trips
+POST   /api/users/saved-trips/:tripId
+DELETE /api/users/saved-trips/:tripId
+```
+
+## Verification
+
+```bash
+cd frontend
+npm run build
+```
+
+Then run both apps, sign in as a tourist, and use a Stripe test card. A successful payment must only be accepted after Stripe reports a succeeded PaymentIntent.

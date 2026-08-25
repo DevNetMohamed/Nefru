@@ -10,13 +10,16 @@ import { store } from "./store/store";
 import "leaflet/dist/leaflet.css";
 import AuthRefresh from "./pages/Auth/components/AuthRefresh/AuthRefresh";
 import NotificationSync from "./shared/components/NotificationSync/NotificationSync";
+import SavedTripsProvider from "./context/SavedTripsProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <AuthRefresh />
-      <NotificationSync />
-      <RouterProvider router={router} />
+      <SavedTripsProvider>
+        <AuthRefresh />
+        <NotificationSync />
+        <RouterProvider router={router} />
+      </SavedTripsProvider>
     </Provider>
   </StrictMode>,
 );

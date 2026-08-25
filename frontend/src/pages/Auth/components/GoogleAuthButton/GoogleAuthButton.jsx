@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { apiRequest } from "../../../../services/api";
 import { loginSuccess } from "../../../../store/slices/authSlice";
@@ -51,6 +51,7 @@ export default function GoogleAuthButton({
   const buttonRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const busyRef = useRef(false);
 
@@ -131,7 +132,11 @@ export default function GoogleAuthButton({
                   profile,
                 }),
               );
-              navigate(getPostAuthPath(user, profile), { replace: true });
+              const returnTo = new URLSearchParams(location.search).get("returnTo");
+              const safeReturnTo = user?.role === "tourist" && returnTo?.startsWith("/user/")
+                ? returnTo
+                : getPostAuthPath(user, profile);
+              navigate(safeReturnTo, { replace: true });
             } catch (error) {
               onError?.(error.message || "Google sign-in failed. Please try again.");
             } finally {
@@ -159,6 +164,7 @@ export default function GoogleAuthButton({
   }, [
     clientId,
     dispatch,
+    location.search,
     navigate,
     onCredential,
     onError,
