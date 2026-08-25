@@ -570,7 +570,9 @@ export default function AvailableTodayPage() {
                 <div
                   key={tour._id}
                   className={styles.card}
-                  onClick={() => hasMongoId && navigate(`/user/trips/info/${tourId}`)}
+                  onClick={() => {
+                    navigate(`/user/trips/${tour._id}`);
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   <div className={styles.cardImageWrapper}>
@@ -673,8 +675,8 @@ export default function AvailableTodayPage() {
                       <button
                         className={styles.actionButton}
                         onClick={(e) => {
-                          e.stopPropagation();
-                          if (hasMongoId) navigate(`/user/trips/${tourId}/book`);
+                          // e.stopPropagation();
+                          navigate(`/user/trips/${tour._id}`);
                         }}
                       >
                         <span>{hasMongoId ? "Book Now" : "Preview only"}</span>
