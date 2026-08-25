@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -8,7 +9,9 @@ import Icons from "../../../../../assets/icons";
 import { Input } from "../../../../../shared/components/inputs/inputs";
 import { Button } from "../../../../../shared/components/Button/Button";
 import { apiRequest } from "../../../../../services/api";
+import { loginSuccess } from "../../../../../store/slices/authSlice";
 import GoogleAuthButton from "../../GoogleAuthButton/GoogleAuthButton";
+import { getPostAuthPath } from "../../../utils/authNavigation";
 import styles from "../Register.module.css";
 
 const LOCAL_REGISTER_SCHEMA = Yup.object({
@@ -32,6 +35,7 @@ const LOCAL_REGISTER_SCHEMA = Yup.object({
 
 function RegisterForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [apiError, setApiError] = useState("");
   const [roleError, setRoleError] = useState("");
@@ -90,6 +94,13 @@ function RegisterForm() {
             `/auth/check-email?email=${encodeURIComponent(values.email)}&role=${role}`,
             { replace: true },
           );
+          return;
+        }
+
+        if (response?.data?.user) {
+          const { user, profile } = response.data;
+          dispatch(loginSuccess({ user, profile }));
+          navigate(getPostAuthPath(user, profile), { replace: true });
           return;
         }
 

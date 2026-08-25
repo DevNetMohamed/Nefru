@@ -1,3 +1,5 @@
+import { DEV_AUTH_BYPASS, getDevelopmentRole } from "../config/devAccess";
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 
@@ -11,6 +13,11 @@ const API_ORIGIN = (() => {
 
 export async function apiRequest(endpoint, options = {}) {
   const headers = { ...options.headers };
+
+  // DEV ONLY: lets the API attach the matching seeded user without a session.
+  if (DEV_AUTH_BYPASS && !headers["X-Dev-Auth-Role"]) {
+    headers["X-Dev-Auth-Role"] = getDevelopmentRole();
+  }
 
   if (options.body && !(options.body instanceof FormData)) {
     headers["Content-Type"] = headers["Content-Type"] || "application/json";

@@ -420,9 +420,22 @@ export const registerUser = async (req, res, next) => {
       email,
       password,
       role,
-      emailVerified: false,
+      // TEMPORARY DEVELOPMENT BYPASS:
+      // Skip email verification so new local accounts can be used immediately.
+      // Production always creates them as unverified and sends the normal email.
+      emailVerified: env.devAuthBypass,
       authProviders: ["local"],
     });
+
+    if (env.devAuthBypass) {
+      return sendAuthenticatedResponse(
+        res,
+        user,
+        profile,
+        false,
+        "Account created and signed in (development auth bypass)",
+      );
+    }
 
     let emailSent = true;
     try {
@@ -556,6 +569,7 @@ export const loginUser = async (req, res, next) => {
     }
 
     if (
+      !env.devAuthBypass &&
       !user.emailVerified &&
       hasLocalProvider(user) &&
       user.emailVerificationToken
