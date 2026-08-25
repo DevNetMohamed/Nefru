@@ -82,7 +82,7 @@ function Info() {
             </p>
           </div>
 
-          <button type="button" className={styles.reserveButton}>
+          <button type="button" className={styles.reserveButton} onClick={()=>navigate(`/user/trips/${tour.id}/book`)}>
             Book
           </button>
         </section>

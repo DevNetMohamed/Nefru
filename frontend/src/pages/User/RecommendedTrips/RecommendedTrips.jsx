@@ -577,13 +577,7 @@ export default function RecommendedTrips() {
                   key={trip._id}
                   className={styles.card}
                   onClick={() => {
-                    if (hasMongoId) {
-                      navigate(`/user/trips/info/${tripId}`);
-                    } else {
-                      navigate("/user/trips/book", {
-                        state: { tour: trip, trip },
-                      });
-                    }
+                    navigate(`/user/trips/${tripId}`);
                   }}
                   style={{ cursor: "pointer" }}
                 >
@@ -678,7 +672,7 @@ export default function RecommendedTrips() {
                         onClick={(e) => {
                           e.stopPropagation();
                           if (hasMongoId) {
-                            navigate(`/user/trips/info/${tripId}`);
+                            navigate(`/user/trips/${tripId}`);
                           } else {
                             navigate("/user/trips/book", {
                               state: { tour: trip, trip },
