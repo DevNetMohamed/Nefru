@@ -100,7 +100,7 @@ export const router = createBrowserRouter([
       {
         path: "trips",
         children: [
-          { index: true, element: <Trips /> },
+          { index: true, element: <RecommendedTrips /> },
           {
             path: ":id",
             children: [
