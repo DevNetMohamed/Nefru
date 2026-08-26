@@ -1,10 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 // DONT DELETE THIS COMMENT, IT'S IMPORTANT
 
-// لما نخلص المشروع شيل الcomment اللي تحت
-// ولف الRouterProvider بالProtectedRoute وحدد الallowedRoles حسب كل route
-// عشان يسهل  الشغل علينا
-// import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
+import RequireApprovedGuide from "./RequireApprovedGuide";
 
 import AuthLayout from "../shared/AuthLayout/AuthLayout";
 import MasterLayout from "../shared/MasterLayout/MasterLayout";
@@ -16,6 +14,10 @@ import Register from "../pages/Auth/components/Register/Register";
 import Forgetpassword from "../pages/Auth/components/Forgetpassword/Forgetpassword";
 import ResetPassword from "../pages/Auth/components/ResetPassword/ResetPassword";
 import ApplicationReceived from "../pages/Auth/components/ApplicationReceived/ApplicationReceived";
+import CheckEmail from "../pages/Auth/Onboarding/CheckEmail";
+import ChooseRole from "../pages/Auth/Onboarding/ChooseRole";
+import LinkGoogleAccount from "../pages/Auth/Onboarding/LinkGoogleAccount";
+import VerifyEmail from "../pages/Auth/Onboarding/VerifyEmail";
 // User Pages
 import Home from "../pages/User/Home/Home";
 import Trips from "../pages/User/Trips/Trips";
@@ -78,12 +80,20 @@ export const router = createBrowserRouter([
       { path: "application-received", element: <ApplicationReceived /> },
       { path: "forget-password", element: <Forgetpassword /> },
       { path: "reset-password", element: <ResetPassword /> },
+      { path: "check-email", element: <CheckEmail /> },
+      { path: "choose-role", element: <ChooseRole /> },
+      { path: "link-google", element: <LinkGoogleAccount /> },
+      { path: "verify-email", element: <VerifyEmail /> },
     ],
   },
   {
     path: "user",
-    element: <MasterLayout />,
+    // Protected: tourists + guides (guides may browse the tourist portal)
+    element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
     children: [
+      {
+        element: <MasterLayout />,
+        children: [
       { index: true, element: <Home /> },
       { path: "home", element: <Home /> },
       // { path: "guideprofile", element: <GuideProfile /> },
@@ -128,6 +138,8 @@ export const router = createBrowserRouter([
       },
       { path: "settings", element: <Settings /> },
       { path: "notifications", element: <NotificationsPage /> },
+        ],
+      },
     ],
 
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT

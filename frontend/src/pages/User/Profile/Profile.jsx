@@ -14,7 +14,7 @@ export default function Profile() {
     </MobileProfile>
   ) : (
     <div>
-      <DesktopNavbar />
+      {/* <DesktopNavbar /> */}
       <DesktopProfile>
         <Outlet />
       </DesktopProfile>

@@ -72,11 +72,11 @@ export default function DashboardStatus(){
                             // isPagination={false}
                         />
                     </div>
-                    <div className={`${styles.layout} ${styles.list}`}>
+                    {/* <div className={`${styles.layout} ${styles.list}`}>
                         <List title="Pending Approvals">
                             <PendingItem info="Guide application approval" name="Sarah Mahmoud" tag="Guide" duration="1d ago"/>
                         </List>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
