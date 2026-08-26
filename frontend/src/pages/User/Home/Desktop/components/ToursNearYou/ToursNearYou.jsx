@@ -8,6 +8,7 @@ import {
 import L from "leaflet";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { resolveUploadsUrl } from "../../../../../../services/api";
 
 import pyramids from "../../../../../../assets/images/explore/pyramids.jpg";
 import museum from "../../../../../../assets/images/explore/the_grand_museum.webp";
@@ -70,16 +71,7 @@ const defaultPlaces = [
 
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 const FALLBACK_COORDS = [

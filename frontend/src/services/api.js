@@ -54,3 +54,14 @@ export function resolveMediaUrl(value) {
   if (/^(https?:|data:|blob:)/i.test(value)) return value;
   return `${API_ORIGIN}${value.startsWith("/") ? value : `/${value}`}`;
 }
+
+// Resolves values stored for uploaded media (trip images, avatars):
+// - "trips/pyramids.webp"      -> ${API_ORIGIN}/uploads/trips/pyramids.webp
+// - "/uploads/avatar.jpg"      -> ${API_ORIGIN}/uploads/avatar.jpg
+// - "https://..." / data:/blob:-> unchanged
+export function resolveUploadsUrl(value) {
+  if (!value || typeof value !== "string") return "";
+  if (/^(https?:|data:|blob:)/i.test(value)) return value;
+  const path = value.startsWith("/") ? value : `/uploads/${value}`;
+  return `${API_ORIGIN}${path}`;
+}

@@ -3,51 +3,55 @@
 Status: IN PROGRESS → mark items [x] as completed immediately after each edit.
 
 ## 1.1 Route protection
-- [ ] Read `routes/routes.jsx`, `ProtectedRoute.jsx`, `RequireApprovedGuide.jsx`,
+- [x] Read `routes/routes.jsx`, `ProtectedRoute.jsx`, `RequireApprovedGuide.jsx`,
       `store/slices/authSlice.js` — confirm guard props & auth state shape
-- [ ] Wrap `/user/*` tree with ProtectedRoute (roles: tourist; check whether
-      guides also access /user)
-- [ ] Wrap `/guide/*` with RequireApprovedGuide (role guide + approved status)
-- [ ] Wrap `/admin/*` with ProtectedRoute (role admin)
-- [ ] Decide redirect targets: unauth → `/auth/login`; wrong-role → own portal
-      home or `/` (keep existing component behavior if already implemented)
-- [ ] Ensure AuthRefresh bootstrap completes before guard decides (avoid
-      flashing login for logged-in users on hard refresh) — check how
-      ProtectedRoute handles "loading" state
+- [x] Wrap `/user/*` tree with ProtectedRoute (roles: tourist + guide)
+- [x] Wrap `/guide/*`: ProtectedRoute(guide) at top, RequireApprovedGuide one
+      level deeper so /guide/verification stays reachable (avoids redirect loop)
+- [x] Wrap `/admin/*` with ProtectedRoute (role admin), Admin kept as layout
+- [x] Redirect targets: guards already redirect unauth → /auth/login?returnTo=,
+      wrong-role → role home (existing behavior kept)
+- [x] Loading state: guards return null until auth.initialized (no login flash)
 
 ## 1.2 Missing auth routes
-- [ ] Read Onboarding pages: CheckEmail, ChooseRole, LinkGoogleAccount
-- [ ] Register routes matching the exact paths used by navigations:
-      GoogleAuthButton.jsx:104 `/auth/choose-role`, :119 `/auth/link-google`;
-      RegisterForm.jsx:94 `/auth/check-email`
-- [ ] Verify VerifyEmail page has a route; register if missing
+- [x] Read Onboarding pages: CheckEmail, ChooseRole, LinkGoogleAccount
+- [x] Registered /auth/check-email, /auth/choose-role, /auth/link-google
+      (paths verified against RegisterForm.jsx:94, GoogleAuthButton.jsx:104,119)
+- [x] Registered /auth/verify-email (VerifyEmail page existed unrouted;
+      reads ?token= from search params, likely linked from emails)
 
 ## 1.3 MasterLayout fixes
-- [ ] `Header()`: add `const navigate = useNavigate()`
-- [ ] Fix effect deps `[location.pathname]` → `[pathname]` (2 places)
-- [ ] Remove console.log leftovers (lines ~61, ~108)
-- [ ] Dedupe activeTab computation between MasterLayout and Navbar (single
-      source; derive from pathname directly, drop duplicated state)
-- [ ] Do not refactor beyond scope (resize listener cleanup stays as-is;
-      useIsMobile adoption is Phase 3)
+- [x] `Header()`: added `const navigate = useNavigate()`
+- [x] Deduped activeTab into single module helper `getActiveTab(pathname)`;
+      removed duplicated useState/useEffect from MasterLayout + Navbar
+- [x] Removed console.log leftovers and unused profile selector
+- [x] Scope kept: resize listener untouched (useIsMobile adoption = Phase 3)
 
 ## 1.4 Hardcoded URLs
-- [ ] Read `services/api.js` to learn exported helpers/signature
-- [ ] MobileHome.jsx:~282 axios call → api wrapper
-- [ ] DesktopHome.jsx:~29 axios call → api wrapper
-- [ ] AvailableTodayPage.jsx:~323 axios call → api wrapper
-- [ ] RecommendedTrips.jsx:~300 axios call → api wrapper
-- [ ] NearbyMap.jsx:~459 axios call → api wrapper
-- [ ] NearbyMap.jsx:~95 hardcoded uploads origin → shared resolver
-      (check DesktopNavbar resolveMediaUrl implementation first)
-- [ ] Keep response-shape handling identical so UI logic is untouched
+- [x] Read `services/api.js`; added shared `resolveUploadsUrl()` (old helpers
+      prefixed `/uploads/` for relative names — resolveMediaUrl alone would
+      have broken those; new helper handles all stored shapes, verified
+      against backend: trip.model.js, seed.js "trips/x.webp",
+      profile.controller.js "/uploads/filename")
+- [x] MobileHome.jsx axios → apiRequest("/home")
+- [x] DesktopHome.jsx axios → apiRequest("/home")
+- [x] AvailableTodayPage.jsx axios → apiRequest("/home" + "/trips"),
+      `.data.data` → `.data` (allSettled values are parsed bodies now)
+- [x] RecommendedTrips.jsx axios → apiRequest("/trips" + "/home"), same unwrap
+- [x] NearbyMap.jsx axios → apiRequest("/home")
+- [x] Uploads-origin hardcodes fixed in ALL copies (audit said 9 getImgSrc,
+      grep found 12 total incl. ToursManagement API_ORIGIN + ui card):
+      MobileHome, AvailableTodayPage, RecommendedTrips, NearbyMap,
+      RecommendedTourCard (ui), ToursNearYou, TrustedGuides,
+      AvailableToday (desktop), ToursManagement
+- [x] axios imports removed everywhere in User pages
 
 ## Verification
-- [ ] `npm run build --prefix frontend` passes
-- [ ] `npm run lint --prefix frontend` no new errors
-- [ ] Manual smoke: routes render logged-out (redirect works), MasterLayout
-      header clicks navigate without crash
-- [ ] CHANGELOG.md updated with all touched files
+- [x] `npm run build --prefix frontend` passes (1.35 MB single chunk — Phase 2)
+- [x] `npm run lint --prefix frontend`: 181 errors, ALL pre-existing debt;
+      none introduced (documented in CHANGELOG.md; CMS.jsx has a latent
+      setAccountTypes undefined bug worth a separate fix)
+- [ ] Manual smoke test per CHANGELOG checklist (needs running backend)
 
 ## Out of scope (explicitly deferred)
 - Dockerfile multi-stage rebuild (user decision 2026-08-26)

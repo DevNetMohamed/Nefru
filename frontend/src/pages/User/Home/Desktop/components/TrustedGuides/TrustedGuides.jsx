@@ -1,5 +1,6 @@
 import styles from "./TrustedGuides.module.css";
 import { useNavigate } from "react-router-dom";
+import { resolveUploadsUrl } from "../../../../../../services/api";
 
 import guide1 from "../../../../../../assets/images/guiders/guide1.webp";
 import guide2 from "../../../../../../assets/images/guiders/guide3.webp";
@@ -43,16 +44,7 @@ const defaultGuides = [
 // Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 function TrustedGuides({ guides }) {

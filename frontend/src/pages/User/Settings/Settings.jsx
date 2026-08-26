@@ -6,7 +6,7 @@ import styles from "./Settings.module.css";
 export default function Settings() {
   return (
     <>
-      <DesktopNavbar />
+      {/* <DesktopNavbar /> */}
       <main className={styles.page}>
         <header><span>Preferences</span><h1>Settings</h1><p>Control how Nefru displays your travel experience.</p></header>
         <section className={styles.card}>

@@ -28,15 +28,12 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import DesktopNavbar from '../../pages/User/Home/components/DesktopNavbar/DesktopNavbar'
 
+function getActiveTab(pathname) {
+  return pathname.split("/").filter(Boolean).pop() || "";
+}
+
 export default function MasterLayout() {
-  const navigate = useNavigate();
- 
   const { pathname } = useLocation();
-  const [activeTab,setActiveTab] = useState('')
-  
-  // const handleNavigate = (page)=>{
-  //   navigate(page)
-  // }
   const [isMobile, setIsMobile] = useState(
     window.innerWidth < 992
   );
@@ -54,12 +51,9 @@ export default function MasterLayout() {
         handleResize
       );
   }, []);
-  
-  useEffect(() => {
-    // Fetch/load new content whenever the route changes
-    setActiveTab(pathname.split("/").filter(Boolean).pop())
-    console.log("New route:", activeTab);
-  }, [location.pathname]);
+
+  const activeTab = getActiveTab(pathname);
+
   return (
     <div className="g">
       {isMobile? activeTab === 'profile'?<></>:<Header/> :<DesktopNavbar/> }
@@ -70,7 +64,7 @@ export default function MasterLayout() {
 }
 
 function Header(){
-  const { profile } = useSelector((state) => state.auth || {});
+  const navigate = useNavigate();
   const notifications = useSelector((state) => state.notifications?.notifications || []);
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   return (
@@ -100,13 +94,9 @@ function Header(){
 
 function Navbar(){
   const navigate = useNavigate();
- 
+
   const { pathname } = useLocation();
-  const [activeTab,setActiveTab] = useState('')
-  useEffect(() => {
-    setActiveTab(pathname.split("/").filter(Boolean).pop())
-    console.log("New route:", activeTab);
-  }, [location.pathname]);
+  const activeTab = getActiveTab(pathname);
 
   return(
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex justify-around items-center py-2 px-3 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">

@@ -9,6 +9,7 @@ across sessions and be reviewed by humans.
 |---|---|
 | `CONTEXT.md` | Project snapshot: stack, structure, key facts an agent needs before touching code |
 | `analysis/frontend-analysis.md` | Full frontend audit (findings with file paths + line numbers) |
+| `analysis/admin-analysis.md` | Admin backend + admin portal audit (2026-08-26) |
 | `PLAN.md` | Phased plan of changes — single source of truth for what to do next |
 | `checklists/phase-N.md` | Detailed per-phase checklists with status |
 | `CHANGELOG.md` | What was actually changed, per phase, with file lists — for human review |
@@ -24,5 +25,9 @@ across sessions and be reviewed by humans.
 
 ## Status
 
-- **Phase 1** (critical fixes): IN PROGRESS
-- Phase 2–5: NOT STARTED
+- **Phase 1** (critical fixes): COMPLETE 2026-08-26 — build passes; see
+  `CHANGELOG.md` for full review notes and `checklists/phase-1.md`
+- Phase 2–5: NOT STARTED (Phase 2 next — needs user approval)
+- **Phases 6–7** (admin backend + frontend): COMPLETE 2026-08-26 — see
+  `checklists/phase-6-7.md` + `CHANGELOG.md`; booking page is READ-ONLY per
+  product decision

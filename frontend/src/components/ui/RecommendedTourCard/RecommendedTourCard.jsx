@@ -2,21 +2,13 @@ import styles from "./RecommendedTours.module.css";
 import { Heart, MapPin, Clock, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSavedTrips } from "../../../context/useSavedTrips";
+import { resolveUploadsUrl } from "../../../services/api";
 
 // Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img) => {
   if (!img) return "";
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
   if (typeof img !== "string") return img;
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || "";
 };
 
 function RecommendedTourCard({

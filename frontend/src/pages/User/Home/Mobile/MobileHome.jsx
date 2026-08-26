@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import axios from "axios";
+
+import { apiRequest, resolveUploadsUrl } from "../../../../services/api";
 
 import {
   Search,
@@ -237,16 +238,7 @@ const topDestinations = [
 // Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 // Bug #11 fixed: time-aware greeting helper
@@ -279,9 +271,9 @@ const MobileHome = () => {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/home");
-        if (response.data?.data) {
-          const { featuredTrips, availableToday, trustedGuides } = response.data.data;
+        const response = await apiRequest("/home");
+        if (response?.data) {
+          const { featuredTrips, availableToday, trustedGuides } = response.data;
 
           if (featuredTrips && featuredTrips.length > 0) {
             const apiTrips = featuredTrips.map((t, idx) => ({

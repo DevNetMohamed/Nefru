@@ -28,7 +28,7 @@ import {
   List,
   ArrowRight,
 } from "lucide-react";
-import axios from "axios";
+import { apiRequest, resolveUploadsUrl } from "../../../services/api";
 import { useSavedTrips } from "../../../context/useSavedTrips";
 
 import logo from "@/assets/images/logo.png";
@@ -83,16 +83,7 @@ function formatTravelTime(mins) {
 // Helper for image URLs
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 // Leaflet custom marker for tour locations - matching design pins
@@ -456,9 +447,9 @@ export default function NearbyMap() {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/home");
-        if (response.data?.data?.featuredTrips?.length > 0) {
-          const apiTrips = response.data.data.featuredTrips.map((t) => {
+        const response = await apiRequest("/home");
+        if (response?.data?.featuredTrips?.length > 0) {
+          const apiTrips = response.data.featuredTrips.map((t) => {
             return {
               id: t._id,
               title: t.title,
