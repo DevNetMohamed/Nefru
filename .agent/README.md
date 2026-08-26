@@ -31,3 +31,5 @@ across sessions and be reviewed by humans.
 - **Phases 6–7** (admin backend + frontend): COMPLETE 2026-08-26 — see
   `checklists/phase-6-7.md` + `CHANGELOG.md`; booking page is READ-ONLY per
   product decision
+- Stripe analysis complete (`analysis/stripe-analysis.md`) → Phase 8 drafted
+  (test-mode unblock + config), awaiting approval

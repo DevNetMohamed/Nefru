@@ -286,3 +286,13 @@ span {
     @apply font-sans;
   }
 }
+/* Admin page transition keyframes (referenced inline from Admin.jsx,
+   global scope so nothing depends on CSS-module scoping). */
+@keyframes nefruPageIn{
+  from{ opacity: 0; }
+  to{ opacity: 1; }
+}
+@keyframes nefruPageOut{
+  from{ opacity: 1; }
+  to{ opacity: 0; }
+}

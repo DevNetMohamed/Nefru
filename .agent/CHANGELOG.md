@@ -277,3 +277,46 @@ outside admin scope). Full detail in checklists/phase-6-7.md.
   selection panel fixed at 340px, scrolls if tall; responsive breakpoints
   (stack <=1200px, 2-col cards <=900px, 1-col <=480px); removed dead .body
   wrapper/class
+
+### Follow-up (2026-08-26) — admin topbar account menu
+- Navbar avatar is now a real toggle button (initial derived from the
+  logged-in admin's name/email via Redux auth.user; was hardcoded 'A')
+- Opens an accessible dropdown (role=menu, aria-expanded/haspopup,
+  closes on outside click + Escape) showing: avatar, display name,
+  email, role pill, 'Signed in' hint, divider, Log out button
+- Log out dispatches the existing logoutUser thunk (POST /auth/logout +
+  Redux reset); ProtectedRoute then redirects to /auth/login
+- Bell/avatar converted from shared Button to plain buttons so aria-labels
+  actually reach the DOM (shared Button does not forward extra props)
+
+### Follow-up (2026-08-26) — admin page transition animation
+- Admin.jsx: Outlet wrapped in a .pageTransition div re-keyed by
+  location.pathname so the entry animation replays on every route change
+  (also resets the ErrorBoundary per navigation)
+- CSS: 280ms fade + 8px rise (cubic-bezier ease-out), disabled under
+  prefers-reduced-motion; wrapper preserves flex/height chain so pages
+  keep height:100% behavior
+- Note: user had meanwhile commented out the topbar bell + menu meta row;
+  cleaned the resulting unused import/variable without restoring them.
+
+### Follow-up (2026-08-26) — admin page fade-out/fade-in
+- Replaced mount-only animation with a true two-phase transition:
+  outgoing page fades out (150ms, frozen via useOutlet so content does
+  not swap early), then incoming page remounts and fades in (220ms).
+- 'fading' is DERIVED (rendered route !== router route), avoiding
+  setState-in-effect lint error entirely; commit happens in a timeout
+  matching FADE_OUT_MS; rapid navigation mid-fade resolves gracefully.
+- pointer-events disabled on the fading wrapper; prefers-reduced-motion
+  disables both animations.
+
+### Follow-up (2026-08-26) — page transition made bulletproof
+- Verified build output: module-scoped keyframes were rewritten correctly,
+  so previous failure was environmental (likely prefers-reduced-motion on
+  the user's Windows, which the old media query honored and disabled all
+  animation)
+- Fade now applied as INLINE animation styles referencing GLOBAL keyframes
+  (nefruPageIn/nefruPageOut appended to index.css) - immune to CSS-module
+  scoping, purging, and media queries
+- Durations raised for visibility: fade-out 200ms (FADE_OUT_MS synced),
+  fade-in 280ms; reduced-motion media query removed per explicit user
+  requirement to always see the transition

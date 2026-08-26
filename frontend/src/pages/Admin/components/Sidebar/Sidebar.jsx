@@ -8,7 +8,7 @@ const Pages = [
   {label:"Dashboard",value:"overview",icon:Icons.Layout},
   {label:"Accounts",value:"accounts",icon:Icons.Users},
   {label:"CMS",value:"cms",icon:Icons.Copy},
-  {label:"Analytics",value:"analytics",icon:Icons.Analytics},
+  // {label:"Analytics",value:"analytics",icon:Icons.Analytics},
   {label:"Booking",value:"booking",icon:Icons.Book},
 ]
 
