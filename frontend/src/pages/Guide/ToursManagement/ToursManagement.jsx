@@ -12,21 +12,10 @@ import {
 } from "react-icons/fa6";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiRequest } from "../../../services/api";
-
-const API_ORIGIN = "http://localhost:5000";
+import { apiRequest, resolveUploadsUrl } from "../../../services/api";
 
 function getImageSrc(image) {
-  if (!image) return "";
-  if (image.startsWith("http") || image.startsWith("data:") || image.startsWith("blob:")) {
-    return image;
-  }
-
-  if (image.startsWith("/uploads")) {
-    return `${API_ORIGIN}${image}`;
-  }
-
-  return `${API_ORIGIN}/uploads/${image}`;
+  return resolveUploadsUrl(image);
 }
 
 function ToursManagement({ pageData, toursData, onCreateTour, onManageTour }) {

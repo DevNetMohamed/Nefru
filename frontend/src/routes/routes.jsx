@@ -20,7 +20,6 @@ import LinkGoogleAccount from "../pages/Auth/Onboarding/LinkGoogleAccount";
 import VerifyEmail from "../pages/Auth/Onboarding/VerifyEmail";
 // User Pages
 import Home from "../pages/User/Home/Home";
-import Trips from "../pages/User/Trips/Trips";
 import Info from "../pages/User/Trips/Info/Info";
 import Book from "../pages/User/Trips/Book/Book";
 import Status from "../pages/User/Trips/Book/components/Status/Status";
@@ -36,11 +35,8 @@ import ReviewsWritten from "../pages/User/Profile/pages/ReviewsWritten/ReviewsWr
 import HelpSupport from "../pages/User/Profile/pages/HelpSupport/HelpSupport";
 import Settings from "../pages/User/Settings/Settings";
 import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
-import Discover from "../pages/User/Discover/Discover";
 import NearbyMap from "../pages/User/NearbyMap/NearbyMap";
 import RecommendedTrips from "../pages/User/RecommendedTrips/RecommendedTrips";
-import AvailableTodayPage from "../pages/User/AvailableToday/AvailableTodayPage";
-import DiscoverEgyptPage from "../pages/User/DiscoverEgypt/DiscoverEgyptPage";
 
 import Admin from "../pages/Admin/Admin";
 import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
@@ -55,7 +51,6 @@ import CreateTour from "../pages/Guide/CreateTour/CreateTour";
 import Schedule from "../pages/Guide/Schedule/Schedule";
 import TourMedia from "../pages/Guide/TourMedia/TourMedia";
 import TourApprove from "../pages/Guide/TourApprove/TourApprove";
-import GuideProfile from "../pages/Guide/GuideProfile/GuideProfile";
 import GuidePortalLayout from "../pages/Guide/components/GuidePortalLayout/GuidePortalLayout";
 import GuideDashboard from "../pages/Guide/GuideDashboard/GuideDashboard";
 import GuideCalendar from "../pages/Guide/GuideCalendar/GuideCalendar";
@@ -181,41 +176,65 @@ export const router = createBrowserRouter([
   {
     path: "guide",
     children: [
-      // Shared guide shell. ToursManagement stays untouched inside the Outlet,
-      // so its own header/navigation can still be compared with the new shell.
+      // Authenticated guides only. The approval check lives one level deeper so
+      // /guide/verification stays reachable for guides who are not approved yet.
       {
-        element: <GuidePortalLayout />,
+        element: <ProtectedRoute allowedRoles={["guide"]} />,
         children: [
-          { index: true, element: <ToursManagement /> },
-          { path: "dashboard", element: <GuideDashboard /> },
-          { path: "calendar", element: <GuideCalendar /> },
-          { path: "profile", element: <GuideAccountProfile /> },
-          { path: "notifications", element: <GuideNotifications /> },
-          { path: "verification", element: <GuideVerification /> },
+          // Shared guide shell. ToursManagement stays untouched inside the Outlet,
+          // so its own header/navigation can still be compared with the new shell.
+          {
+            element: <RequireApprovedGuide />,
+            children: [
+              {
+                element: <GuidePortalLayout />,
+                children: [
+                  { index: true, element: <ToursManagement /> },
+                  { path: "dashboard", element: <GuideDashboard /> },
+                  { path: "calendar", element: <GuideCalendar /> },
+                  { path: "profile", element: <GuideAccountProfile /> },
+                  { path: "notifications", element: <GuideNotifications /> },
+                ],
+              },
+
+              // Existing create-trip flow — left completely unchanged and outside
+              // GuidePortalLayout to avoid adding another global header/navigation.
+              { path: "createtour", element: <CreateTour /> },
+              { path: "schedule", element: <Schedule /> },
+              { path: "tourmedia", element: <TourMedia /> },
+              { path: "tourapprove", element: <TourApprove /> },
+            ],
+          },
+
+          // Reachable by authenticated guides regardless of approval status,
+          // inside the same portal shell as before.
+          {
+            element: <GuidePortalLayout />,
+            children: [
+              { path: "verification", element: <GuideVerification /> },
+            ],
+          },
         ],
       },
-
-      // Existing create-trip flow — left completely unchanged and outside
-      // GuidePortalLayout to avoid adding another global header/navigation.
-      { path: "createtour", element: <CreateTour /> },
-      { path: "schedule", element: <Schedule /> },
-      { path: "tourmedia", element: <TourMedia /> },
-      { path: "tourapprove", element: <TourApprove /> },
     ],
   },
   {
     path: "admin",
 
-    // not protected yet, we will protect after we finish the project
-    element: <Admin />,
-
+    // Protected: admins only (non-admins are redirected to their own portal home)
+    element: <ProtectedRoute allowedRoles={["admin"]} />,
     children: [
-      { index: true, element: <Navigate to="/admin/overview" replace /> },
-      { path: "overview", element: <DashboardStatus /> },
-      { path: "accounts", element: <Accounts /> },
-      { path: "cms", element: <CMS /> },
-      { path: "analytics", element: <Analytics /> },
-      { path: "booking", element: <Booking /> },
+      {
+        element: <Admin />,
+        children: [
+          { index: true, element: <Navigate to="/admin/overview" replace /> },
+          { path: "overview", element: <DashboardStatus /> },
+          { path: "accounts", element: <Accounts /> },
+          { path: "cms", element: <CMS /> },
+          { path: "analytics", element: <Analytics /> },
+          { path: "booking", element: <Booking /> },
+        ],
+      },
     ],
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT
 

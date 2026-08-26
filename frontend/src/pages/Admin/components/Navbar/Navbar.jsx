@@ -1,40 +1,36 @@
 import styles from './Navbar.module.css';
 import Icons from '../../../../assets/icons'
-import {Link, useLocation } from 'react-router-dom'
-import {Button} from '../../../../shared/components/Button/Button'
-import {Input} from '../../../../shared/components/inputs/inputs'
+import { useLocation } from 'react-router-dom'
+import { Button } from '../../../../shared/components/Button/Button'
 
+const PAGE_TITLES = {
+  overview: "Dashboard",
+  accounts: "Accounts",
+  cms: "CMS",
+  analytics: "Analytics",
+  booking: "Bookings",
+};
 
-export default function Navbar({data}) {
+export default function Navbar() {
   const location = useLocation();
+  const activeKey =
+    location.pathname.split("/").filter(Boolean).pop() || "overview";
+  const title = PAGE_TITLES[activeKey] || "Dashboard";
 
-    const getPageTitle = () => {
-        switch (location.pathname) {
-            case "/admin":
-                return "Admin";
-
-            case "/admin/accounts":
-                return "Accounts";
-
-            case "/admin/orders":
-                return "Orders";
-
-            case "/admin/settings":
-                return "Settings";
-
-            default:
-                return "Admin";
-        }
-    };
   return (
     <div className={styles.navbar}>
-        <div style={{fontSize:"32px",fontWeight:"500"}}>Dashboard</div>
-        <div className={styles.section}>
-          <Button className={styles.button}>May 1 - May 31,2024 <Icons.chevronDown/></Button>
-          <Button className={styles.button}>Export <Icons.chevronDown/></Button>
-          <Button className={styles.iconButton}><Icons.Notification/></Button>
-          <Button className={`${styles.iconButton} ${styles.avatar}`}>A</Button>
-        </div>
+      <div style={{ fontSize: "32px", fontWeight: "500" }}>{title}</div>
+      <div className={styles.section}>
+        <Button className={styles.iconButton} aria-label="Notifications">
+          <Icons.Notification />
+        </Button>
+        <Button
+          className={`${styles.iconButton} ${styles.avatar}`}
+          aria-label="Admin account"
+        >
+          A
+        </Button>
+      </div>
     </div>
   );
 }

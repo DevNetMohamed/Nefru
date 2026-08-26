@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import {
   MapPin,
   Clock,
@@ -22,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 
+import { apiRequest, resolveUploadsUrl } from "../../../services/api";
 import useIsMobile from "../../../hooks/useIsMobile";
 import MobilePageHeader from "../../../shared/components/MobilePageHeader/MobilePageHeader";
 import styles from "./AvailableTodayPage.module.css";
@@ -42,16 +42,7 @@ import userAvatar from "../../../assets/images/user/user1.png";
 
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 const DEFAULT_AVAILABLE_TODAY = [
@@ -320,17 +311,17 @@ export default function AvailableTodayPage() {
     const fetchAvailableTours = async () => {
       try {
         const [homeRes, tripsRes] = await Promise.allSettled([
-          axios.get("http://localhost:5000/api/home"),
-          axios.get("http://localhost:5000/api/trips"),
+          apiRequest("/home"),
+          apiRequest("/trips"),
         ]);
 
         let combined = [...DEFAULT_AVAILABLE_TODAY];
 
         if (
           homeRes.status === "fulfilled" &&
-          homeRes.value.data?.data?.availableToday?.length > 0
+          homeRes.value?.data?.availableToday?.length > 0
         ) {
-          const apiAvailable = homeRes.value.data.data.availableToday.map(
+          const apiAvailable = homeRes.value.data.availableToday.map(
             (t, idx) => ({
               _id: t._id || t.id || `api-today-${idx}`,
               title: t.title,
@@ -461,7 +452,7 @@ export default function AvailableTodayPage() {
 
   return (
     <div className={styles.container}>
-      <DesktopNavbar />
+      {/* <DesktopNavbar /> */}
 
       {/* MAIN SECTION */}
       <main className={styles.main}>

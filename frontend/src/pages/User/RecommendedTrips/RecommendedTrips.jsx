@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import {
   MapPin,
   Clock,
@@ -21,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 
+import { apiRequest, resolveUploadsUrl } from "../../../services/api";
 import useIsMobile from "../../../hooks/useIsMobile";
 import MobilePageHeader from "../../../shared/components/MobilePageHeader/MobilePageHeader";
 import styles from "./RecommendedTrips.module.css";
@@ -41,16 +41,7 @@ import userAvatar from "../../../assets/images/user/user1.png";
 
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 const DEFAULT_RECOMMENDED_TRIPS = [
@@ -297,14 +288,14 @@ export default function RecommendedTrips() {
     const fetchTripsData = async () => {
       try {
         const [tripsRes, homeRes] = await Promise.allSettled([
-          axios.get("http://localhost:5000/api/trips"),
-          axios.get("http://localhost:5000/api/home"),
+          apiRequest("/trips"),
+          apiRequest("/home"),
         ]);
 
         let combined = [...DEFAULT_RECOMMENDED_TRIPS];
 
-        if (tripsRes.status === "fulfilled" && tripsRes.value.data?.data) {
-          const apiTrips = tripsRes.value.data.data.map((t) => ({
+        if (tripsRes.status === "fulfilled" && tripsRes.value?.data) {
+          const apiTrips = tripsRes.value.data.map((t) => ({
             _id: t._id || t.id,
             title: t.title,
             category: t.category || "History",
@@ -340,8 +331,8 @@ export default function RecommendedTrips() {
             );
             combined = [...apiTrips, ...filteredDefaults];
           }
-        } else if (homeRes.status === "fulfilled" && homeRes.value.data?.data?.featuredTrips) {
-          const homeTrips = homeRes.value.data.data.featuredTrips.map((t) => ({
+        } else if (homeRes.status === "fulfilled" && homeRes.value?.data?.featuredTrips) {
+          const homeTrips = homeRes.value.data.featuredTrips.map((t) => ({
             _id: t._id || t.id,
             title: t.title,
             category: t.category || "History",

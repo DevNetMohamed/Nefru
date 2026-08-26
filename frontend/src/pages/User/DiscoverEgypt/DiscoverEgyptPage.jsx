@@ -368,7 +368,7 @@ export default function DiscoverEgyptPage() {
 
   return (
     <div className={styles.container}>
-      <DesktopNavbar />
+      {/* <DesktopNavbar /> */}
 
       {/* MAIN CONTENT */}
       <main className={styles.main}>
