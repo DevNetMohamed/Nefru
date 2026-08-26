@@ -88,8 +88,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "user",
-    element: <MasterLayout />,
+    // Protected: tourists + guides (guides may browse the tourist portal)
+    element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
     children: [
+      {
+        element: <MasterLayout />,
+        children: [
       { index: true, element: <Home /> },
       { path: "home", element: <Home /> },
       // { path: "guideprofile", element: <GuideProfile /> },
@@ -134,6 +138,8 @@ export const router = createBrowserRouter([
       },
       { path: "settings", element: <Settings /> },
       { path: "notifications", element: <NotificationsPage /> },
+        ],
+      },
     ],
 
     // DONT DELETE THIS COMMENT, IT'S IMPORTANT
