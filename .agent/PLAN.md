@@ -78,7 +78,30 @@ Source: `.agent/analysis/admin-analysis.md`
       keyboard-accessible rows, aria-labels/alt, colSpan empty state
 - [ ] 7.9 Lint/dead-code pass on the folder (~58 errors)
 
+## Phase 8 — Stripe payments via TEST MODE (analyzed 2026-08-26, pending approval)
+Source: `.agent/analysis/stripe-analysis.md`. Existing integration is ~85%
+complete; work = unblock flow + test config + gap fixes.
+- [ ] 8.1 Fix B1: register `/user/bookings/:bookingId/payment` route →
+      CheckoutWizard/Status mount (decide single canonical checkout path)
+- [ ] 8.2 Fix B2: param mismatch — Status must read the real param name
+      (or route renamed) so `GET /bookings/:id` stops receiving "undefined"
+- [ ] 8.3 Fix B3: Book.jsx captures POST /bookings response (id +
+      holdExpiresAt) and navigates straight into checkout
+- [ ] 8.4 Test-mode config: backend/.env + frontend/.env with sk_test/pk_test
+      + whsec from stripe CLI listen; document commands in PAYMENT_GUIDE
+- [ ] 8.5 Handle payment_intent.payment_failed webhook (mark failed,
+      notify); loud dev warning when webhook unsigned
+- [ ] 8.6 Shared stripe module: one client factory, pinned apiVersion,
+      shared CANCELLABLE statuses; rate-limit payment endpoints
+- [ ] 8.7 Hold-expiry UX: freeze steps 2-3 at 0:00 with expired state +
+      retry link; surface decline_code in CardDetailsStep errors
+- [ ] 8.8 Small trust fixes: save-card default OFF, no forced default on
+      add-card, role=alert on payment errors
+- Deferred (needs product decision): refunds implementation, seed data
+  with real test PIs
+
 ## Decisions log
 - 2026-08-26: Phase 1 approved WITHOUT item 5 (Dockerfile) â€” user request
+- 2026-08-26: Stripe analysis complete - integration already exists (~85%), plan = unblock + test config (Phase 8)
 - 2026-08-26: Admin analysis requested covering backend + frontend routes;
   Phases 6â€“7 drafted, NOT started without approval

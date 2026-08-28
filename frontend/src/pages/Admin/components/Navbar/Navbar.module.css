@@ -39,4 +39,104 @@
   color:white;
   height:35px;
   width:35px;
+  cursor:pointer;
+}
+
+.accountWrap{
+  position:relative;
+}
+
+.menu{
+  position:absolute;
+  top:calc(100% + 8px);
+  right:0;
+  min-width:240px;
+  background-color:white;
+  border:1px solid var(--admin-border);
+  border-radius:10px;
+  box-shadow:0px 8px 24px rgba(15,23,42,0.14);
+  padding:12px;
+  z-index:60;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.menuHeader{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.menuAvatar{
+  flex-shrink:0;
+  width:38px;
+  height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background-color:var(--color-primary);
+  color:white;
+  font-weight:700;
+  font-size:15px;
+}
+.menuIdentity{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+.menuName{
+  color:var(--admin-primary);
+  font-weight:600;
+  font-size:14px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.menuEmail{
+  color:#7c8794;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.menuMeta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.rolePill{
+  width:fit-content;
+  padding:2px 10px;
+  border-radius:999px;
+  background-color:var(--color-tertiary-mute, #f4f5f8);
+  color:var(--color-tertiary);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.05em;
+}
+.signedIn{
+  color:#98a2ad;
+  font-size:11.5px;
+}
+.divider{
+  height:1px;
+  background-color:var(--admin-border);
+}
+.logoutButton{
+  all:unset;
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  text-align:left;
+  padding:9px 10px;
+  border-radius:8px;
+  color:#c2372f;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+.logoutButton:hover{
+  background-color:#fdf1f0;
 }

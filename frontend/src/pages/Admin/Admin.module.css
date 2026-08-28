@@ -32,6 +32,16 @@
   flex-direction:column;
 }
 
+/* Page transition wrapper. The fade itself is applied as an INLINE
+   animation (nefruPageIn/nefruPageOut keyframes live in index.css) so it
+   cannot be affected by module scoping or media queries. */
+.pageTransition{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+
 @media (max-width: 900px) {
   .dashboard {
     flex-direction: column;
