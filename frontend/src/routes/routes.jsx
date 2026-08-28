@@ -105,16 +105,6 @@ export const router = createBrowserRouter([
       {
         path: "trips",
         children: [
-<<<<<<< HEAD
-          { index: true, element: <Trips /> },
-          { path: "info/:id", element: <Info /> },
-          { path: ":id", element: <Info /> },
-          { path: "guide", element: <Guide /> },
-          {
-            element: <ProtectedRoute allowedRoles={["tourist"]} />,
-            children: [
-              { path: ":id/book", element: <Book /> },
-=======
           { index: true, element: <RecommendedTrips /> },
           {
             path: ":id",
@@ -123,25 +113,14 @@ export const router = createBrowserRouter([
               { path: "book", element: <Book /> },
               { path: "book/status", element: <Status /> },
               { path: "guide", element: <Guide /> },
->>>>>>> dcbe38237724661d929db9d98025e9fb5542f2ee
             ],
           },
         ],
       },
       { path: "saved", element: <Saved /> },
       {
-<<<<<<< HEAD
-        element: <ProtectedRoute allowedRoles={["tourist"]} />,
-        children: [
-          { path: "bookings/:bookingId/payment", element: <Status /> },
-        ],
-      },
-      {
-        element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
-=======
         path: "profile",
         element: <Profile />,
->>>>>>> dcbe38237724661d929db9d98025e9fb5542f2ee
         children: [
           { index: true, element: <ProfileOverview /> },
           { path: "edit", element: <EditProfile /> },

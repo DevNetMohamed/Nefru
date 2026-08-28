@@ -31,7 +31,7 @@ export const env = {
 
   jwtSecret,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  frontendUrl,
+  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
   cookieSameSite,
   googleClientId: process.env.GOOGLE_CLIENT_ID || "91221898814-uemk7pdvf01si76c33f6ksvrui17eitf.apps.googleusercontent.com",
   devAuthBypass,
