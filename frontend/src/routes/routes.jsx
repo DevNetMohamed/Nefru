@@ -109,16 +109,20 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Trips /> },
           { path: "info/:id", element: <Info /> },
-          { path: "book", element: <Book /> },
-          { path: "book/status", element: <Status /> },
+          { path: ":id", element: <Info /> },
           { path: "guide", element: <Guide /> },
           {
-            element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
+            element: <ProtectedRoute allowedRoles={["tourist"]} />,
             children: [
-              { path: "book", element: <Book /> },
-              { path: "book/status", element: <Status /> },
+              { path: ":id/book", element: <Book /> },
             ],
           },
+        ],
+      },
+      {
+        element: <ProtectedRoute allowedRoles={["tourist"]} />,
+        children: [
+          { path: "bookings/:bookingId/payment", element: <Status /> },
         ],
       },
       {
