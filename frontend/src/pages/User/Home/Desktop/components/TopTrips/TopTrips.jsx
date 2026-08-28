@@ -56,7 +56,7 @@ const TopTrips = () => {
           </p>
         </div>
 
-        <button onClick={() => navigate("/user/recommended-trips")}>View All Tours</button>
+        <button onClick={() => navigate("/user/trips")}>View All Tours</button>
       </div>
 
       <div className={styles.grid}>

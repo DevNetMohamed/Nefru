@@ -63,7 +63,7 @@ function randomInt(min, max) {
 
 const guideSeedData = [
   {
-    fullName: "Mohamed Hassan",
+    fullName: "Mohamed Hassan.",
     email: env.emailGuide,
     verificationStatus: "approved",
     isActive: true,

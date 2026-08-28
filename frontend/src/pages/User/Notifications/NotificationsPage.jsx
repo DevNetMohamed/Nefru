@@ -88,5 +88,5 @@ function NotificationsContent({ isMobile }) {
 export default function NotificationsPage() {
   const isMobile = useIsMobile(992);
   if (isMobile) return <NotificationsContent isMobile />;
-  return <><DesktopNavbar /><NotificationsContent isMobile={false} /><Footer /></>;
+  return <><NotificationsContent isMobile={false} /><Footer /></>;
 }

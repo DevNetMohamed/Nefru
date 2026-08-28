@@ -4,7 +4,7 @@ import { Trip } from "../models/trip.model.js";
 async function getPublicTrips(sort = null) {
   let query = Trip.find({ status: "active" })
     .populate("guide", "email status")
-    .limit(18)
+    .limit(5)
     .lean();
 
   if (sort) {

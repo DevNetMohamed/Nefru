@@ -1,25 +1,25 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
+// DONT DELETE THIS COMMENT, IT'S IMPORTANT
+
+import ProtectedRoute from "./ProtectedRoute";
+import RequireApprovedGuide from "./RequireApprovedGuide";
 
 import AuthLayout from "../shared/AuthLayout/AuthLayout";
 import MasterLayout from "../shared/MasterLayout/MasterLayout";
 import NotFound from "../shared/NotFound/NotFound";
-import ProtectedRoute from "./ProtectedRoute";
-import RequireApprovedGuide from "./RequireApprovedGuide";
-
 // Auth Pages
 import Welcome from "../pages/Auth/Welcome/Welcome";
 import Login from "../pages/Auth/components/Login/Login";
 import Register from "../pages/Auth/components/Register/Register";
 import Forgetpassword from "../pages/Auth/components/Forgetpassword/Forgetpassword";
 import ResetPassword from "../pages/Auth/components/ResetPassword/ResetPassword";
+import ApplicationReceived from "../pages/Auth/components/ApplicationReceived/ApplicationReceived";
 import CheckEmail from "../pages/Auth/Onboarding/CheckEmail";
-import VerifyEmail from "../pages/Auth/Onboarding/VerifyEmail";
 import ChooseRole from "../pages/Auth/Onboarding/ChooseRole";
 import LinkGoogleAccount from "../pages/Auth/Onboarding/LinkGoogleAccount";
-
+import VerifyEmail from "../pages/Auth/Onboarding/VerifyEmail";
 // User Pages
 import Home from "../pages/User/Home/Home";
-import Trips from "../pages/User/Trips/Trips";
 import Info from "../pages/User/Trips/Info/Info";
 import Book from "../pages/User/Trips/Book/Book";
 import Status from "../pages/User/Trips/Book/components/Status/Status";
@@ -35,13 +35,9 @@ import ReviewsWritten from "../pages/User/Profile/pages/ReviewsWritten/ReviewsWr
 import HelpSupport from "../pages/User/Profile/pages/HelpSupport/HelpSupport";
 import Settings from "../pages/User/Settings/Settings";
 import NotificationsPage from "../pages/User/Notifications/NotificationsPage";
-import Discover from "../pages/User/Discover/Discover";
 import NearbyMap from "../pages/User/NearbyMap/NearbyMap";
 import RecommendedTrips from "../pages/User/RecommendedTrips/RecommendedTrips";
-import AvailableTodayPage from "../pages/User/AvailableToday/AvailableTodayPage";
-import DiscoverEgyptPage from "../pages/User/DiscoverEgypt/DiscoverEgyptPage";
 
-// Admin
 import Admin from "../pages/Admin/Admin";
 import DashboardStatus from "../pages/Admin/pages/DashboardStatus/DashboardStatus";
 import Accounts from "../pages/Admin/pages/Accounts/Accounts";
@@ -55,14 +51,14 @@ import CreateTour from "../pages/Guide/CreateTour/CreateTour";
 import Schedule from "../pages/Guide/Schedule/Schedule";
 import TourMedia from "../pages/Guide/TourMedia/TourMedia";
 import TourApprove from "../pages/Guide/TourApprove/TourApprove";
-import GuideProfile from "../pages/Guide/GuideProfile/GuideProfile";
 import GuidePortalLayout from "../pages/Guide/components/GuidePortalLayout/GuidePortalLayout";
 import GuideDashboard from "../pages/Guide/GuideDashboard/GuideDashboard";
 import GuideCalendar from "../pages/Guide/GuideCalendar/GuideCalendar";
 import GuideAccountProfile from "../pages/Guide/GuideAccountProfile/GuideAccountProfile";
 import GuideNotifications from "../pages/Guide/GuideNotifications/GuideNotifications";
 import GuideVerification from "../pages/Guide/GuideVerification/GuideVerification";
-import GuideApplicationReceived from "../pages/Guide/GuideApplicationReceived/GuideApplicationReceived";
+
+import { Navigate } from "react-router-dom";
 
 export const router = createBrowserRouter([
   {
@@ -76,37 +72,40 @@ export const router = createBrowserRouter([
     children: [
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      {
-        path: "application-received",
-        element: <Navigate to="/guide/application-received" replace />,
-      },
+      { path: "application-received", element: <ApplicationReceived /> },
       { path: "forget-password", element: <Forgetpassword /> },
       { path: "reset-password", element: <ResetPassword /> },
       { path: "check-email", element: <CheckEmail /> },
-      { path: "verify-email", element: <VerifyEmail /> },
       { path: "choose-role", element: <ChooseRole /> },
       { path: "link-google", element: <LinkGoogleAccount /> },
+      { path: "verify-email", element: <VerifyEmail /> },
     ],
   },
   {
     path: "user",
-    element: <MasterLayout />,
+    // Protected: tourists + guides (guides may browse the tourist portal)
+    element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
     children: [
+      {
+        element: <MasterLayout />,
+        children: [
       { index: true, element: <Home /> },
       { path: "home", element: <Home /> },
-      { path: "guideprofile", element: <GuideProfile /> },
-      { path: "discover", element: <Discover /> },
+      // { path: "guideprofile", element: <GuideProfile /> },
+      //Discover Routes
+      // { path: "discover", element: <Discover /> },
       { path: "nearby", element: <NearbyMap /> },
-      { path: "recommended-trips", element: <RecommendedTrips /> },
-      { path: "all-recommended-trips", element: <RecommendedTrips /> },
-      { path: "available-today", element: <AvailableTodayPage /> },
-      { path: "tours-available-today", element: <AvailableTodayPage /> },
-      { path: "discover-egypt", element: <DiscoverEgyptPage /> },
-      { path: "explore-egypt", element: <DiscoverEgyptPage /> },
+      // { path: "recommended-trips", element: <RecommendedTrips /> },
+      // { path: "all-recommended-trips", element: <RecommendedTrips /> },
+      // { path: "available-today", element: <AvailableTodayPage /> },
+      // { path: "tours-available-today", element: <AvailableTodayPage /> },
+      // { path: "discover-egypt", element: <DiscoverEgyptPage /> },
+      // { path: "explore-egypt", element: <DiscoverEgyptPage /> },
 
       {
         path: "trips",
         children: [
+<<<<<<< HEAD
           { index: true, element: <Trips /> },
           { path: "info/:id", element: <Info /> },
           { path: ":id", element: <Info /> },
@@ -115,11 +114,23 @@ export const router = createBrowserRouter([
             element: <ProtectedRoute allowedRoles={["tourist"]} />,
             children: [
               { path: ":id/book", element: <Book /> },
+=======
+          { index: true, element: <RecommendedTrips /> },
+          {
+            path: ":id",
+            children: [
+              {index:true, element: <Info />},
+              { path: "book", element: <Book /> },
+              { path: "book/status", element: <Status /> },
+              { path: "guide", element: <Guide /> },
+>>>>>>> dcbe38237724661d929db9d98025e9fb5542f2ee
             ],
           },
         ],
       },
+      { path: "saved", element: <Saved /> },
       {
+<<<<<<< HEAD
         element: <ProtectedRoute allowedRoles={["tourist"]} />,
         children: [
           { path: "bookings/:bookingId/payment", element: <Status /> },
@@ -127,56 +138,111 @@ export const router = createBrowserRouter([
       },
       {
         element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
+=======
+        path: "profile",
+        element: <Profile />,
+>>>>>>> dcbe38237724661d929db9d98025e9fb5542f2ee
         children: [
-          { path: "saved", element: <Saved /> },
-          {
-            path: "profile",
-            element: <Profile />,
-            children: [
-              { index: true, element: <ProfileOverview /> },
-              { path: "edit", element: <EditProfile /> },
-              { path: "change-password", element: <ChangePassword /> },
-              { path: "bookings", element: <MyBookings /> },
-              { path: "payments", element: <PaymentMethods /> },
-              { path: "reviews", element: <ReviewsWritten /> },
-              { path: "support", element: <HelpSupport /> },
-            ],
-          },
-          { path: "settings", element: <Settings /> },
-          { path: "notifications", element: <NotificationsPage /> },
+          { index: true, element: <ProfileOverview /> },
+          { path: "edit", element: <EditProfile /> },
+          { path: "change-password", element: <ChangePassword /> },
+          { path: "bookings", element: <MyBookings /> },
+          { path: "payments", element: <PaymentMethods /> },
+          { path: "reviews", element: <ReviewsWritten /> },
+          { path: "support", element: <HelpSupport /> },
+        ],
+      },
+      { path: "settings", element: <Settings /> },
+      { path: "notifications", element: <NotificationsPage /> },
         ],
       },
     ],
+
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
+
+    //protected route for tourist and guide, we will protect after we finish the project
+    // لما نخلص المشروع شيل الcomment اللي تحت
+
+    // element: <ProtectedRoute allowedRoles={["tourist", "guide"]} />,
+    // children: [
+    //   {
+    //     element: <MasterLayout />,
+    //     children: [
+    //       { index: true, element: <Home /> },
+    //       { path: "home", element: <Home /> },
+
+    //       //Discover Routes
+    //       { path: "discover", element: <Discover /> },
+
+    //       {
+    //         path: "trips",
+    //         children: [
+    //           { index: true, element: <Trips /> },
+    //           { path: "info", element: <Info /> },
+    //           { path: "book", element: <Book /> },
+    //           { path: "book/status", element: <Status /> },
+    //           { path: "guide", element: <Guide /> },
+    //         ],
+    //       },
+    //       { path: "saved", element: <Saved /> },
+    //       { path: "profile", element: <Profile /> },
+    //       { path: "settings", element: <Settings /> },
+    //     ],
+    //   },
+    // ],
+
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
   },
+
   {
     path: "guide",
-    element: <ProtectedRoute allowedRoles={["guide"]} />,
     children: [
+      // Authenticated guides only. The approval check lives one level deeper so
+      // /guide/verification stays reachable for guides who are not approved yet.
       {
-        element: <GuidePortalLayout />,
+        element: <ProtectedRoute allowedRoles={["guide"]} />,
         children: [
-          { index: true, element: <ToursManagement /> },
-          { path: "dashboard", element: <GuideDashboard /> },
-          { path: "calendar", element: <GuideCalendar /> },
-          { path: "profile", element: <GuideAccountProfile /> },
-          { path: "notifications", element: <GuideNotifications /> },
-          { path: "verification", element: <GuideVerification /> },
-          { path: "application-received", element: <GuideApplicationReceived /> },
-        ],
-      },
-      {
-        element: <RequireApprovedGuide />,
-        children: [
-          { path: "createtour", element: <CreateTour /> },
-          { path: "schedule", element: <Schedule /> },
-          { path: "tourmedia", element: <TourMedia /> },
-          { path: "tourapprove", element: <TourApprove /> },
+          // Shared guide shell. ToursManagement stays untouched inside the Outlet,
+          // so its own header/navigation can still be compared with the new shell.
+          {
+            element: <RequireApprovedGuide />,
+            children: [
+              {
+                element: <GuidePortalLayout />,
+                children: [
+                  { index: true, element: <ToursManagement /> },
+                  { path: "dashboard", element: <GuideDashboard /> },
+                  { path: "calendar", element: <GuideCalendar /> },
+                  { path: "profile", element: <GuideAccountProfile /> },
+                  { path: "notifications", element: <GuideNotifications /> },
+                ],
+              },
+
+              // Existing create-trip flow — left completely unchanged and outside
+              // GuidePortalLayout to avoid adding another global header/navigation.
+              { path: "createtour", element: <CreateTour /> },
+              { path: "schedule", element: <Schedule /> },
+              { path: "tourmedia", element: <TourMedia /> },
+              { path: "tourapprove", element: <TourApprove /> },
+            ],
+          },
+
+          // Reachable by authenticated guides regardless of approval status,
+          // inside the same portal shell as before.
+          {
+            element: <GuidePortalLayout />,
+            children: [
+              { path: "verification", element: <GuideVerification /> },
+            ],
+          },
         ],
       },
     ],
   },
   {
     path: "admin",
+
+    // Protected: admins only (non-admins are redirected to their own portal home)
     element: <ProtectedRoute allowedRoles={["admin"]} />,
     children: [
       {
@@ -191,9 +257,27 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
+
+    //protected route for admin, we will protect after we finish the project
+    // لما نخلص المشروع شيل الcomment اللي تحت
+    // element: <ProtectedRoute allowedRoles={["admin"]} />,
+    // children: [
+    //   {
+    //     element: <Admin />,
+    //     children: [
+    //       { path: "overview", element: <DashboardStatus /> },
+    //       { path: "accounts", element: <Accounts /> },
+    //       { path: "cms", element: <CMS /> },
+    //       { path: "analytics", element: <Analytics /> },
+    //       { path: "booking", element: <Booking /> },
+    //     ],
+    //   },
+    // ],
+    // DONT DELETE THIS COMMENT, IT'S IMPORTANT
   },
   {
     path: "*",
-    element: <NotFound />,
+    element: <Navigate to="/user" replace />,
   },
 ]);

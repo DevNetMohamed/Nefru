@@ -10,7 +10,7 @@ import ToursNearYou from "../Desktop/components/ToursNearYou/ToursNearYou";
 import TrustedGuides from "../Desktop/components/TrustedGuides/TrustedGuides";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { apiRequest } from "../../../../services/api";
 import backgroundVideo from "../../../../assets/videos/Golden_Egyptian.mp4";
 
 const DesktopHome = () => {
@@ -26,14 +26,14 @@ const DesktopHome = () => {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/home");
+        const response = await apiRequest("/home");
 
-        if (response.data?.data) {
+        if (response?.data) {
           setHomeData({
-            featuredTrips: response.data.data.featuredTrips || [],
-            availableToday: response.data.data.availableToday || [],
-            trustedGuides: response.data.data.trustedGuides || [],
-            toursNearYou: response.data.data.toursNearYou || [],
+            featuredTrips: response.data.featuredTrips || [],
+            availableToday: response.data.availableToday || [],
+            trustedGuides: response.data.trustedGuides || [],
+            toursNearYou: response.data.toursNearYou || [],
           });
         }
       } catch (error) {
@@ -48,7 +48,7 @@ const DesktopHome = () => {
 
   return (
     <div className="relative min-h-screen">
-      <video
+      {/* <video
         autoPlay
         loop
         muted
@@ -56,11 +56,11 @@ const DesktopHome = () => {
         className="fixed top-0 left-0 w-full h-full object-cover -z-10 opacity-25 blur-[3px]">
       
         <source src={backgroundVideo} type="video/mp4" />
-      </video>
+      </video> */}
 
       <div className="relative z-10">
 
-        <DesktopNavbar />
+        {/* <DesktopNavbar /> */}
 
         {loading ? (
           <HeroSearchSkeleton />

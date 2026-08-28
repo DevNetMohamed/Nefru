@@ -1,13 +1,23 @@
 import styles from "./Status.module.css";
 import Icons from '../../../../assets/icons'
-import { FaRegCalendarCheck } from "react-icons/fa";
-import { LuTicket } from "react-icons/lu";
-import { BsCashStack } from "react-icons/bs";
-import { RiCalendarScheduleLine } from "react-icons/ri";
 
 import { formatNumber } from '../../../../utils/formatters'
 
-export default function Status({data=[]}) {
+export default function Status({data=[], isLoading=false}) {
+  if (isLoading && data.length === 0) {
+    return (
+      <div className={styles.container}>
+        {[0, 1, 2, 3].map((index) => (
+          <div key={index} className={styles.card} aria-hidden="true">
+            <p className={styles.title}>…</p>
+            <div className={styles.counter}>
+              <p>—</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
   return (
     <>
       <div className={styles.container}>
@@ -22,26 +32,31 @@ export default function Status({data=[]}) {
 }
 
 export function Card({ title, counter, rate, rateStatus = "UP", duration, className }) {
-  const statusStyles = {
+  const statusStylesMap = {
     "UP": { icon:Icons.arrowUp,color: "green" },
     "DOWN": { icon:Icons.arrowDown,color: "red" },
     "NORMAL": { icon:Icons.arrowUp,color: "gray" }
   };
-  const currentStyle = statusStyles[rateStatus] || {icon:Icons.ArrowRight, color: "black" };
+  const hasRate = rate !== undefined && rate !== null && rate !== "";
+  const currentStyle = statusStylesMap[rateStatus] || {icon:Icons.ArrowRight, color: "black" };
   const Icon = currentStyle.icon
   return (
     <div className={`${className} ${styles.card}`}>
       <p className={styles.title}>{title}</p>
       <div className={styles.counter}>
         <p>{counter}</p>
-        <div className={styles.rate}>
-          <Icon style={{ color:currentStyle.color, fontSize:"20px"}} color="green"/>
-          <p style={{ color: currentStyle.color, fontWeight: 500 }}>
-            {rate}
-          </p>
-        </div>
+        {hasRate ? (
+          <div className={styles.rate}>
+            <Icon style={{ color:currentStyle.color, fontSize:"20px"}} color="green"/>
+            <p style={{ color: currentStyle.color, fontWeight: 500 }}>
+              {rate}
+            </p>
+          </div>
+        ) : null}
       </div>
-      <p style={{ fontSize: "12px", color: "#888" }}>{duration}</p>
+      {duration ? (
+        <p style={{ fontSize: "12px", color: "#888" }}>{duration}</p>
+      ) : null}
     </div>
   );
 }
@@ -66,29 +81,25 @@ ChartJS.register(
   Legend
 );
 
-export function LineChart({x, y, points, max, step, lineColor, pointColor}) {
-  const data = {
-    labels: x || ["May 1","May 5", "May 10", "May 15", "May 20", "May 25", "May 30"],
-    datasets: [
-      {
-        label: "Bookings",
-        data: points || [1.5,2.2,3.1,.9,1.2,3.9,2.3],
-        borderColor:lineColor|| "#5656df",
-        backgroundColor:pointColor|| "#5656df",
-        tension: 0.4,
-        borderWidth: 3,
-        pointRadius: 4,
-      },
-      {
-        label: "Revenue",
-        data: points || [1,2.6,3,1,2,3.1,2.2],
-        borderColor:lineColor|| "#db7d11",
-        backgroundColor:pointColor|| "#db7d11",
-        tension: 0.4,
-        borderWidth: 3,
-        pointRadius: 4,
-      }
-    ],
+const SERIES_COLORS = ["#5656df", "#db7d11", "#4E924D"];
+
+// Expects API-shaped chart data: { labels: string[], datasets: [{label, values}] }
+export function LineChart({ data }) {
+  const hasData = Boolean(data?.labels?.length && data?.datasets?.length);
+
+  const chartData = {
+    labels: hasData ? data.labels : [],
+    datasets: hasData
+      ? data.datasets.map((series, index) => ({
+          label: series.label,
+          data: series.values,
+          borderColor: SERIES_COLORS[index % SERIES_COLORS.length],
+          backgroundColor: SERIES_COLORS[index % SERIES_COLORS.length],
+          tension: 0.4,
+          borderWidth: 3,
+          pointRadius: 4,
+        }))
+      : [],
   };
 
   const options = {
@@ -122,13 +133,13 @@ export function LineChart({x, y, points, max, step, lineColor, pointColor}) {
 
         ticks: {
           color: "#374151",
+          maxTicksLimit: 10,
         },
       },
       y: {
         beginAtZero: true,
-        max: max || 4,
         ticks: {
-          stepSize: step || 1,
+          precision: 0,
           color: "#9CA3AF",
         },
 
@@ -141,9 +152,13 @@ export function LineChart({x, y, points, max, step, lineColor, pointColor}) {
 
   return (
     <div>
-      <div className={styles.chart}>
-        <Line data={data} options={options} />
-      </div>
+      {hasData ? (
+        <div className={styles.chart}>
+          <Line data={chartData} options={options} />
+        </div>
+      ) : (
+        <p style={{ color: "#888", padding: "24px" }}>No booking data for this period yet.</p>
+      )}
     </div>
   );
 }

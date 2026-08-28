@@ -28,7 +28,7 @@ import {
   List,
   ArrowRight,
 } from "lucide-react";
-import axios from "axios";
+import { apiRequest, resolveUploadsUrl } from "../../../services/api";
 import { useSavedTrips } from "../../../context/useSavedTrips";
 
 import logo from "@/assets/images/logo.png";
@@ -83,16 +83,7 @@ function formatTravelTime(mins) {
 // Helper for image URLs
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 // Leaflet custom marker for tour locations - matching design pins
@@ -232,152 +223,152 @@ const createVehiclePinIcon = (mode = "walking") => {
 };
 
 // Rich default nearby tours dataset matching screenshot
-const defaultNearbyTours = [
-  {
-    id: 1,
-    title: "Historic Cairo Walking Trip",
-    price: 25,
-    timeText: "Tomorrow",
-    duration: "3 Hours",
-    badgeText: "Last seat",
-    badgeColor: "bg-red-500",
-    position: [30.0477, 31.2623],
-    location: "Khan El-Khalili, Cairo",
-    image: oldCairoImg,
-    pinColor: "#ef4444",
-    iconType: "camera",
-    category: "History",
-    rating: 4.8,
-    reviewsCount: 340,
-    guide: "Mohamed Hassan",
-  },
-  {
-    id: 2,
-    title: "Pyramids Sunrise & Sphinx Experience",
-    price: 45,
-    timeText: "2 days left",
-    duration: "4 Hours",
-    badgeText: "4 available",
-    badgeColor: "bg-[#0097a7]",
-    position: [29.9792, 31.1342],
-    location: "Giza Plateau",
-    image: pyramidsImg,
-    pinColor: "#ef4444",
-    iconType: "pyramid",
-    category: "History",
-    rating: 4.9,
-    reviewsCount: 582,
-    guide: "Mohamed Hassan",
-  },
-  {
-    id: 3,
-    title: "Nile Sunset Felucca",
-    price: 20,
-    timeText: "Tomorrow",
-    duration: "2 Hours",
-    badgeText: "Available",
-    badgeColor: "bg-emerald-600",
-    position: [30.0420, 31.2280],
-    location: "River Nile, Cairo",
-    image: nileFeluccaImg,
-    pinColor: "#0284c7",
-    iconType: "boat",
-    category: "Culture",
-    rating: 4.8,
-    reviewsCount: 290,
-    guide: "Mariam El-Sayed",
-  },
-  {
-    id: 4,
-    title: "Cairo Street Food Evening",
-    price: 30,
-    timeText: "Today",
-    duration: "3 Hours",
-    badgeText: "Popular",
-    badgeColor: "bg-amber-500",
-    position: [30.0460, 31.2400],
-    location: "Downtown & Old Cairo",
-    image: oldCairoImg,
-    pinColor: "#f59e0b",
-    iconType: "camera",
-    category: "Food",
-    rating: 4.9,
-    reviewsCount: 215,
-    guide: "Mariam El-Sayed",
-  },
-  {
-    id: 5,
-    title: "Coptic Cairo & Civilization Museum",
-    price: 35,
-    timeText: "Tomorrow",
-    duration: "5 Hours",
-    badgeText: "8 available",
-    badgeColor: "bg-[#0097a7]",
-    position: [30.0058, 31.2300],
-    location: "Old Cairo & NMEC",
-    image: museumImg,
-    pinColor: "#9333ea",
-    iconType: "museum",
-    category: "Culture",
-    rating: 4.9,
-    reviewsCount: 410,
-    guide: "Mohamed Hassan",
-  },
-  {
-    id: 6,
-    title: "Siwa Desert Safari & Sunset",
-    price: 75,
-    timeText: "3 days left",
-    duration: "6 Hours",
-    badgeText: "6 available",
-    badgeColor: "bg-[#0097a7]",
-    position: [29.2032, 25.5186],
-    location: "Siwa Oasis",
-    image: desertSafariImg,
-    pinColor: "#d97706",
-    iconType: "safari",
-    category: "Adventure",
-    rating: 4.7,
-    reviewsCount: 95,
-    guide: "Salma Nassar",
-  },
-  {
-    id: 7,
-    title: "Alexandria Coastal & Heritage Trip",
-    price: 50,
-    timeText: "Tomorrow",
-    duration: "Full Day",
-    badgeText: "Best Seller",
-    badgeColor: "bg-purple-600",
-    position: [31.2001, 29.9187],
-    location: "Alexandria Corniche",
-    image: sphinxImg,
-    pinColor: "#003D5B",
-    iconType: "camera",
-    category: "Culture",
-    rating: 4.8,
-    reviewsCount: 180,
-    guide: "Youssef Farouk",
-  },
-  {
-    id: 8,
-    title: "Luxor East & West Banks",
-    price: 65,
-    timeText: "Daily",
-    duration: "Full Day",
-    badgeText: "Top Rated",
-    badgeColor: "bg-emerald-700",
-    position: [25.6872, 32.6396],
-    location: "Luxor Temples",
-    image: oldCairoImg,
-    pinColor: "#ef4444",
-    iconType: "pyramid",
-    category: "History",
-    rating: 5.0,
-    reviewsCount: 420,
-    guide: "Omar Khalil",
-  },
-];
+// const defaultNearbyTours = [
+//   {
+//     id: 1,
+//     title: "Historic Cairo Walking Trip",
+//     price: 25,
+//     timeText: "Tomorrow",
+//     duration: "3 Hours",
+//     badgeText: "Last seat",
+//     badgeColor: "bg-red-500",
+//     position: [30.0477, 31.2623],
+//     location: "Khan El-Khalili, Cairo",
+//     image: oldCairoImg,
+//     pinColor: "#ef4444",
+//     iconType: "camera",
+//     category: "History",
+//     rating: 4.8,
+//     reviewsCount: 340,
+//     guide: "Mohamed Hassan",
+//   },
+//   {
+//     id: 2,
+//     title: "Pmids Sunrise & Sphinx Experience",
+//     price: 123,
+//     timeText: "2 days left",
+//     duration: "4 Hours",
+//     badgeText: "4 available",
+//     badgeColor: "bg-[#0097a7]",
+//     position: [29.9792, 31.1342],
+//     location: "Giza Plateau",
+//     image: pyramidsImg,
+//     pinColor: "#ef4444",
+//     iconType: "pyramid",
+//     category: "History",
+//     rating: 4.9,
+//     reviewsCount: 582,
+//     guide: "Mohamed Hassan",
+//   },
+//   {
+//     id: 3,
+//     title: "Nile Sunset Felucca",
+//     price: 20,
+//     timeText: "Tomorrow",
+//     duration: "2 Hours",
+//     badgeText: "Available",
+//     badgeColor: "bg-emerald-600",
+//     position: [30.0420, 31.2280],
+//     location: "River Nile, Cairo",
+//     image: nileFeluccaImg,
+//     pinColor: "#0284c7",
+//     iconType: "boat",
+//     category: "Culture",
+//     rating: 4.8,
+//     reviewsCount: 290,
+//     guide: "Mariam El-Sayed",
+//   },
+//   {
+//     id: 4,
+//     title: "Cairo Street Food Evening",
+//     price: 30,
+//     timeText: "Today",
+//     duration: "3 Hours",
+//     badgeText: "Popular",
+//     badgeColor: "bg-amber-500",
+//     position: [30.0460, 31.2400],
+//     location: "Downtown & Old Cairo",
+//     image: oldCairoImg,
+//     pinColor: "#f59e0b",
+//     iconType: "camera",
+//     category: "Food",
+//     rating: 4.9,
+//     reviewsCount: 215,
+//     guide: "Mariam El-Sayed",
+//   },
+//   {
+//     id: 5,
+//     title: "Coptic Cairo & Civilization Museum",
+//     price: 35,
+//     timeText: "Tomorrow",
+//     duration: "5 Hours",
+//     badgeText: "8 available",
+//     badgeColor: "bg-[#0097a7]",
+//     position: [30.0058, 31.2300],
+//     location: "Old Cairo & NMEC",
+//     image: museumImg,
+//     pinColor: "#9333ea",
+//     iconType: "museum",
+//     category: "Culture",
+//     rating: 4.9,
+//     reviewsCount: 410,
+//     guide: "Mohamed Hassan",
+//   },
+//   {
+//     id: 6,
+//     title: "Siwa Desert Safari & Sunset",
+//     price: 75,
+//     timeText: "3 days left",
+//     duration: "6 Hours",
+//     badgeText: "6 available",
+//     badgeColor: "bg-[#0097a7]",
+//     position: [29.2032, 25.5186],
+//     location: "Siwa Oasis",
+//     image: desertSafariImg,
+//     pinColor: "#d97706",
+//     iconType: "safari",
+//     category: "Adventure",
+//     rating: 4.7,
+//     reviewsCount: 95,
+//     guide: "Salma Nassar",
+//   },
+//   {
+//     id: 7,
+//     title: "Alexandria Coastal & Heritage Trip",
+//     price: 50,
+//     timeText: "Tomorrow",
+//     duration: "Full Day",
+//     badgeText: "Best Seller",
+//     badgeColor: "bg-purple-600",
+//     position: [31.2001, 29.9187],
+//     location: "Alexandria Corniche",
+//     image: sphinxImg,
+//     pinColor: "#003D5B",
+//     iconType: "camera",
+//     category: "Culture",
+//     rating: 4.8,
+//     reviewsCount: 180,
+//     guide: "Youssef Farouk",
+//   },
+//   {
+//     id: 8,
+//     title: "Luxor East & West Banks",
+//     price: 65,
+//     timeText: "Daily",
+//     duration: "Full Day",
+//     badgeText: "Top Rated",
+//     badgeColor: "bg-emerald-700",
+//     position: [25.6872, 32.6396],
+//     location: "Luxor Temples",
+//     image: oldCairoImg,
+//     pinColor: "#ef4444",
+//     iconType: "pyramid",
+//     category: "History",
+//     rating: 5.0,
+//     reviewsCount: 420,
+//     guide: "Omar Khalil",
+//   },
+// ];
 
 // Helper component to bind map instance and support programmatic zooming/recentering
 function MapController({ center, zoom, onMapReady }) {
@@ -405,10 +396,10 @@ export default function NearbyMap() {
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTour, setSelectedTour] = useState(defaultNearbyTours[0]);
+  const [selectedTour, setSelectedTour] = useState(null);
   const [userLocation, setUserLocation] = useState(DEFAULT_USER_COORDS);
-  const [mapCenter, setMapCenter] = useState(defaultNearbyTours[0].position);
-  const [toursList, setToursList] = useState(defaultNearbyTours);
+  const [mapCenter, setMapCenter] = useState(DEFAULT_USER_COORDS);
+  const [toursList, setToursList] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
   const [travelMode, setTravelMode] = useState("walking"); // "walking" | "driving"
   const [routeData, setRouteData] = useState(null);
@@ -453,43 +444,44 @@ export default function NearbyMap() {
     }
   }, []);
 
-  // 2. Fetch backend trips if available and merge
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/home");
-        if (response.data?.data?.featuredTrips?.length > 0) {
-          const apiTrips = response.data.data.featuredTrips.map((t, idx) => {
-            const fallback = defaultNearbyTours[idx % defaultNearbyTours.length];
+        const response = await apiRequest("/home");
+        if (response?.data?.featuredTrips?.length > 0) {
+          const apiTrips = response.data.featuredTrips.map((t) => {
             return {
-              id: t._id || idx + 10,
-              title: t.title || fallback.title,
-              price: t.price || fallback.price,
-              timeText: idx % 2 === 0 ? "Tomorrow" : "2 days left",
-              duration: t.duration ? `${t.duration}` : fallback.duration,
-              badgeText: idx === 0 ? "Last seat" : idx === 1 ? "4 available" : "Available",
-              badgeColor: idx === 0 ? "bg-red-500" : idx === 1 ? "bg-[#0097a7]" : "bg-emerald-600",
-              position: t.coordinates?.lat ? [t.coordinates.lat, t.coordinates.lng] : fallback.position,
-              location: t.location || fallback.location,
-              image: getImgSrc(t.image, fallback.image),
-              pinColor: fallback.pinColor,
-              iconType: fallback.iconType,
-              category: fallback.category,
-              rating: t.rating || fallback.rating,
-              reviewsCount: t.reviewsCount || fallback.reviewsCount,
+              id: t._id,
+              title: t.title,
+              price: t.price,
+              timeText: "Tomorrow",
+              duration: t.duration ? `${t.duration}` : "Unknown",
+              badgeText: "Available",
+              badgeColor: "bg-gray-500",
+              position: t.coordinates?.lat ? [t.coordinates.lat, t.coordinates.lng] : [0, 0],
+              location: t.location,
+              image: getImgSrc(t.image, null),
+              pinColor: t.pinColor || "#6b7280",
+              iconType: t.iconType || "map-pin",
+              category: t.category || "Uncategorized",
+              rating: t.rating || 0,
+              reviewsCount: t.reviewsCount || 0,
+              guide: t.guide || "Guide TBA",
             };
           });
-          // Merge API trips with default rich set to ensure complete variety
-          const merged = [...defaultNearbyTours];
-          apiTrips.forEach((apiT) => {
-            if (!merged.find((m) => m.title.toLowerCase() === apiT.title.toLowerCase())) {
-              merged.push(apiT);
+          setToursList(apiTrips);
+          if (apiTrips.length > 0) {
+            setSelectedTour(apiTrips[0]);
+            if (apiTrips[0].position && apiTrips[0].position[0] !== 0) {
+              setMapCenter(apiTrips[0].position);
             }
-          });
-          setToursList(merged);
+          }
+        } else {
+          setToursList([]);
         }
       } catch (err) {
-        console.log("Using default nearby tours dataset:", err);
+        console.log("Error fetching trips:", err);
+        setToursList([]);
       }
     };
     fetchTrips();
@@ -986,7 +978,7 @@ export default function NearbyMap() {
           </div>
 
           {/* Floating Pill: Search this area */}
-          <div className="absolute top-4 left-4 z-[990] hidden md:block">
+          {/* <div className="absolute top-4 left-4 z-[990] hidden md:block">
             <button
               onClick={() => {
                 if (mapRef.current) {
@@ -999,7 +991,7 @@ export default function NearbyMap() {
               <Search className="w-3.5 h-3.5 text-slate-500" />
               <span>Search this area</span>
             </button>
-          </div>
+          </div> */}
 
           {/* Floating Pill: Mode Selector (Walking vs Driving) - Visible on Mobile & Desktop */}
           <div className="absolute top-16 md:top-4 left-1/2 -translate-x-1/2 z-[990] flex bg-white/95 backdrop-blur-md p-1 rounded-full shadow-xl border border-slate-200/80 items-center gap-1 text-xs font-bold">
@@ -1229,13 +1221,7 @@ export default function NearbyMap() {
                           ${tour.price}
                         </span>
                         <button
-                          onClick={() => {
-                            if (/^[a-f0-9]{24}$/i.test(String(tour.id || ""))) {
-                              navigate(`/user/trips/${tour.id}/book`);
-                            } else {
-                              navigate("/user/available-today");
-                            }
-                          }}
+                          onClick={() => {console.log(tour);navigate(`/user/trips/${tour.id}/book`);}}
                           className="text-[11px] font-extrabold text-white bg-[#003D5B] hover:bg-[#002b40] px-3 py-1.5 rounded-lg shadow-xs transition-colors shrink-0 whitespace-nowrap"
                         >
                           Book Now →
@@ -1581,7 +1567,7 @@ export default function NearbyMap() {
           </div>
 
           {/* Bottom Pinned Banner: Can't find what you want? */}
-          <div className="p-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between gap-3 shrink-0">
+          {/* <div className="p-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-slate-200/80 flex items-center justify-center text-slate-600 shrink-0">
                 <Info className="w-4 h-4 stroke-[2.2]" />
@@ -1602,7 +1588,7 @@ export default function NearbyMap() {
             >
               Create Tour
             </button>
-          </div>
+          </div> */}
         </aside>
       </div>
     </div>

@@ -31,3 +31,20 @@
   display:flex;
   flex-direction:column;
 }
+
+@media (max-width: 900px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .body {
+    width: 100%;
+    overflow: visible;
+  }
+}

@@ -34,3 +34,15 @@
   color:white;
   font-weight:normal
 }
+
+@media (max-width: 900px) {
+  .sidebar {
+    gap: 12px;
+    padding: 8px;
+  }
+  .items {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}

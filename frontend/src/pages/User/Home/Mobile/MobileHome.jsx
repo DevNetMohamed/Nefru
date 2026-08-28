@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import axios from "axios";
+
+import { apiRequest, resolveUploadsUrl } from "../../../../services/api";
 
 import {
   Search,
@@ -237,16 +238,7 @@ const topDestinations = [
 // Bug #4 fixed: handle Vite bundled asset paths that start with "/"
 const getImgSrc = (img, fallback) => {
   if (!img) return fallback;
-  if (
-    typeof img === "string" &&
-    (img.startsWith("http://") ||
-      img.startsWith("https://") ||
-      img.startsWith("data:") ||
-      img.startsWith("/"))
-  ) {
-    return img;
-  }
-  return `http://localhost:5000/uploads/${img}`;
+  return resolveUploadsUrl(img) || fallback;
 };
 
 // Bug #11 fixed: time-aware greeting helper
@@ -279,9 +271,9 @@ const MobileHome = () => {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/home");
-        if (response.data?.data) {
-          const { featuredTrips, availableToday, trustedGuides } = response.data.data;
+        const response = await apiRequest("/home");
+        if (response?.data) {
+          const { featuredTrips, availableToday, trustedGuides } = response.data;
 
           if (featuredTrips && featuredTrips.length > 0) {
             const apiTrips = featuredTrips.map((t, idx) => ({
@@ -341,29 +333,6 @@ const MobileHome = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-24 font-sans">
-      {/* 1. Header Bar */}
-      <div className="bg-white sticky top-0 z-40 px-4 py-3 border-b border-gray-100 flex items-center justify-between shadow-xs">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/user/home")}>
-          <img src={logo} alt="Nefru Logo" className="h-[38px] w-auto" />
-          <span 
-            className="font-semibold text-[#003D5B]" 
-            style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '2.1rem' }}
-          >
-            Nefru
-          </span>
-        </div>
-        <button
-          onClick={() => navigate("/user/notifications")}
-          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition-colors relative"
-          aria-label="Notifications"
-        >
-          <Bell className="w-5 h-5 text-gray-700" />
-          {unreadCount > 0 && (
-            <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white" />
-          )}
-        </button>
-      </div>
-
       {/* 2. Welcome & Search Banner */}
       <div className="px-4 pt-4 pb-2 bg-white">
         <div className="mb-3">
@@ -421,9 +390,9 @@ const MobileHome = () => {
             <span className="text-[10px] font-extrabold text-[#003D5B] uppercase tracking-wider block">
               Places & Guides
             </span>
-            <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
+            {/* <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
               Discover Egypt
-            </h2>
+            </h2> */}
           </div>
           <button
             onClick={() => navigate("/user/discover-egypt")}
@@ -464,11 +433,14 @@ const MobileHome = () => {
       {/* 6. Best Choice / Top Tours */}
       <div className="py-3">
         <div className="px-4 mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
+          <span className="text-[10px] font-extrabold text-[#003D5B] uppercase tracking-wider block">
+              Best Choice Tours
+            </span>
+          {/* <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
             Best Choice Tours
-          </h2>
+          </h2> */}
           <button
-            onClick={() => navigate("/user/recommended-trips")}
+            onClick={() => navigate("/user/trips")}
             className="text-xs font-bold text-[#003D5B] flex items-center gap-0.5 hover:underline"
           >
             View All <ChevronRight className="w-3.5 h-3.5" />
@@ -480,7 +452,7 @@ const MobileHome = () => {
             return (
               <div
                 key={trip.id}
-                onClick={() => navigate("/user/recommended-trips")}
+                onClick={() => navigate(`/user/trips/${trip.id}`)}
                 className="w-64 bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden shrink-0 flex flex-col cursor-pointer hover:shadow-md transition-all"
               >
                 <div className="relative w-full h-36">
@@ -547,9 +519,9 @@ const MobileHome = () => {
               <Calendar className="w-3.5 h-3.5" />
               <span>Same-Day Booking</span>
             </div>
-            <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
+            {/* <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
               Tours Available Today
-            </h2>
+            </h2> */}
           </div>
           <button
             onClick={() => navigate("/user/available-today")}
@@ -563,7 +535,7 @@ const MobileHome = () => {
           {availableTodayTours.map((trip) => (
             <div
               key={trip.id}
-              onClick={() => navigate("/user/available-today")}
+              onClick={() => navigate(`/user/trips/${trip.id}`)}
               className="w-64 bg-amber-50/50 rounded-2xl border border-amber-200/60 p-3 shrink-0 flex gap-3 items-center cursor-pointer hover:bg-amber-100/50 transition-colors"
             >
               <img
@@ -603,9 +575,9 @@ const MobileHome = () => {
               <Award className="w-3.5 h-3.5" />
               <span>Licensed Experts</span>
             </div>
-            <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
+            {/* <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
               Trusted Local Guides
-            </h2>
+            </h2> */}
           </div>
           <button
             onClick={() => navigate("/user/guideprofile")}
@@ -798,7 +770,7 @@ const MobileHome = () => {
                   onClick={() => {
                     const city = activeGuideModal.searchCity;
                     setActiveGuideModal(null);
-                    navigate(`/user/recommended-trips?search=${encodeURIComponent(city)}`);
+                    navigate(`/user/trips?search=${encodeURIComponent(city)}`);
                   }}
                   className="w-full py-2.5 px-4 bg-[#003D5B] hover:bg-[#002c42] text-white font-bold text-xs rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-colors"
                 >
@@ -822,39 +794,7 @@ const MobileHome = () => {
       )}
 
       {/* 12. Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 flex justify-around items-center py-2 px-3 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
-        <button
-          onClick={() => navigate("/user/home")}
-          className="flex flex-col items-center gap-1 text-xs font-bold text-[#003D5B]"
-        >
-          <Home className="w-5 h-5 stroke-[2.4]" />
-          <span>Home</span>
-        </button>
-
-        <button
-          onClick={() => navigate("/user/trips")}
-          className="flex flex-col items-center gap-1 text-xs font-semibold text-gray-400 hover:text-gray-700"
-        >
-          <Briefcase className="w-5 h-5" />
-          <span>Trips</span>
-        </button>
-
-        <button
-          onClick={() => navigate("/user/saved")}
-          className="flex flex-col items-center gap-1 text-xs font-semibold text-gray-400 hover:text-gray-700"
-        >
-          <Heart className="w-5 h-5" />
-          <span>Saved</span>
-        </button>
-
-        <button
-          onClick={() => navigate("/user/profile")}
-          className="flex flex-col items-center gap-1 text-xs font-semibold text-gray-400 hover:text-gray-700"
-        >
-          <User className="w-5 h-5" />
-          <span>Profile</span>
-        </button>
-      </nav>
+      
     </div>
   );
 };

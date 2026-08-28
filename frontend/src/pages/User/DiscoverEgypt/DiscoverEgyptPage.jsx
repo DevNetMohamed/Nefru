@@ -368,7 +368,7 @@ export default function DiscoverEgyptPage() {
 
   return (
     <div className={styles.container}>
-      <DesktopNavbar />
+      {/* <DesktopNavbar /> */}
 
       {/* MAIN CONTENT */}
       <main className={styles.main}>
@@ -496,7 +496,7 @@ export default function DiscoverEgyptPage() {
                       className={styles.toursBtn}
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/user/recommended-trips?search=${encodeURIComponent(place.city)}`);
+                        navigate(`/user/trips?search=${encodeURIComponent(place.city)}`);
                       }}
                     >
                       <span>Find Tours</span>
@@ -629,7 +629,7 @@ export default function DiscoverEgyptPage() {
                   onClick={() => {
                     const searchCity = selectedPlace.city;
                     setSelectedPlace(null);
-                    navigate(`/user/recommended-trips?search=${encodeURIComponent(searchCity)}`);
+                    navigate(`/user/trips?search=${encodeURIComponent(searchCity)}`);
                   }}
                 >
                   <span>Find Guided Tours to {selectedPlace.title}</span>
